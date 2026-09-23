@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <!-- Outer Ring & Gear Teeth -->
+  <circle cx="100" cy="100" r="92" fill="#1e3a8a" stroke="#facc15" stroke-width="5"/>
+  <circle cx="100" cy="100" r="78" fill="#1e40af" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Outer Circular Text Ring -->
+  <circle cx="100" cy="100" r="62" fill="#0f172a" stroke="#facc15" stroke-width="3"/>
+  
+  <!-- Center Symbols: Torch, Gear & Book -->
+  <!-- Gear cog -->
+  <path d="M100,55 L104,65 L114,62 L115,72 L125,73 L122,83 L131,88 L125,96 L131,104 L122,109 L125,119 L115,120 L114,130 L104,127 L100,137 L96,127 L86,130 L85,120 L75,119 L78,109 L69,104 L75,96 L69,88 L78,83 L75,73 L85,72 L86,62 L96,65 Z" fill="#facc15"/>
+  <circle cx="100" cy="96" r="20" fill="#1e3a8a"/>
+  
+  <!-- Flame -->
+  <path d="M100,78 Q106,88 100,100 Q94,88 100,78 Z" fill="#ef4444"/>
+  <circle cx="100" cy="96" r="4" fill="#facc15"/>
+  
+  <!-- Bottom Ribbon: LABOR -->
+  <path d="M30,142 Q100,162 170,142 L165,166 Q100,182 35,166 Z" fill="#facc15" stroke="#b45309" stroke-width="2"/>
+  <text x="100" y="159" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="900" fill="#1e3a8a" text-anchor="middle" letter-spacing="1">LABOR</text>
+  
+  <text x="100" y="42" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">SMK BINAAN FKIP UNRI</text>
+</svg>

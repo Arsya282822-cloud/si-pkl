@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Presentasi SI-PKL SMK Labor Binaan FKIP UNRI</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            background-color: #090d16;
+            color: #f8fafc;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .slide-container {
+            width: 1200px;
+            height: 675px; /* 16:9 Aspect Ratio */
+            background: radial-gradient(circle at top right, #0c4a6e 0%, #0369a1 25%, #0f172a 70%);
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 50px 60px;
+        }
+        .slide {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            animation: fadeIn 0.4s ease;
+        }
+        .slide.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .badge-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #38bdf8;
+            letter-spacing: 0.5px;
+            width: fit-content;
+        }
+        h1 { font-size: 40px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; }
+        h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; color: #f8fafc; }
+        p { font-size: 16px; color: #cbd5e1; line-height: 1.6; }
+        
+        /* Navigation Controls */
+        .controls {
+            position: fixed;
+            bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            z-index: 100;
+        }
+        .nav-btn {
+            background: #0284c7;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: #0369a1; transform: scale(1.05); }
+        .slide-indicator { font-size: 13px; font-weight: 700; color: #94a3b8; }
+
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        
+        .card-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+        }
+        .card-box h3 { font-size: 18px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; }
+        .card-box p { font-size: 14px; color: #94a3b8; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="slide-container">
+    
+    <!-- Slide 1: Cover -->
+    <div class="slide active" id="slide1">
+        <div>
+            <div class="badge-tag mb-3">
+                <i class="ph ph-presentation"></i> SIDANG TUGAS AKHIR / PRESENTASI PROYEK
+            </div>
+            <p style="color: #38bdf8; font-weight: 700; margin-top: 15px;">SMK LABOR BINAAN FKIP UNRI PEKANBARU</p>
+            <h1 style="margin-top: 5px; font-size: 42px;">Sistem Informasi Praktik Kerja Lapangan (SI-PKL)</h1>
+            <p style="font-size: 18px; margin-top: 15px; max-width: 800px; color: #cbd5e1;">
+                Platform Digital Terpadu Berbasis Web & Progressive Web App (PWA) untuk Efisiensi Presensi GPS, Jurnal Harian, Berkas Observasi Guru, dan Rapor Kurikulum Merdeka.
+            </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px;">
+            <div>
+                <span style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8;">Disusun Oleh:</span>
+                <div style="font-size: 16px; font-weight: 700; color: #f8fafc;">Tim Pengembang SI-PKL</div>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8;">Tahun Akademik:</span>
+                <div style="font-size: 16px; font-weight: 700; color: #38bdf8;">2026 / 2027</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Problem Statement -->
+    <div class="slide" id="slide2">
+        <div>
+            <div class="badge-tag mb-2">LATAR BELAKANG & PERMASALAHAN</div>
+            <h2>Mengapa Sistem Ini Dibutuhkan?</h2>
+            <p>Pengelolaan Praktik Kerja Lapangan (PKL) manual berbasis kertas menimbulkan kendala utama:</p>
+        </div>
+        <div class="grid-3" style="margin-top: 10px;">
+            <div class="card-box">
+                <div style="font-size: 32px; margin-bottom: 10px;">📋</div>
+                <h3>Presensi Rawan Manipulasi</h3>
+                <p>Absensi kertas di tempat magang tidak dapat memverifikasi kehadiran fisik dan koordinat lokasi siswa secara akurat.</p>
+            </div>
+            <div class="card-box">
+                <div style="font-size: 32px; margin-bottom: 10px;">⏳</div>
+                <h3>Jurnal Terlambat Dievaluasi</h3>
+                <p>Buku kegiatan fisik siswa baru dinilai di akhir masa PKL, sehingga feedback pembimbingan tidak realtime.</p>
+            </div>
+            <div class="card-box">
+                <div style="font-size: 32px; margin-bottom: 10px;">🗂️</div>
+                <h3>Administrasi Berat & Tersebar</h3>
+                <p>Pembuatan surat tugas, berita acara observasi, sertifikat, dan rapor PKL memakan waktu dan berisiko tercecer.</p>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px; font-size: 14px; color: #38bdf8;">
+            💡 <strong>Target:</strong> Menghadirkan sistem terintegrasi yang hemat waktu hingga 85% dan berbasis paperless.
+        </div>
+    </div>
+
+    <!-- Slide 3: Solution & Tech Stack -->
+    <div class="slide" id="slide3">
+        <div>
+            <div class="badge-tag mb-2">SOLUSI & ARSITEKTUR TEKNOLOGI</div>
+            <h2>Tech Stack Modern & Andal</h2>
+        </div>
+        <div class="grid-2">
+            <div class="card-box" style="padding: 20px;">
+                <h3 style="font-size: 16px; margin-bottom: 12px;"><i class="ph ph-cpu"></i> Backend & Keamanan</h3>
+                <p style="font-size: 13.5px; margin-bottom: 6px;">• <strong>Laravel 11 (PHP 8.2+):</strong> Framework MVC performa tinggi.</p>
+                <p style="font-size: 13.5px; margin-bottom: 6px;">• <strong>Audit Trail Log:</strong> Pencatatan IP & User-Agent otomatis.</p>
+                <p style="font-size: 13.5px; margin-bottom: 6px;">• <strong>Backup Database 1-Klik:</strong> Keamanan data instan.</p>
+                <p style="font-size: 13.5px;">• <strong>Signed QR Code:</strong> Verifikasi publik keaslian sertifikat.</p>
+            </div>
+            <div class="card-box" style="padding: 20px;">
+                <h3 style="font-size: 16px; margin-bottom: 12px;"><i class="ph ph-device-mobile"></i> Frontend & Mobile PWA</h3>
+                <p style="font-size: 13.5px; margin-bottom: 6px;">• <strong>Progressive Web App (PWA):</strong> Dapat di-install di HP tanpa Play Store.</p>
+                <p style="font-size: 13.5px; margin-bottom: 6px;">• <strong>HTML5 Geolocation:</strong> Presensi GPS realtime + Smart Fallback.</p>
+                <p style="font-size: 13.5px; margin-bottom: 6px;">• <strong>Chart.js 4.x:</strong> Visual analitik tren presensi & industri.</p>
+                <p style="font-size: 13.5px;">• <strong>Tailwind & Vanilla Tokens:</strong> UI Glassmorphism modern.</p>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 12px; font-size: 13px; color: #94a3b8;">
+            Arsitektur dirancang responsif untuk Laptop Pokja, Tablet Guru, hingga Smartphone Siswa.
+        </div>
+    </div>
+
+    <!-- Slide 4: 6 Core Modules -->
+    <div class="slide" id="slide4">
+        <div>
+            <div class="badge-tag mb-2">FITUR UTAMA</div>
+            <h2>6 Modul Unggulan Sistem</h2>
+        </div>
+        <div class="grid-3" style="margin-top: 5px;">
+            <div class="card-box" style="padding: 16px;">
+                <h3 style="font-size: 15px;">📍 1. Presensi GPS</h3>
+                <p style="font-size: 12.5px;">Absensi realtime titik lokasi industri dengan fail-safe recovery jika izin GPS ditolak.</p>
+            </div>
+            <div class="card-box" style="padding: 16px;">
+                <h3 style="font-size: 15px;">📖 2. Jurnal & Foto</h3>
+                <p style="font-size: 12.5px;">Pencatatan kegiatan harian siswa berbukti foto, divalidasi langsung oleh guru.</p>
+            </div>
+            <div class="card-box" style="padding: 16px;">
+                <h3 style="font-size: 15px;">📁 3. Berkas Observasi</h3>
+                <p style="font-size: 12.5px;">Cetak blanko evaluasi guru & upload scan dokumen bertanda tangan stempel DUDI.</p>
+            </div>
+            <div class="card-box" style="padding: 16px;">
+                <h3 style="font-size: 15px;">📊 4. Visual Dashboard</h3>
+                <p style="font-size: 12.5px;">Grafik tren presensi 7 hari, sebaran jurusan, dan mitra industri teraktif.</p>
+            </div>
+            <div class="card-box" style="padding: 16px;">
+                <h3 style="font-size: 15px;">🎓 5. Rapor Kurikulum Merdeka</h3>
+                <p style="font-size: 12.5px;">Generator capaian PKL lengkap: nilai hard/soft skill, jam hadir, & deskripsi capaian.</p>
+            </div>
+            <div class="card-box" style="padding: 16px;">
+                <h3 style="font-size: 15px;">🔒 6. Sertifikat & QR Sah</h3>
+                <p style="font-size: 12.5px;">Penerbitan sertifikat digital resmi ber-QR Code verifikasi anti-pemalsuan.</p>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 10px; font-size: 13px; color: #38bdf8;">
+            Mendukung alur siklus PKL SMK secara menyeluruh dari awal hingga akhir.
+        </div>
+    </div>
+
+    <!-- Slide 5: Testing Results -->
+    <div class="slide" id="slide5">
+        <div>
+            <div class="badge-tag mb-2">HASIL PENGUJIAN</div>
+            <h2>Black Box Testing 100% Berhasil</h2>
+        </div>
+        <div class="card-box" style="padding: 16px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #cbd5e1;">
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.2); color: #38bdf8; text-align: left;">
+                    <th style="padding: 6px;">Skenario Pengujian</th>
+                    <th style="padding: 6px;">Aksi</th>
+                    <th style="padding: 6px;">Hasil Sistem</th>
+                    <th style="padding: 6px; text-align: center;">Status</th>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 6px;">Multi-Role Auth</td>
+                    <td>Login Admin / Guru / Siswa</td>
+                    <td>Sesuai hak akses masing-masing</td>
+                    <td style="text-align: center; color: #4ade80; font-weight: bold;">PASSED</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 6px;">Presensi Geolocation</td>
+                    <td>Klik Absen Masuk & Pulang</td>
+                    <td>Koordinat GPS tersimpan akurat</td>
+                    <td style="text-align: center; color: #4ade80; font-weight: bold;">PASSED</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 6px;">GPS Fallback Mechanism</td>
+                    <td>Nonaktifkan akses lokasi HP</td>
+                    <td>Dialog fallback muncul, presensi lolos</td>
+                    <td style="text-align: center; color: #4ade80; font-weight: bold;">PASSED</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 6px;">Berkas Observasi & Rapor</td>
+                    <td>Cetak blanko & rapor kurmer</td>
+                    <td>PDF ber-kop resmi terbit instan</td>
+                    <td style="text-align: center; color: #4ade80; font-weight: bold;">PASSED</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px;">QR Code Verification</td>
+                    <td>Scan QR sertifikat via kamera</td>
+                    <td>URL publik menampilkan validitas sah</td>
+                    <td style="text-align: center; color: #4ade80; font-weight: bold;">PASSED</td>
+                </tr>
+            </table>
+        </div>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 10px; font-size: 13px; color: #4ade80;">
+            ✓ Seluruh fungsi berjalan sesuai harapan tanpa error runtime.
+        </div>
+    </div>
+
+    <!-- Slide 6: Conclusion -->
+    <div class="slide" id="slide6">
+        <div>
+            <div class="badge-tag mb-2">KESIMPULAN & PENUTUP</div>
+            <h2>Dampak & Manfaat Implementasi</h2>
+        </div>
+        <div class="grid-3">
+            <div class="card-box">
+                <div style="font-size: 32px; color: #38bdf8;">📈 85%</div>
+                <h3 style="margin-top: 8px;">Efisiensi Waktu</h3>
+                <p>Otomatisasi pengolahan nilai, rekapitulasi kehadiran, dan penerbitan dokumen resmi.</p>
+            </div>
+            <div class="card-box">
+                <div style="font-size: 32px; color: #4ade80;">🌱 100%</div>
+                <h3 style="margin-top: 8px;">Paperless & Transparan</h3>
+                <p>Seluruh jurnal, presensi, dan dokumen observasi tersimpan terpusat dan aman.</p>
+            </div>
+            <div class="card-box">
+                <div style="font-size: 32px; color: #f59e0b;">🛡️ Sah</div>
+                <h3 style="margin-top: 8px;">Anti-Pemalsuan</h3>
+                <p>Verifikasi digital QR Code memastikan setiap sertifikat dan rapor sah dari sekolah.</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <h3 style="color: #38bdf8; font-size: 22px;">Terima Kasih! 🙏</h3>
+            <p style="font-size: 14px; color: #94a3b8;">Sesi Tanya Jawab & Demonstrasi Sistem Dibuka.</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- Navigation Controls -->
+<div class="controls">
+    <button class="nav-btn" onclick="prevSlide()"><i class="ph ph-caret-left"></i></button>
+    <span class="slide-indicator" id="indicator">1 / 6</span>
+    <button class="nav-btn" onclick="nextSlide()"><i class="ph ph-caret-right"></i></button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 6;
+
+    function showSlide(n) {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.getElementById('slide' + n).classList.add('active');
+        document.getElementById('indicator').innerText = n + ' / ' + totalSlides;
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides) {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlide > 1) {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+    }
+
+    // Keyboard Arrow Navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+</script>
+
+</body>
+</html>

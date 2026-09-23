@@ -1,0 +1,31 @@
+use App\Http\Controllers\Admin\GuruController;
+use App\Http\Controllers\Admin\JurusanController;
+use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\PerusahaanController;
+use App\Http\Controllers\Admin\PeriodePklController;
+use App\Http\Controllers\Admin\SiswaController;
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        // Dashboard admin dari Fase 6 tetap dipertahankan.
+
+        Route::resource('jurusan', JurusanController::class)
+            ->except(['show']);
+
+        Route::resource('guru', GuruController::class)
+            ->except(['show']);
+
+        Route::resource('kelas', KelasController::class)
+            ->except(['show']);
+
+        Route::resource('siswa', SiswaController::class)
+            ->except(['show']);
+
+        Route::resource('perusahaan', PerusahaanController::class)
+            ->except(['show']);
+
+        Route::resource('periode', PeriodePklController::class)
+            ->except(['show']);
+    });

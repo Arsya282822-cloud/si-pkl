@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('jurnal_pkl', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('penempatan_id')->constrained('penempatan')->cascadeOnDelete();
+            $table->date('tanggal');
+            $table->text('kegiatan');
+            $table->string('foto')->nullable();
+            $table->enum('status_validasi', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
+            $table->text('komentar_guru')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('jurnal_pkl');
+    }
+};

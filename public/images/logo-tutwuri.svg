@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <!-- Background Shield/Circle -->
+  <polygon points="100,10 185,50 185,145 100,190 15,145 15,50" fill="#0284c7" stroke="#ffffff" stroke-width="4"/>
+  <polygon points="100,18 177,54 177,140 100,181 23,140 23,54" fill="#0284c7" stroke="#fbbf24" stroke-width="3"/>
+  <!-- Garuda Wings / Blencong Motif -->
+  <path d="M100,35 C115,55 155,70 170,105 C150,110 135,95 125,85 C130,105 120,125 100,140 C80,125 70,105 75,85 C65,95 50,110 30,105 C45,70 85,55 100,35 Z" fill="#fbbf24"/>
+  <!-- Api Obor (Flame) -->
+  <path d="M100,45 Q108,65 100,80 Q92,65 100,45 Z" fill="#ef4444"/>
+  <path d="M100,52 Q104,65 100,74 Q96,65 100,52 Z" fill="#fbbf24"/>
+  <!-- Buku (Book) -->
+  <path d="M65,135 Q100,125 100,145 Q100,125 135,135 L135,148 Q100,138 100,158 Q100,138 65,148 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+  <!-- Text Ring -->
+  <circle cx="100" cy="100" r="88" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,3"/>
+</svg>
