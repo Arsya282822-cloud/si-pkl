@@ -21,15 +21,17 @@ class GuruImport implements ToModel, WithHeadingRow
             return null;
         }
 
+        $namaGuru = mb_strtoupper(trim($row['nama']));
+
         // Cari atau buat User berdasarkan email atau NIP
         $role = Role::where('nama_role', 'guru')->first();
         
-        $email = !empty($row['email']) ? $row['email'] : strtolower(str_replace(' ', '', $row['nama'])) . '@guru.com';
+        $email = !empty($row['email']) ? $row['email'] : strtolower(str_replace(' ', '', $namaGuru)) . '@guru.com';
 
         $user = User::firstOrCreate(
             ['email' => $email],
             [
-                'name' => $row['nama'],
+                'name' => $namaGuru,
                 'password' => bcrypt('guru1234'), // Password default guru
                 'role_id' => $role->id ?? 2,
                 'status' => 'aktif'

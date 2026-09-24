@@ -63,6 +63,12 @@ class LembarObservasiController extends Controller
 
         $selectedJurusan = $selectedPenempatan?->siswa?->jurusan?->nama_jurusan ?? 'RPL';
         $defaultKompetensi = KompetensiObservasiService::getKompetensiByJurusan($selectedJurusan);
+        $defaultKompetensiBaru = KompetensiObservasiService::getKompetensiBaruByJurusan($selectedJurusan);
+        $allTpGrouped = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+            ->orderBy('kode_jurusan')
+            ->orderBy('nomor_urut')
+            ->get()
+            ->groupBy(['kode_jurusan', 'capaian_pembelajaran']);
 
         return view('guru.observasi.create', compact(
             'penempatans',
@@ -70,7 +76,9 @@ class LembarObservasiController extends Controller
             'presets',
             'defaultSoftskills',
             'defaultKompetensi',
+            'defaultKompetensiBaru',
             'defaultAnalisis',
+            'allTpGrouped',
             'guru'
         ));
     }
@@ -236,12 +244,19 @@ class LembarObservasiController extends Controller
         $defaultSoftskills = KompetensiObservasiService::getSoftSkills();
         $defaultAnalisis = KompetensiObservasiService::getAnalisisUsaha();
 
+        $allTpGrouped = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+            ->orderBy('kode_jurusan')
+            ->orderBy('nomor_urut')
+            ->get()
+            ->groupBy(['kode_jurusan', 'capaian_pembelajaran']);
+
         return view('guru.observasi.edit', compact(
             'observasi',
             'penempatans',
             'presets',
             'defaultSoftskills',
             'defaultAnalisis',
+            'allTpGrouped',
             'guru'
         ));
     }

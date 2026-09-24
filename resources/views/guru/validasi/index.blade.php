@@ -93,10 +93,10 @@
                 </span>
                 <select name="status" class="form-select border-start-0 ps-0">
                     <option value="">Semua Status Validasi</option>
-                    <option value="laporan_khusus" {{ $status == 'laporan_khusus' ? 'selected' : '' }}>🚨 Laporan Khusus DUDI</option>
-                    <option value="disetujui" {{ $status == 'disetujui' ? 'selected' : '' }}>✅ Disetujui DUDI</option>
-                    <option value="menunggu" {{ $status == 'menunggu' ? 'selected' : '' }}>⏳ Menunggu Review DUDI</option>
-                    <option value="ditolak" {{ $status == 'ditolak' ? 'selected' : '' }}>❌ Ditolak / Perlu Revisi</option>
+                    <option value="laporan_khusus" {{ $status == 'laporan_khusus' ? 'selected' : '' }}>Laporan Khusus DUDI</option>
+                    <option value="disetujui" {{ $status == 'disetujui' ? 'selected' : '' }}>Disetujui DUDI</option>
+                    <option value="menunggu" {{ $status == 'menunggu' ? 'selected' : '' }}>Menunggu Review DUDI</option>
+                    <option value="ditolak" {{ $status == 'ditolak' ? 'selected' : '' }}>Ditolak / Perlu Revisi</option>
                 </select>
             </div>
         </div>

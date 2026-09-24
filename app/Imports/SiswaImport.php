@@ -22,47 +22,57 @@ class SiswaImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        // Generate kode_jurusan dari singkatan (misal: "Bisnis Retail" -> "BR")
-        $kodeJurusan = collect(explode(' ', trim($row['jurusan'])))
-            ->map(function($word) { return strtoupper(substr($word, 0, 1)); })
-            ->join('');
-        
-        if (empty($kodeJurusan) || strlen($kodeJurusan) < 2) {
-            $kodeJurusan = strtoupper(substr(preg_replace('/[^a-zA-Z]/', '', $row['jurusan']), 0, 3));
+        $rawKelas = strtoupper(trim($row['kelas'] ?? ''));
+        $rawJurusan = strtoupper(trim($row['jurusan'] ?? ''));
+
+        // Deteksi kode standar SMK Labor (TKJ, RPL, AK, MP, BR) dari kolom jurusan maupun kelas
+        $combined = $rawKelas . ' ' . $rawJurusan;
+        if (str_contains($combined, 'TKJ') || str_contains($combined, 'JARINGAN')) {
+            $kodeJurusan = 'TKJ';
+            $namaJurusan = 'Teknik Komputer dan Jaringan';
+            $namaKelas   = 'XII TKJ';
+        } elseif (str_contains($combined, 'RPL') || str_contains($combined, 'PERANGKAT LUNAK') || str_contains($combined, 'PPLG')) {
+            $kodeJurusan = 'RPL';
+            $namaJurusan = 'Rekayasa Perangkat Lunak';
+            $namaKelas   = 'XII RPL';
+        } elseif (str_contains($combined, 'AK') || str_contains($combined, 'AKUNTANSI')) {
+            $kodeJurusan = 'AK';
+            $namaJurusan = 'Akuntansi dan Keuangan Lembaga';
+            $namaKelas   = 'XII AK';
+        } elseif (str_contains($combined, 'MP') || str_contains($combined, 'PERKANTORAN') || str_contains($combined, 'OTKP')) {
+            $kodeJurusan = 'MP';
+            $namaJurusan = 'Manajemen Perkantoran dan Layanan Bisnis';
+            $namaKelas   = 'XII MP';
+        } else {
+            $kodeJurusan = 'BR';
+            $namaJurusan = 'Bisnis Retail';
+            $namaKelas   = 'XII BR';
         }
 
-        // Cari atau buat Jurusan
         $jurusan = Jurusan::firstOrCreate(
-            ['nama_jurusan' => $row['jurusan']],
-            ['kode_jurusan' => $kodeJurusan]
+            ['kode_jurusan' => $kodeJurusan],
+            ['nama_jurusan' => $namaJurusan, 'status' => true]
         );
 
-        // Tentukan tingkat berdasarkan kata pertama dari nama kelas (misal: "XII RPL 1" -> "XII")
-        $tingkat = explode(' ', trim($row['kelas']))[0] ?? 'XII';
-        // Konversi 10, 11, 12 ke romawi jika perlu (sebagai fallback sederhana)
-        $tingkatMap = ['10' => 'X', '11' => 'XI', '12' => 'XII'];
-        if (array_key_exists($tingkat, $tingkatMap)) {
-            $tingkat = $tingkatMap[$tingkat];
-        }
-
-        // Cari atau buat Kelas
         $kelas = Kelas::firstOrCreate(
-            ['nama_kelas' => $row['kelas']],
-            ['jurusan_id' => $jurusan->id, 'tingkat' => $tingkat]
+            ['nama_kelas' => $namaKelas],
+            ['jurusan_id' => $jurusan->id, 'tingkat' => 'XII', 'status' => true]
         );
+
+        $namaSiswa = mb_strtoupper(trim($row['nama'] ?? ''));
 
         // Cari atau buat User berdasarkan email atau NIS
         $email = !empty($row['email']) ? $row['email'] : $row['nis'] . '@smklabor.sch.id';
         $roleId = \App\Models\Role::where('nama_role', 'siswa')->value('id') ?? 3;
         
         $user = User::firstOrCreate(
-            ['email' => $email],
-            [
-                'name' => $row['nama'],
-                'password' => Hash::make($row['nis']), // Password default adalah NIS
-                'role_id' => $roleId
-            ]
-        );
+             ['email' => $email],
+             [
+                 'name' => $namaSiswa,
+                 'password' => Hash::make($row['nis']), // Password default adalah NIS
+                 'role_id' => $roleId
+             ]
+         );
 
         // Konversi format tanggal excel jika perlu
         $tanggal_lahir = null;

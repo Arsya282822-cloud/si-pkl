@@ -52,8 +52,8 @@ class DatabaseSeeder extends Seeder
             ['pejabat_kepala_sekolah_aktif', 'sekarang', 'pejabat'],
             ['pejabat_kepala_sekolah', 'JEFFRI HUNTER, M.Pd', 'pejabat'],
             ['pejabat_nip_kepala_sekolah', '-', 'pejabat'],
-            ['pejabat_ketua_pokja', 'Dedi Hendrawan, S.Kom., M.Kom.', 'pejabat'],
-            ['pejabat_nip_ketua_pokja', '-', 'pejabat'],
+            ['pejabat_ketua_pokja', 'Mahendra, S.Pd., M.Si.', 'pejabat'],
+            ['pejabat_nip_ketua_pokja', '198904122019031005', 'pejabat'],
         ];
 
         foreach ($defaultSettings as [$key, $val, $group]) {
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@admin.com'],
             [
-                'name'     => 'Administrator Pokja PKL',
+                'name'     => 'Administrator Koordinator PKL',
                 'password' => bcrypt('password'),
                 'role_id'  => $roleAdmin->id,
                 'status'   => 'aktif',
@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
         $userGuru = User::updateOrCreate(
             ['email' => 'guru@smklabor.sch.id'],
             [
-                'name'     => 'Dedi Hendrawan, S.Kom., M.Kom.',
+                'name'     => 'Mahendra, S.Pd., M.Si.',
                 'password' => bcrypt('password'),
                 'role_id'  => $roleGuru->id,
                 'status'   => 'aktif',
@@ -88,9 +88,9 @@ class DatabaseSeeder extends Seeder
             ['nip' => '198904122019031005'],
             [
                 'user_id'       => $userGuru->id,
-                'nama'          => 'Dedi Hendrawan, S.Kom., M.Kom.',
+                'nama'          => 'Mahendra, S.Pd., M.Si.',
                 'jenis_kelamin' => 'L',
-                'no_hp'         => '081276001234',
+                'no_hp'         => '6282387334892',
                 'alamat'        => 'Jl. Thamrin No. 97, Pekanbaru',
             ]
         );
@@ -200,6 +200,25 @@ class DatabaseSeeder extends Seeder
                     'status'        => 'aktif',
                 ]
             );
+
+            \App\Models\Pks::firstOrCreate(
+                ['nama_dudi' => $dudi['nama_perusahaan']],
+                [
+                    'vld'                  => 'Valid',
+                    'jenis_kerjasama'      => 'Praktik Kerja Lapangan (PKL) & Sinkronisasi Kurikulum',
+                    'dunia_usaha_industri' => 'DUDI Mitra Resmi',
+                    'nomor_pks'            => '421.5/PKS-SMKLBFU/2026/00' . ($idx + 1),
+                    'judul_pks'            => 'Perjanjian Kerja Sama Pelaksanaan PKL Siswa SMK Labor Binaan FKIP UNRI',
+                    'tgl_mulai'            => '2026-01-10',
+                    'tgl_selesai'          => '2028-01-10',
+                    'nama_bidang_usaha'    => 'Teknologi, Perbankan & Layanan Publik',
+                    'telp_kantor'          => $dudi['no_telepon'],
+                    'contact_person'       => $dudi['nama_pimpinan'],
+                    'telepon_cp'           => $dudi['no_telepon'],
+                    'jabatan_cp'           => 'Pimpinan / Koordinator PKL',
+                ]
+            );
+
             if ($idx === 0) {
                 $perusahaanUtama = $prs;
                 PembimbingIndustri::firstOrCreate(
@@ -276,5 +295,11 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+
+        // 9. Pesan & Info Pengumuman Resmi
+        $this->call(PengumumanSeeder::class);
+
+        // 10. Tujuan Pembelajaran Kurikulum PKL 2026 (Semua Jurusan)
+        $this->call(TujuanPembelajaranSeeder::class);
     }
 }

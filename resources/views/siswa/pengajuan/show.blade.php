@@ -39,7 +39,7 @@
                 <!-- Verification Notes -->
                 @if($pengajuan->catatan_verifikasi)
                     <div class="p-3 rounded-3 border mb-3 bg-light">
-                        <small class="fw-bold text-dark d-block mb-1">Catatan Tim Pokja PKL:</small>
+                        <small class="fw-bold text-dark d-block mb-1">Catatan Tim Koordinator PKL:</small>
                         <p class="small text-muted mb-1">{{ $pengajuan->catatan_verifikasi }}</p>
                         @if($pengajuan->verifikator)
                             <small class="text-muted fst-italic" style="font-size: 0.75rem;">Oleh: {{ $pengajuan->verifikator->name }} ({{ $pengajuan->diverifikasi_pada?->format('d M Y, H:i') }})</small>
@@ -66,7 +66,7 @@
                                 <i class="ph {{ $pengajuan->status !== 'menunggu' ? 'ph-check' : 'ph-hourglass' }}"></i>
                             </div>
                             <div>
-                                <div class="fw-bold text-dark" style="font-size: 0.85rem;">Review Pokja PKL</div>
+                                <div class="fw-bold text-dark" style="font-size: 0.85rem;">Review Koordinator PKL</div>
                                 <div class="text-muted" style="font-size: 0.75rem;">Pemeriksaan kesesuaian jurusan</div>
                             </div>
                         </div>

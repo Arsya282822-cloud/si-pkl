@@ -74,9 +74,9 @@
             Status Periode <span class="text-danger">*</span>
         </label>
         <select name="status" class="form-select @error('status') is-invalid @enderror" style="border-radius: 8px;">
-            <option value="aktif" @selected(old('status', $periode->status ?? 'aktif') === 'aktif')>🟢 Aktif (Sedang Berlangsung)</option>
-            <option value="nonaktif" @selected(old('status', $periode->status ?? '') === 'nonaktif')>⚪ Nonaktif (Draft / Belum Dimulai)</option>
-            <option value="selesai" @selected(old('status', $periode->status ?? '') === 'selesai')>🔵 Selesai (Arsip Lulus)</option>
+            <option value="aktif" @selected(old('status', $periode->status ?? 'aktif') === 'aktif')>Aktif (Sedang Berlangsung)</option>
+            <option value="nonaktif" @selected(old('status', $periode->status ?? '') === 'nonaktif')>Nonaktif (Draft / Belum Dimulai)</option>
+            <option value="selesai" @selected(old('status', $periode->status ?? '') === 'selesai')>Selesai (Arsip Lulus)</option>
         </select>
         @error('status')
             <div class="text-danger mt-1" style="font-size: 0.75rem;">{{ $message }}</div>
@@ -86,7 +86,7 @@
     <!-- Duration Preview Box -->
     <div class="col-12">
         <div class="p-3 bg-light rounded-3 d-flex align-items-center gap-3 border" id="durationBox" style="font-size: 0.85rem;">
-            <i class="ph ph-hourglass-high text-primary" style="font-size: 24px;"></i>
+            <i data-lucide="clock" class="text-primary" style="width: 24px; height: 24px;"></i>
             <div>
                 <span class="text-muted">Estimasi Durasi Periode:</span>
                 <strong id="durationText" class="text-dark ms-1">Pilih tanggal mulai & selesai</strong>

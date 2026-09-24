@@ -7,13 +7,14 @@
 
     <title>{{ config('app.name', 'SI-PKL') }} - Login</title>
 
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Phosphor Icons -->
+    <!-- Icons: Lucide & Phosphor -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- PWA Manifest & Meta Tags -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -21,7 +22,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SI-PKL">
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-sipkl.jpg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo-sipkl.jpg') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-sipkl.jpg') }}">
 
     <style>
@@ -36,7 +38,8 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            letter-spacing: -0.01em;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;

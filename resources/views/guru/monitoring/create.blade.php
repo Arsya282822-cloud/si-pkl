@@ -61,10 +61,10 @@
                         Kesesuaian Kompetensi Tugas di DUDI <span class="text-danger">*</span>
                     </label>
                     <select name="kesesuaian_kompetensi" class="form-select" style="border-radius: 8px;" required>
-                        <option value="sangat_sesuai" {{ old('kesesuaian_kompetensi') == 'sangat_sesuai' ? 'selected' : '' }}>🟢 Sangat Sesuai (Pekerjaan selaras dengan silabus jurusan)</option>
-                        <option value="sesuai" {{ old('kesesuaian_kompetensi', 'sesuai') == 'sesuai' ? 'selected' : '' }}>🔵 Sesuai (Sebagian besar tugas relevan)</option>
-                        <option value="cukup" {{ old('kesesuaian_kompetensi') == 'cukup' ? 'selected' : '' }}>🟡 Cukup (Tugas umum / administrasi ringan)</option>
-                        <option value="kurang" {{ old('kesesuaian_kompetensi') == 'kurang' ? 'selected' : '' }}>🔴 Kurang Sesuai (Tugas tidak berhubungan)</option>
+                        <option value="sangat_sesuai" {{ old('kesesuaian_kompetensi') == 'sangat_sesuai' ? 'selected' : '' }}>Sangat Sesuai (Pekerjaan selaras dengan silabus jurusan)</option>
+                        <option value="sesuai" {{ old('kesesuaian_kompetensi', 'sesuai') == 'sesuai' ? 'selected' : '' }}>Sesuai (Sebagian besar tugas relevan)</option>
+                        <option value="cukup" {{ old('kesesuaian_kompetensi') == 'cukup' ? 'selected' : '' }}>Cukup (Tugas umum / administrasi ringan)</option>
+                        <option value="kurang" {{ old('kesesuaian_kompetensi') == 'kurang' ? 'selected' : '' }}>Kurang Sesuai (Tugas tidak berhubungan)</option>
                     </select>
                 </div>
 
@@ -73,10 +73,10 @@
                         Kedisiplinan & Sikap Siswa <span class="text-danger">*</span>
                     </label>
                     <select name="kedisiplinan_siswa" class="form-select" style="border-radius: 8px;" required>
-                        <option value="sangat_baik" {{ old('kedisiplinan_siswa') == 'sangat_baik' ? 'selected' : '' }}>🟢 Sangat Baik (Hadir rajin, sopan, proaktif)</option>
-                        <option value="baik" {{ old('kedisiplinan_siswa', 'baik') == 'baik' ? 'selected' : '' }}>🔵 Baik (Mengikuti jam kerja & SOP dengan baik)</option>
-                        <option value="cukup" {{ old('kedisiplinan_siswa') == 'cukup' ? 'selected' : '' }}>🟡 Cukup (Perlu bimbingan motivasi)</option>
-                        <option value="kurang" {{ old('kedisiplinan_siswa') == 'kurang' ? 'selected' : '' }}>🔴 Kurang (Sering terlambat / kurang disiplin)</option>
+                        <option value="sangat_baik" {{ old('kedisiplinan_siswa') == 'sangat_baik' ? 'selected' : '' }}>Sangat Baik (Hadir rajin, sopan, proaktif)</option>
+                        <option value="baik" {{ old('kedisiplinan_siswa', 'baik') == 'baik' ? 'selected' : '' }}>Baik (Mengikuti jam kerja & SOP dengan baik)</option>
+                        <option value="cukup" {{ old('kedisiplinan_siswa') == 'cukup' ? 'selected' : '' }}>Cukup (Perlu bimbingan motivasi)</option>
+                        <option value="kurang" {{ old('kedisiplinan_siswa') == 'kurang' ? 'selected' : '' }}>Kurang (Sering terlambat / kurang disiplin)</option>
                     </select>
                 </div>
             </div>

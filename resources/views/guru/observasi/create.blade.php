@@ -236,7 +236,7 @@
                             <td class="text-center text-muted">{{ $idx + 1 }}</td>
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" name="kompetensi_teknis[{{ $idx }}][tujuan]" class="form-control form-control-sm" value="{{ $item }}" placeholder="Tuliskan capaian kompetensi teknis...">
+                                    <input type="text" name="kompetensi_teknis[{{ $idx }}][tujuan]" class="form-control form-control-sm" value="{{ $item }}" placeholder="Pilih/ketik capaian kompetensi teknis..." list="datalistTpKelas">
                                     <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                                 </div>
                             </td>
@@ -261,12 +261,12 @@
                         </tr>
                     </tbody>
                     <tbody id="section3Body">
-                        @for($i = 0; $i < 3; $i++)
+                        @foreach($defaultKompetensiBaru ?? ['', '', ''] as $i => $itemBaru)
                         <tr class="score-row">
                             <td class="text-center text-muted">{{ $i + 1 }}</td>
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" name="kompetensi_baru[{{ $i }}][tujuan]" class="form-control form-control-sm" placeholder="Tuliskan kompetensi teknis baru yang dipelajari di DUDI...">
+                                    <input type="text" name="kompetensi_baru[{{ $i }}][tujuan]" class="form-control form-control-sm" value="{{ $itemBaru }}" placeholder="Pilih/ketik kompetensi teknis baru yang dipelajari di DUDI..." list="datalistTpKelas">
                                     <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                                 </div>
                             </td>
@@ -275,7 +275,7 @@
                             <td><input type="number" step="0.1" min="0" max="100" name="kompetensi_baru[{{ $i }}][akhir]" class="form-control form-control-sm text-center input-score akhir" oninput="calcRow(this)" placeholder="0-100"></td>
                             <td><input type="text" name="kompetensi_baru[{{ $i }}][rerata]" class="form-control form-control-sm text-center bg-light fw-bold rerata" readonly></td>
                         </tr>
-                        @endfor
+                        @endforeach
                     </tbody>
 
                     <!-- SECTION IV: Analisis Usaha -->
@@ -343,6 +343,19 @@
                 Simpan & Langsung Cetak PDF
             </button>
         </div>
+
+        <!-- DATALIST PILIHAN TUJUAN PEMBELAJARAN (KURIKULUM PKL 2026) -->
+        <datalist id="datalistTpKelas">
+            @if(isset($allTpGrouped))
+                @foreach($allTpGrouped as $kodeJ => $byCp)
+                    @foreach($byCp as $cpName => $tps)
+                        @foreach($tps as $tp)
+                            <option value="{{ $tp->tujuan_pembelajaran }}">[{{ $kodeJ }} - TP {{ $tp->nomor_urut }}] {{ $tp->tujuan_pembelajaran }}</option>
+                        @endforeach
+                    @endforeach
+                @endforeach
+            @endif
+        </datalist>
     </form>
 </div>
 
@@ -402,7 +415,7 @@
                 <td class="text-center text-muted">${idx + 1}</td>
                 <td>
                     <div class="input-group input-group-sm">
-                        <input type="text" name="kompetensi_teknis[${idx}][tujuan]" class="form-control form-control-sm" value="${item}" placeholder="Tuliskan capaian kompetensi teknis...">
+                        <input type="text" name="kompetensi_teknis[${idx}][tujuan]" class="form-control form-control-sm" value="${item}" placeholder="Pilih/ketik capaian kompetensi..." list="datalistTpKelas">
                         <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                     </div>
                 </td>
@@ -424,7 +437,7 @@
             <td class="text-center text-muted">${idx + 1}</td>
             <td>
                 <div class="input-group input-group-sm">
-                    <input type="text" name="${prefixName}[${idx}][tujuan]" class="form-control form-control-sm" placeholder="Tuliskan butir capaian kompetensi...">
+                    <input type="text" name="${prefixName}[${idx}][tujuan]" class="form-control form-control-sm" placeholder="Pilih/ketik butir capaian kompetensi..." list="datalistTpKelas">
                     <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                 </div>
             </td>

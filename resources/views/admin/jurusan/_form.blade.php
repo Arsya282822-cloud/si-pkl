@@ -16,9 +16,12 @@
     </div>
     <div class="col-md-4">
         <label class="form-label">Status</label>
+        @php
+            $currentStatus = (string) old('status', isset($jurusan) ? (int) $jurusan->status : 1);
+        @endphp
         <select name="status" class="form-select">
-            <option value="1" @selected(old('status', $jurusan->status ?? true))>Aktif</option>
-            <option value="0" @selected(!old('status', $jurusan->status ?? true))>Nonaktif</option>
+            <option value="1" @selected($currentStatus === '1')>Aktif</option>
+            <option value="0" @selected($currentStatus === '0')>Nonaktif</option>
         </select>
     </div>
 </div>

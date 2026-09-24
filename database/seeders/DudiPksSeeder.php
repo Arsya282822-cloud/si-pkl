@@ -1,0 +1,771 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Perusahaan;
+use App\Models\Pks;
+
+class DudiPksSeeder extends Seeder
+{
+    public function run()
+    {
+        // 50 Data Perusahaan Mitra DUDI sesuai 5 Jurusan
+        $dudis = [
+            // ==========================================
+            // 1. REKAYASA PERANGKAT LUNAK (RPL) - 10 DUDI
+            // ==========================================
+            [
+                'nama_perusahaan' => 'PT Garuda Cyber Indonesia',
+                'alamat' => 'Jl. HR. Soebrantas No. 188, Panam',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-567890',
+                'email' => 'hrd@garudacyber.co.id',
+                'website' => 'www.garudacyber.co.id',
+                'nama_pimpinan' => 'Ir. Budi Santoso, S.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Time Excelindo Riau',
+                'alamat' => 'Jl. Arifin Achmad No. 45, Marpoyan Damai',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-848123',
+                'email' => 'info@excelindo-riau.com',
+                'website' => 'www.excelindo-riau.com',
+                'nama_pimpinan' => 'Rian Hidayat, S.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Lancang Kuning Digital Media',
+                'alamat' => 'Jl. Tuanku Tambusai No. 89, Sukajadi',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-789012',
+                'email' => 'kontak@lancangkuningmedia.id',
+                'website' => 'www.lancangkuningmedia.id',
+                'nama_pimpinan' => 'Ahmad Fauzi, M.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Riau Media Teknologi',
+                'alamat' => 'Jl. Jend. Sudirman No. 210, Tengkerang Selatan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-345678',
+                'email' => 'career@riaumediatek.co.id',
+                'website' => 'www.riaumediatek.co.id',
+                'nama_pimpinan' => 'Hendra Wijaya, S.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Pekanbaru Web Creative',
+                'alamat' => 'Jl. Delima No. 12, Tampan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0812-7654-3210',
+                'email' => 'halo@pkuwebcreative.com',
+                'website' => 'www.pkuwebcreative.com',
+                'nama_pimpinan' => 'Dedi Pratama, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Inovasi Solusi Digital',
+                'alamat' => 'Jl. Kaharuddin Nasution No. 56, Simpang Tiga',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-678901',
+                'email' => 'hr@inovasidigital.id',
+                'website' => 'www.inovasidigital.id',
+                'nama_pimpinan' => 'Wahyu Kurniawan, S.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Nusantara App Studio',
+                'alamat' => 'Jl. SM Amin No. 78, Bina Widya',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0813-9876-5432',
+                'email' => 'dev@nusantaraapp.com',
+                'website' => 'www.nusantaraapp.com',
+                'nama_pimpinan' => 'Fajar Ramadhan, S.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Kreasi Digital Nusantara',
+                'alamat' => 'Jl. Riau No. 142, Senapelan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-234567',
+                'email' => 'info@kreasidigital.co.id',
+                'website' => 'www.kreasidigital.co.id',
+                'nama_pimpinan' => 'Linda Permata, S.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Cyber Riau Mandiri',
+                'alamat' => 'Jl. Paus No. 33, Marpoyan Damai',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0821-6543-2109',
+                'email' => 'admin@cyberriaumandiri.com',
+                'website' => 'www.cyberriaumandiri.com',
+                'nama_pimpinan' => 'Rizki Ananda, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Cipta Solusi Informatika',
+                'alamat' => 'Jl. Soekarno-Hatta No. 99, Labuh Baru Barat',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-890123',
+                'email' => 'kontak@ciptasolusi.co.id',
+                'website' => 'www.ciptasolusi.co.id',
+                'nama_pimpinan' => 'Agus Setiawan, M.Kom.',
+                'status' => 'aktif'
+            ],
+
+            // ==========================================
+            // 2. TEKNIK KOMPUTER & JARINGAN (TKJ) - 10 DUDI
+            // ==========================================
+            [
+                'nama_perusahaan' => 'PT Telkom Indonesia Witel Riau Daratan',
+                'alamat' => 'Jl. Jend. Sudirman No. 199, Pekanbaru Kota',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-33123',
+                'email' => 'witel.riau@telkom.co.id',
+                'website' => 'www.telkom.co.id',
+                'nama_pimpinan' => 'Muhammad Ridwan, S.T., M.M.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Indonesia Comnets Plus (PLN Icon Plus) SBU Regional Riau',
+                'alamat' => 'Jl. Setia Budi No. 55, Rintis',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-856789',
+                'email' => 'contact.riau@plniconplus.co.id',
+                'website' => 'www.plniconplus.co.id',
+                'nama_pimpinan' => 'Eko Prasetyo, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Mora Telematika Indonesia (Moratelindo) Pekanbaru',
+                'alamat' => 'Jl. Arifin Achmad No. 102, Marpoyan Damai',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-841999',
+                'email' => 'service.pku@moratelindo.co.id',
+                'website' => 'www.moratelindo.co.id',
+                'nama_pimpinan' => 'Bayu Aji, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Riau Net Solusindo',
+                'alamat' => 'Jl. Tuanku Tambusai No. 150, Payung Sekaki',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-654321',
+                'email' => 'support@riaunetsolusindo.id',
+                'website' => 'www.riaunetsolusindo.id',
+                'nama_pimpinan' => 'Doni Saputra, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Hypernet Technologies Pekanbaru',
+                'alamat' => 'Jl. Riau No. 88, Senapelan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-456789',
+                'email' => 'sales.pku@hypernet.co.id',
+                'website' => 'www.hypernet.co.id',
+                'nama_pimpinan' => 'Surya Dharma, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Global Network Solution',
+                'alamat' => 'Jl. HR. Soebrantas No. 210, Panam',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0812-3456-7890',
+                'email' => 'info@globalnetworksolution.com',
+                'website' => 'www.globalnetworksolution.com',
+                'nama_pimpinan' => 'Ilham Akbar, S.Kom.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Media Antar Nusa (Nusanet) Pekanbaru',
+                'alamat' => 'Jl. Melati No. 40, Sukajadi',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-789456',
+                'email' => 'cs.pku@nusa.net.id',
+                'website' => 'www.nusa.net.id',
+                'nama_pimpinan' => 'Tri Wahyudi, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Sentra Komputer & Network',
+                'alamat' => 'Jl. Hangtuah No. 67, Sail',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-891234',
+                'email' => 'sentrakomputerpku@gmail.com',
+                'website' => 'www.sentrakomputerpku.com',
+                'nama_pimpinan' => 'Andi Maulana, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Cendana Teknika Utama Cabang Riau',
+                'alamat' => 'Jl. Soekarno-Hatta No. 45, Tampan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-589012',
+                'email' => 'info.pku@cendana2000.com',
+                'website' => 'www.cendana2000.com',
+                'nama_pimpinan' => 'Dimas Anggara, S.T.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'CV Mitra Jaringan Riau',
+                'alamat' => 'Jl. Kartama No. 19, Maharatu',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0852-7890-1234',
+                'email' => 'mitrajaringanriau@gmail.com',
+                'website' => 'www.mitrajaringanriau.com',
+                'nama_pimpinan' => 'Anton Wijaya, S.Kom.',
+                'status' => 'aktif'
+            ],
+
+            // ==========================================
+            // 3. AKUNTANSI (AK) - 10 DUDI
+            // ==========================================
+            [
+                'nama_perusahaan' => 'Kantor Akuntan Publik (KAP) Drs. Syamsir, M.Ak., Ak., CA',
+                'alamat' => 'Jl. Diponegoro No. 34, Sail',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-32456',
+                'email' => 'kap.syamsir@gmail.com',
+                'website' => 'www.kapsyamsir.co.id',
+                'nama_pimpinan' => 'Drs. Syamsir, M.Ak., Ak., CA, CPA',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Bank Riau Kepri Syariah (Perseroda) Kantor Pusat',
+                'alamat' => 'Jl. Jend. Sudirman No. 462, Tangkerang Tengah',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-855855',
+                'email' => 'sdm@brksyariah.co.id',
+                'website' => 'www.brksyariah.co.id',
+                'nama_pimpinan' => 'Hj. Nurhasanah, S.E., M.M.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Kantor Konsultan Pajak (KKP) Zulfa Hendra & Rekan',
+                'alamat' => 'Jl. Arifin Achmad No. 60, Marpoyan Damai',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-849922',
+                'email' => 'kkp.zulfahendra@gmail.com',
+                'website' => 'www.kkpzulfahendra.com',
+                'nama_pimpinan' => 'Zulfa Hendra, S.E., BKP, Ak.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT BPR Fianka Rezeki Mandiri',
+                'alamat' => 'Jl. Tuanku Tambusai No. 120, Sukajadi',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-571234',
+                'email' => 'bprfianka@yahoo.co.id',
+                'website' => 'www.bprfianka.com',
+                'nama_pimpinan' => 'Bambang Irawan, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Koperasi Pegawai Negeri (KPN) Balai Kota Pekanbaru',
+                'alamat' => 'Jl. Cut Nyak Dien No. 8, Jadirejo',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-23190',
+                'email' => 'kpn.balaikotapku@gmail.com',
+                'website' => 'www.kpnbalaikotapku.or.id',
+                'nama_pimpinan' => 'Hj. Farida Hanum, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'KAP Erfan & Rakhmadi Cabang Pekanbaru',
+                'alamat' => 'Jl. Gajah Mada No. 15, Simpang Empat',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-44567',
+                'email' => 'kap.erfan.pku@gmail.com',
+                'website' => 'www.kaperfanrakhmadi.com',
+                'nama_pimpinan' => 'Rakhmadi, S.E., Ak., CA, CPA',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Pegadaian (Persero) Area Pekanbaru',
+                'alamat' => 'Jl. Jend. Sudirman No. 150, Pekanbaru',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-31400',
+                'email' => 'area.pekanbaru@pegadaian.co.id',
+                'website' => 'www.pegadaian.co.id',
+                'nama_pimpinan' => 'Hendro Siswanto, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Koperasi Simpan Pinjam Syariah 212 Pekanbaru Mandiri',
+                'alamat' => 'Jl. HR. Soebrantas No. 77, Panam',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-588234',
+                'email' => 'ksps212pku@gmail.com',
+                'website' => 'www.ksps212pku.com',
+                'nama_pimpinan' => 'H. Rasyid Ridho, S.E.I.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Kantor Jasa Akuntan (KJA) Prima Akun Solusi',
+                'alamat' => 'Jl. Durian No. 28, Labuh Baru Timur',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0813-7890-4567',
+                'email' => 'primaakunjasa@gmail.com',
+                'website' => 'www.primaakunjasa.com',
+                'nama_pimpinan' => 'Maya Sari, S.E., M.Si., Ak.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT BPR Tuah Madani Riau',
+                'alamat' => 'Jl. Soekarno-Hatta No. 81, Tampan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-562990',
+                'email' => 'bprtuahmadani@gmail.com',
+                'website' => 'www.bprtuahmadani.com',
+                'nama_pimpinan' => 'T. Iskandar, S.E., M.M.',
+                'status' => 'aktif'
+            ],
+
+            // ==========================================
+            // 4. MANAJEMEN PERKANTORAN (MP) - 10 DUDI
+            // ==========================================
+            [
+                'nama_perusahaan' => 'Dinas Pendidikan Provinsi Riau',
+                'alamat' => 'Jl. Cut Nyak Dien No. 3, Jadirejo',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-22550',
+                'email' => 'disdik@riau.go.id',
+                'website' => 'www.disdik.riau.go.id',
+                'nama_pimpinan' => 'Dr. H. Wan Syafruddin, M.Si.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Badan Pendapatan Daerah (Bapenda) Kota Pekanbaru',
+                'alamat' => 'Jl. Teratai No. 81, Sukajadi',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-38290',
+                'email' => 'bapenda@pekanbaru.go.id',
+                'website' => 'www.bapenda.pekanbaru.go.id',
+                'nama_pimpinan' => 'Drs. H. Tengku Arifin, M.Si.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT PLN (Persero) Unit Induk Distribusi Riau & Kepri',
+                'alamat' => 'Jl. Musyawarah No. 1, Labuh Baru Barat',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-853311',
+                'email' => 'humas.uidriau@pln.co.id',
+                'website' => 'www.pln.co.id',
+                'nama_pimpinan' => 'Agung Wicaksono, S.T., M.M.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Kantor Notaris & PPAT Fransiska, S.H., M.Kn.',
+                'alamat' => 'Jl. Jend. Sudirman No. 312, Tengkerang Barat',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-36789',
+                'email' => 'notaris.fransiska.pku@gmail.com',
+                'website' => 'www.notarisfransiska.id',
+                'nama_pimpinan' => 'Fransiska, S.H., M.Kn.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Pos Indonesia (Persero) Kantor Pos Pekanbaru 28000',
+                'alamat' => 'Jl. Jend. Sudirman No. 229, Kota Tinggi',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-21890',
+                'email' => 'kprk.pekanbaru@posindonesia.co.id',
+                'website' => 'www.posindonesia.co.id',
+                'nama_pimpinan' => 'Rusli Effendi, S.Sos.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'BPJS Ketenagakerjaan Kantor Cabang Pekanbaru Kota',
+                'alamat' => 'Jl. Tuanku Tambusai No. 90, Labuh Baru Barat',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-571990',
+                'email' => 'kacab.pekanbarukota@bpjsketenagakerjaan.go.id',
+                'website' => 'www.bpjsketenagakerjaan.go.id',
+                'nama_pimpinan' => 'Anwar Fuadi, S.Sos., M.M.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Perkebunan Nusantara IV Regional Riau',
+                'alamat' => 'Jl. Rambutan No. 43, Marpoyan Damai',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-66565',
+                'email' => 'sekretariat@ptpn4.co.id',
+                'website' => 'www.ptpn4.co.id',
+                'nama_pimpinan' => 'Ir. H. Dedi Iskandar, M.M.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Dinas Perpustakaan dan Kearsipan Kota Pekanbaru',
+                'alamat' => 'Jl. Dr. Sutomo No. 1, Rintis',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-857123',
+                'email' => 'dispusip@pekanbaru.go.id',
+                'website' => 'www.dispusip.pekanbaru.go.id',
+                'nama_pimpinan' => 'Hj. Sri Wahyuni, S.Pd., M.Pd.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Kantor Notaris & PPAT M. Ridwan, S.H., M.Kn.',
+                'alamat' => 'Jl. Arifin Achmad No. 88, Marpoyan Damai',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-849933',
+                'email' => 'notaris.mridwan@gmail.com',
+                'website' => 'www.notarismridwan.com',
+                'nama_pimpinan' => 'M. Ridwan, S.H., M.Kn.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Sarana Pembangunan Pekanbaru (BUMD)',
+                'alamat' => 'Jl. Jend. Ahmad Yani No. 10, Kampung Baru',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-39988',
+                'email' => 'sekretariat@spppekanbaru.co.id',
+                'website' => 'www.spppekanbaru.co.id',
+                'nama_pimpinan' => 'Faisal Riza, S.STP., M.Si.',
+                'status' => 'aktif'
+            ],
+
+            // ==========================================
+            // 5. BISNIS RETAIL (BR) - 10 DUDI
+            // ==========================================
+            [
+                'nama_perusahaan' => 'PT Indomarco Prismatama (Indomaret DC Pekanbaru)',
+                'alamat' => 'Jl. HR. Soebrantas Km. 15, Tuah Karya, Tampan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-589555',
+                'email' => 'hrd.dcpekanbaru@indomaret.co.id',
+                'website' => 'www.indomaret.co.id',
+                'nama_pimpinan' => 'Joko Susilo, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'PT Sumber Alfaria Trijaya Tbk (Alfamart Branch Pekanbaru)',
+                'alamat' => 'Jl. Siak II No. 100, Rumbai',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-53210',
+                'email' => 'recruitment.pku@alfamart.co.id',
+                'website' => 'www.alfamart.co.id',
+                'nama_pimpinan' => 'Gunawan Wibisono, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Mal SKA Pekanbaru (PT Citraciti Pacific)',
+                'alamat' => 'Jl. Tuanku Tambusai / Soekarno Hatta, Delima',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-864000',
+                'email' => 'management@malska.com',
+                'website' => 'www.malska.com',
+                'nama_pimpinan' => 'Ardianto Kurniawan, B.Com.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Living World Pekanbaru (PT Kawan Lama Sejahtera)',
+                'alamat' => 'Jl. Soekarno-Hatta No. 1, Tangkerang Barat',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-670500',
+                'email' => 'customer.pku@livingworld.co.id',
+                'website' => 'www.livingworld.co.id',
+                'nama_pimpinan' => 'Sony Kurnia, S.M.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Transmart Carrefour Pekanbaru',
+                'alamat' => 'Jl. Musyawarah No. 11, Payung Sekaki',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-841555',
+                'email' => 'store.pku@transretail.co.id',
+                'website' => 'www.transmart.co.id',
+                'nama_pimpinan' => 'Hery Prasetya, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Matahari Department Store Mal Ciputra Seraya',
+                'alamat' => 'Jl. Riau No. 58, Kampung Baru',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-868100',
+                'email' => 'store315@matahari.co.id',
+                'website' => 'www.matahari.com',
+                'nama_pimpinan' => 'Rina Marlina, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Hypermart Mal SKA Pekanbaru',
+                'alamat' => 'Jl. Tuanku Tambusai No. 10, Delima',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-864111',
+                'email' => 'hypermart.ska@mpc.co.id',
+                'website' => 'www.hypermart.co.id',
+                'nama_pimpinan' => 'Denny Setiawan, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Erafone Megastore Mall Living World Pekanbaru',
+                'alamat' => 'Jl. Soekarno-Hatta Ground Floor, Pekanbaru',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-670555',
+                'email' => 'erafone.livingworld@erajaya.com',
+                'website' => 'www.eraspace.com',
+                'nama_pimpinan' => 'Kelvin Tan, S.M.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'ACE Hardware Mal Pekanbaru',
+                'alamat' => 'Jl. Jend. Sudirman No. 123, Pekanbaru Kota',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-850088',
+                'email' => 'ace.malpku@kawanlamagroup.com',
+                'website' => 'www.acehardware.co.id',
+                'nama_pimpinan' => 'Teguh Santoso, S.E.',
+                'status' => 'aktif'
+            ],
+            [
+                'nama_perusahaan' => 'Gramedia Mal Ciputra Seraya Pekanbaru',
+                'alamat' => 'Jl. Riau No. 58 Lt. 2, Senapelan',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-868200',
+                'email' => 'gramedia.ciputrapku@gramedia.id',
+                'website' => 'www.gramedia.com',
+                'nama_pimpinan' => 'Anita Rahayu, S.E.',
+                'status' => 'aktif'
+            ],
+        ];
+
+        // Insert or update 50 DUDI
+        foreach ($dudis as $dudi) {
+            Perusahaan::updateOrCreate(
+                ['nama_perusahaan' => $dudi['nama_perusahaan']],
+                $dudi
+            );
+        }
+
+        // ==========================================
+        // 12 DATA PKS (PERJANJIAN KERJA SAMA)
+        // ==========================================
+        $pksList = [
+            // RPL - 3 PKS
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Kelas Industri',
+                'dunia_usaha_industri' => 'Dunia Usaha dan Dunia Industri (DUDI)',
+                'nama_dudi' => 'PT Garuda Cyber Indonesia',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/001',
+                'judul_pks' => 'Perjanjian Kerja Sama Penyelenggaraan Praktik Kerja Lapangan (PKL), Sinkronisasi Kurikulum & Kelas Industri Rekayasa Perangkat Lunak',
+                'tgl_mulai' => '2024-07-01',
+                'tgl_selesai' => '2027-06-30',
+                'npwp_dudi' => '82.345.678.9-216.000',
+                'nama_bidang_usaha' => 'Teknologi Informasi & Software Development',
+                'telp_kantor' => '0761-567890',
+                'fax' => '0761-567891',
+                'contact_person' => 'Rahmat Hidayat, S.Kom.',
+                'telepon_cp' => '0812-7890-1122',
+                'jabatan_cp' => 'General Manager & HR Head'
+            ],
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Uji Kompetensi',
+                'dunia_usaha_industri' => 'Dunia Usaha dan Dunia Industri (DUDI)',
+                'nama_dudi' => 'PT Time Excelindo Riau',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/002',
+                'judul_pks' => 'Kemitraan Penyelenggaraan PKL dan Penguji Eksternal Uji Kompetensi Keahlian (UKK) Bidang Pemrograman Web',
+                'tgl_mulai' => '2024-08-01',
+                'tgl_selesai' => '2027-07-31',
+                'npwp_dudi' => '02.456.789.0-216.000',
+                'nama_bidang_usaha' => 'Web & Mobile Application Studio',
+                'telp_kantor' => '0761-848123',
+                'fax' => '0761-848124',
+                'contact_person' => 'Maya Anggraini, S.Kom.',
+                'telepon_cp' => '0813-6789-2233',
+                'jabatan_cp' => 'Lead Software Engineer'
+            ],
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Guru Tamu',
+                'dunia_usaha_industri' => 'Dunia Usaha dan Dunia Industri (DUDI)',
+                'nama_dudi' => 'CV Lancang Kuning Digital Media',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2025/003',
+                'judul_pks' => 'Kerja Sama Pelaksanaan Praktik Kerja Lapangan, Program Guru Tamu Industri, dan Inkubasi Startup Siswa RPL',
+                'tgl_mulai' => '2025-01-10',
+                'tgl_selesai' => '2028-01-09',
+                'npwp_dudi' => '71.567.890.1-216.000',
+                'nama_bidang_usaha' => 'Digital Creative & Software House',
+                'telp_kantor' => '0761-789012',
+                'fax' => '0761-789013',
+                'contact_person' => 'Ahmad Fauzi, M.Kom.',
+                'telepon_cp' => '0821-7890-3344',
+                'jabatan_cp' => 'Direktur Operasional'
+            ],
+
+            // TKJ - 3 PKS
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Sertifikasi Industri',
+                'dunia_usaha_industri' => 'BUMN / Dunia Usaha Telekomunikasi',
+                'nama_dudi' => 'PT Telkom Indonesia Witel Riau Daratan',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/004',
+                'judul_pks' => 'Kerja Sama Strategis Penyelenggaraan Praktik Kerja Lapangan, Sertifikasi Fiber Optic, dan Kunjungan Industri Siswa TKJ',
+                'tgl_mulai' => '2024-06-15',
+                'tgl_selesai' => '2027-06-14',
+                'npwp_dudi' => '01.000.013.1-093.000',
+                'nama_bidang_usaha' => 'Telekomunikasi & Jaringan Seluler / Fixed Broadband',
+                'telp_kantor' => '0761-33123',
+                'fax' => '0761-33124',
+                'contact_person' => 'Ir. Hendri Gunawan, S.T.',
+                'telepon_cp' => '0811-760-5566',
+                'jabatan_cp' => 'Manager Network Operation & HR'
+            ],
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Penyelarasan Kurikulum',
+                'dunia_usaha_industri' => 'Anak Perusahaan BUMN / Internet Service Provider',
+                'nama_dudi' => 'PT Indonesia Comnets Plus (PLN Icon Plus) SBU Regional Riau',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/005',
+                'judul_pks' => 'Perjanjian Kerja Sama Penyelenggaraan PKL, Magang Industri Berkelanjutan, dan Sinkronisasi Standar Jaringan Komputer',
+                'tgl_mulai' => '2024-09-01',
+                'tgl_selesai' => '2027-08-31',
+                'npwp_dudi' => '02.045.678.9-092.000',
+                'nama_bidang_usaha' => 'Jaringan Telekomunikasi, ISP & Data Center',
+                'telp_kantor' => '0761-856789',
+                'fax' => '0761-856790',
+                'contact_person' => 'Bambang Sudibyo, S.T.',
+                'telepon_cp' => '0812-9988-7766',
+                'jabatan_cp' => 'Kepala Divisi Pemeliharaan Jaringan'
+            ],
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Rekrutmen',
+                'dunia_usaha_industri' => 'Dunia Usaha Telekomunikasi Swasta',
+                'nama_dudi' => 'PT Mora Telematika Indonesia (Moratelindo) Pekanbaru',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2025/006',
+                'judul_pks' => 'Kemitraan Praktik Kerja Lapangan (PKL) Siswa dan Fasilitasi Perekrutan Tenaga Kerja Teknisi Jaringan Fiber Optic',
+                'tgl_mulai' => '2025-02-01',
+                'tgl_selesai' => '2028-01-31',
+                'npwp_dudi' => '01.998.765.4-061.000',
+                'nama_bidang_usaha' => 'Penyedia Infrastruktur Telekomunikasi & Jaringan',
+                'telp_kantor' => '0761-841999',
+                'fax' => '0761-841998',
+                'contact_person' => 'Dian Anggraini, S.T.',
+                'telepon_cp' => '0813-8877-6655',
+                'jabatan_cp' => 'HR Operations Supervisor'
+            ],
+
+            // AK - 2 PKS
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Literasi Perbankan',
+                'dunia_usaha_industri' => 'BUMD / Sektor Jasa Keuangan & Perbankan',
+                'nama_dudi' => 'PT Bank Riau Kepri Syariah (Perseroda) Kantor Pusat',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/007',
+                'judul_pks' => 'Kerja Sama Penyelenggaraan Praktik Kerja Lapangan Akuntansi & Administrasi Perbankan Syariah',
+                'tgl_mulai' => '2024-07-15',
+                'tgl_selesai' => '2027-07-14',
+                'npwp_dudi' => '01.123.456.7-216.000',
+                'nama_bidang_usaha' => 'Perbankan Syariah & Jasa Keuangan Terintegrasi',
+                'telp_kantor' => '0761-855855',
+                'fax' => '0761-855856',
+                'contact_person' => 'Siti Zubaidah, S.E., M.M.',
+                'telepon_cp' => '0812-7654-9988',
+                'jabatan_cp' => 'Pemimpin Bagian Human Capital & Training'
+            ],
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Audit Keuangan',
+                'dunia_usaha_industri' => 'Kantor Akuntan Publik Profesional',
+                'nama_dudi' => 'Kantor Akuntan Publik (KAP) Drs. Syamsir, M.Ak., Ak., CA',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2025/008',
+                'judul_pks' => 'Perjanjian Kerja Sama PKL Kompetensi Akuntansi Keuangan, Komputer Akuntansi Terapan, dan Audit Kepatuhan',
+                'tgl_mulai' => '2025-01-02',
+                'tgl_selesai' => '2028-01-01',
+                'npwp_dudi' => '05.678.901.2-216.000',
+                'nama_bidang_usaha' => 'Jasa Audit Laporan Keuangan & Perpajakan',
+                'telp_kantor' => '0761-32456',
+                'fax' => '0761-32457',
+                'contact_person' => 'Drs. Syamsir, M.Ak., Ak.',
+                'telepon_cp' => '0811-753-2211',
+                'jabatan_cp' => 'Managing Partner / Pimpinan KAP'
+            ],
+
+            // MP - 2 PKS
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Tata Kelola Perkantoran',
+                'dunia_usaha_industri' => 'Instansi Pemerintah Daerah',
+                'nama_dudi' => 'Dinas Pendidikan Provinsi Riau',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/009',
+                'judul_pks' => 'Kerja Sama Penyelenggaraan Praktik Kerja Lapangan Siswa Bidang Manajemen Perkantoran dan Layanan Bisnis',
+                'tgl_mulai' => '2024-05-01',
+                'tgl_selesai' => '2027-04-30',
+                'npwp_dudi' => '00.123.456.7-216.000',
+                'nama_bidang_usaha' => 'Instansi Pemerintahan / Layanan Pendidikan',
+                'telp_kantor' => '0761-22550',
+                'fax' => '0761-22551',
+                'contact_person' => 'H. M. Yusuf, S.Sos., M.Si.',
+                'telepon_cp' => '0813-7123-4567',
+                'jabatan_cp' => 'Kepala Subbagian Umum & Kepegawaian'
+            ],
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Manajemen Dokumen',
+                'dunia_usaha_industri' => 'BUMN / Sektor Ketenagalistrikan & Pelayanan',
+                'nama_dudi' => 'PT PLN (Persero) Unit Induk Distribusi Riau & Kepri',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2025/010',
+                'judul_pks' => 'Kemitraan Praktik Kerja Lapangan Manajemen Kearsipan Digital, Pelayanan Pelanggan, dan Kesekretariatan Korporat',
+                'tgl_mulai' => '2025-03-01',
+                'tgl_selesai' => '2028-02-29',
+                'npwp_dudi' => '01.001.612.9-093.000',
+                'nama_bidang_usaha' => 'Ketenagalistrikan & Layanan Publik',
+                'telp_kantor' => '0761-853311',
+                'fax' => '0761-853312',
+                'contact_person' => 'Fitri Handayani, S.E.',
+                'telepon_cp' => '0812-8899-0011',
+                'jabatan_cp' => 'Manager SDM & Hubungan Eksternal'
+            ],
+
+            // BR - 2 PKS
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Retail Modern Class',
+                'dunia_usaha_industri' => 'Perusahaan Retail Modern Nasional',
+                'nama_dudi' => 'PT Indomarco Prismatama (Indomaret DC Pekanbaru)',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/011',
+                'judul_pks' => 'Perjanjian Kerja Sama Penyelenggaraan Praktik Kerja Lapangan, Kelas Khusus Retail Modern, dan Penyerapan Lulusan Bisnis Retail',
+                'tgl_mulai' => '2024-07-01',
+                'tgl_selesai' => '2027-06-30',
+                'npwp_dudi' => '01.337.994.6-054.000',
+                'nama_bidang_usaha' => 'Jaringan Minimarket Retail & Distribusi Logistik',
+                'telp_kantor' => '0761-589555',
+                'fax' => '0761-589556',
+                'contact_person' => 'Arief Wicaksono, S.E.',
+                'telepon_cp' => '0812-7000-8899',
+                'jabatan_cp' => 'Branch HR & Development Manager'
+            ],
+            [
+                'vld' => '1',
+                'jenis_kerjasama' => 'Praktik Kerja Lapangan & Retail Merchandising',
+                'dunia_usaha_industri' => 'Perusahaan Retail Modern Terbuka (Tbk)',
+                'nama_dudi' => 'PT Sumber Alfaria Trijaya Tbk (Alfamart Branch Pekanbaru)',
+                'nomor_pks' => '421.5/SMK-LABOR/PKS/2024/012',
+                'judul_pks' => 'Kemitraan Vokasi Praktik Kerja Lapangan (PKL), Manajemen Visual Merchandising, Kasir Modern, dan Pembinaan Karir Bisnis Retail',
+                'tgl_mulai' => '2024-08-15',
+                'tgl_selesai' => '2027-08-14',
+                'npwp_dudi' => '01.336.233.0-054.000',
+                'nama_bidang_usaha' => 'Retail Perdagangan Eceran & Waralaba',
+                'telp_kantor' => '0761-53210',
+                'fax' => '0761-53211',
+                'contact_person' => 'Novia Anggraini, S.Psi.',
+                'telepon_cp' => '0813-7555-1122',
+                'jabatan_cp' => 'People Development & Internship PIC'
+            ],
+        ];
+
+        // Insert or update 12 PKS
+        foreach ($pksList as $pks) {
+            Pks::updateOrCreate(
+                ['nomor_pks' => $pks['nomor_pks']],
+                $pks
+            );
+        }
+    }
+}

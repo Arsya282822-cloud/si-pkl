@@ -14,7 +14,7 @@
         }
         body {
             background: white !important;
-            font-family: 'Calibri', sans-serif !important;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
             color: black !important;
         }
         .pro-main, .pro-content {
@@ -51,7 +51,7 @@
 <div class="print-header">
     @include('admin.dokumen._kop')
     <div class="text-center mt-3 mb-3">
-        <h4 class="fw-bold mb-0" style="text-decoration: underline; font-family: Tahoma, sans-serif; letter-spacing: 0.5px;">REKAPITULASI NILAI PRAKTIK KERJA LAPANGAN (PKL)</h4>
+        <h4 class="fw-bold mb-0" style="text-decoration: underline; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.02em;">REKAPITULASI NILAI PRAKTIK KERJA LAPANGAN (PKL)</h4>
         <div style="font-size: 13px; font-weight: 600; margin-top: 4px;">
             SMK LABOR BINAAN FKIP UNRI PEKANBARU
         </div>
@@ -179,7 +179,7 @@
         @php
             $namaKepsek = \App\Models\Setting::get('pejabat_kepala_sekolah', 'JEFFRI HUNTER, M.Pd');
             $nipKepsek = \App\Models\Setting::get('pejabat_nip_kepala_sekolah', '-');
-            $namaPokja = \App\Models\Setting::get('pejabat_ketua_pokja', 'Dedi Hendrawan, S.Kom., M.Kom.');
+            $namaPokja = \App\Models\Setting::get('pejabat_ketua_pokja', 'Mahendra, S.Pd., M.Si.');
             $nipPokja = \App\Models\Setting::get('pejabat_nip_ketua_pokja', '-');
             $kotaTerbit = \App\Models\Setting::get('sekolah_kota_terbit', 'Pekanbaru');
         @endphp

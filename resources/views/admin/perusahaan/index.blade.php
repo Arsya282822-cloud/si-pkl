@@ -351,7 +351,17 @@
                             <td class="text-end">
                                 <div class="d-inline-flex align-items-center justify-content-end gap-1.5">
                                     <!-- Tombol Kelola Akun Instruktur -->
-                                    <button type="button" class="action-btn-instruktur" data-bs-toggle="modal" data-bs-target="#modalInstruktur{{ $item->id }}" title="Atur Akun Login Instruktur DUDI">
+                                    <button type="button" 
+                                        class="action-btn-instruktur btn-open-instruktur-modal" 
+                                        onclick="openInstrukturModal(this)"
+                                        data-action="{{ route('admin.perusahaan.instruktur', $item->id) }}"
+                                        data-company="{{ $item->nama_perusahaan }}"
+                                        data-nama="{{ $instruktur?->nama ?? $item->nama_pimpinan ?? ('Pembimbing ' . $item->nama_perusahaan) }}"
+                                        data-email="{{ $dudiEmail }}"
+                                        data-jabatan="{{ $instruktur?->jabatan ?? 'Pembimbing Lapangan' }}"
+                                        data-nohp="{{ $instruktur?->no_hp ?? $item->no_telepon }}"
+                                        data-default-email="dudi{{ $item->id }}@dudi.com"
+                                        title="Atur Akun Login Instruktur DUDI">
                                         <i class="ph-bold ph-user-gear fs-6"></i>
                                         <span>Instruktur</span>
                                     </button>
@@ -369,71 +379,6 @@
                                             <i class="ph-bold ph-trash fs-6"></i>
                                         </button>
                                     </form>
-                                </div>
-
-                                <!-- Modal Akun Instruktur -->
-                                <div class="modal fade text-start" id="modalInstruktur{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <form action="{{ route('admin.perusahaan.instruktur', $item->id) }}" method="POST">
-                                            @csrf
-                                            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-                                                <div class="modal-header bg-light border-bottom px-4 py-3">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <div class="stat-icon-wrapper bg-primary text-white" style="width: 36px; height: 36px; font-size: 1.1rem; border-radius: 8px;">
-                                                            <i class="ph-bold ph-user-gear"></i>
-                                                        </div>
-                                                        <div>
-                                                            <h6 class="modal-title fw-bold text-dark mb-0">Kelola Akun Instruktur DUDI</h6>
-                                                            <div class="small text-muted">{{ $item->nama_perusahaan }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body p-4">
-                                                    <div class="alert bg-primary-subtle text-primary border border-primary-subtle p-3 mb-3 d-flex align-items-start gap-2.5" style="border-radius: 10px;">
-                                                        <i class="ph-fill ph-info fs-5 mt-0.5"></i>
-                                                        <div class="small">
-                                                            <strong>Hak Akses Instruktur DUDI:</strong> Instruktur bertugas menyetujui absensi harian siswa, memvalidasi jurnal kerja, mengirim laporan ke guru pembimbing, dan memberikan nilai evaluasi industri.
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold text-dark small">Nama Lengkap Instruktur / PIC <span class="text-danger">*</span></label>
-                                                        <input type="text" name="nama" class="form-control" value="{{ $instruktur?->nama ?? $item->nama_pimpinan ?? 'Pembimbing ' . $item->nama_perusahaan }}" required style="border-radius: 8px;">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold text-dark small">Email Login Instruktur <span class="text-danger">*</span></label>
-                                                        <input type="email" name="email" class="form-control font-monospace fw-bold" value="{{ $dudiEmail }}" required style="border-radius: 8px;">
-                                                        <div class="form-text small text-muted">Format standar praktis: <code>dudi{{ $item->id }}@dudi.com</code></div>
-                                                    </div>
-
-                                                    <div class="row g-3 mb-3">
-                                                        <div class="col-6">
-                                                            <label class="form-label fw-semibold text-dark small">Jabatan di DUDI</label>
-                                                            <input type="text" name="jabatan" class="form-control" value="{{ $instruktur?->jabatan ?? 'Pembimbing Lapangan' }}" placeholder="Contoh: HRD / Supervisor" style="border-radius: 8px;">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="form-label fw-semibold text-dark small">No. WhatsApp</label>
-                                                            <input type="text" name="no_hp" class="form-control" value="{{ $instruktur?->no_hp ?? $item->no_telepon }}" placeholder="08xxxxxxxx" style="border-radius: 8px;">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-2">
-                                                        <label class="form-label fw-semibold text-dark small">Ubah Password Akun</label>
-                                                        <input type="text" name="password" class="form-control font-monospace" placeholder="Kosongkan jika default 'dudi1234'" style="border-radius: 8px;">
-                                                        <div class="form-text small text-muted">Password default bawaan: <code class="fw-bold">dudi1234</code></div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer bg-light border-top px-4 py-3">
-                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
-                                                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1.5 fw-semibold" style="border-radius: 8px;">
-                                                        <i class="ph-bold ph-check"></i> Simpan Akun Instruktur
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -455,6 +400,73 @@
         <div class="mt-4">
             {{ $perusahaan->links() }}
         </div>
+    </div>
+</div>
+@endsection
+
+@push('modals')
+<!-- Modal Akun Instruktur (Global Dynamic) -->
+<div class="modal fade text-start" id="modalInstrukturGlobal" tabindex="-1" aria-labelledby="modalInstrukturGlobalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="formInstrukturGlobal" action="" method="POST">
+            @csrf
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-header bg-light border-bottom px-4 py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="stat-icon-wrapper bg-primary text-white" style="width: 36px; height: 36px; font-size: 1.1rem; border-radius: 8px;">
+                            <i class="ph-bold ph-user-gear"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title fw-bold text-dark mb-0" id="modalInstrukturGlobalLabel">Kelola Akun Instruktur DUDI</h6>
+                            <div class="small text-muted" id="instrukturModalCompanyName">-</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert bg-primary-subtle text-primary border border-primary-subtle p-3 mb-3 d-flex align-items-start gap-2.5" style="border-radius: 10px;">
+                        <i class="ph-fill ph-info fs-5 mt-0.5"></i>
+                        <div class="small">
+                            <strong>Hak Akses Instruktur DUDI:</strong> Instruktur bertugas menyetujui absensi harian siswa, memvalidasi jurnal kerja, mengirim laporan ke guru pembimbing, dan memberikan nilai evaluasi industri.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Nama Lengkap Instruktur / PIC <span class="text-danger">*</span></label>
+                        <input type="text" name="nama" id="instrukturInputNama" class="form-control" required style="border-radius: 8px;">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Email Login Instruktur <span class="text-danger">*</span></label>
+                        <input type="email" name="email" id="instrukturInputEmail" class="form-control font-monospace fw-bold" required style="border-radius: 8px;">
+                        <div class="form-text small text-muted">Format standar praktis: <code id="instrukturDefaultEmailCode">dudi@dudi.com</code></div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold text-dark small">Jabatan di DUDI</label>
+                            <input type="text" name="jabatan" id="instrukturInputJabatan" class="form-control" placeholder="Contoh: HRD / Supervisor" style="border-radius: 8px;">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold text-dark small">No. WhatsApp</label>
+                            <input type="text" name="no_hp" id="instrukturInputNoHp" class="form-control" placeholder="08xxxxxxxx" style="border-radius: 8px;">
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold text-dark small">Ubah Password Akun</label>
+                        <input type="text" name="password" id="instrukturInputPassword" class="form-control font-monospace" placeholder="Kosongkan jika default 'dudi1234'" style="border-radius: 8px;">
+                        <div class="form-text small text-muted">Password default bawaan: <code class="fw-bold">dudi1234</code></div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top px-4 py-3">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
+                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1.5 fw-semibold" style="border-radius: 8px;">
+                        <i class="ph-bold ph-check"></i> Simpan Akun Instruktur
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -489,8 +501,10 @@
         </form>
     </div>
 </div>
+@endpush
 
-<!-- Toast Script Helper -->
+@push('scripts')
+<!-- Toast & Dynamic Modal Script Helper -->
 <script>
     function copyToClipboard(text, message) {
         navigator.clipboard.writeText(text).then(function() {
@@ -503,5 +517,40 @@
             prompt('Salin teks manual:', text);
         });
     }
+
+    function openInstrukturModal(button) {
+        if (!button) return;
+
+        const form = document.getElementById('formInstrukturGlobal');
+        const action = button.getAttribute('data-action');
+        const company = button.getAttribute('data-company');
+        const nama = button.getAttribute('data-nama');
+        const email = button.getAttribute('data-email');
+        const jabatan = button.getAttribute('data-jabatan');
+        const nohp = button.getAttribute('data-nohp');
+        const defaultEmail = button.getAttribute('data-default-email');
+
+        if (form) form.action = action;
+        const companyEl = document.getElementById('instrukturModalCompanyName');
+        if (companyEl) companyEl.textContent = company || '-';
+        const namaEl = document.getElementById('instrukturInputNama');
+        if (namaEl) namaEl.value = nama || '';
+        const emailEl = document.getElementById('instrukturInputEmail');
+        if (emailEl) emailEl.value = email || '';
+        const jabatanEl = document.getElementById('instrukturInputJabatan');
+        if (jabatanEl) jabatanEl.value = jabatan || '';
+        const nohpEl = document.getElementById('instrukturInputNoHp');
+        if (nohpEl) nohpEl.value = nohp || '';
+        const passEl = document.getElementById('instrukturInputPassword');
+        if (passEl) passEl.value = '';
+        const defEmailEl = document.getElementById('instrukturDefaultEmailCode');
+        if (defEmailEl) defEmailEl.textContent = defaultEmail || 'dudi@dudi.com';
+
+        const modalEl = document.getElementById('modalInstrukturGlobal');
+        if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            bsModal.show();
+        }
+    }
 </script>
-@endsection
+@endpush

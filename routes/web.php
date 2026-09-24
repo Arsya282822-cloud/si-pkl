@@ -57,12 +57,13 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('jurusan', JurusanController::class)->except(['show']);
+        Route::resource('jurusan', JurusanController::class)->parameters(['jurusan' => 'jurusan'])->except(['show']);
         Route::post('guru/import', [GuruController::class, 'import'])->name('guru.import');
         Route::post('guru/reset-all-password', [GuruController::class, 'resetAllPassword'])->name('guru.reset_all_password');
         Route::resource('guru', GuruController::class)->except(['show']);
         Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas'])->except(['show']);
         Route::post('siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
+        Route::post('siswa/bulk-update-kelas', [SiswaController::class, 'bulkUpdateKelas'])->name('siswa.bulk_update_kelas');
         Route::resource('siswa', SiswaController::class)->except(['show']);
         Route::post('perusahaan/import', [PerusahaanController::class, 'import'])->name('perusahaan.import');
         Route::post('perusahaan/sync-instruktur', [PerusahaanController::class, 'syncAllInstruktur'])->name('perusahaan.sync_instruktur');
@@ -71,6 +72,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('pks', \App\Http\Controllers\Admin\PksController::class)->except(['show']);
         Route::resource('periode', PeriodePklController::class)->except(['show']);
         Route::resource('penempatan', PenempatanController::class)->except(['show']);
+
+        // Tujuan Pembelajaran Kurikulum PKL 2026
+        Route::get('/tujuan-pembelajaran/cetak', [\App\Http\Controllers\Admin\TujuanPembelajaranController::class, 'cetak'])->name('tujuan_pembelajaran.cetak');
+        Route::resource('tujuan-pembelajaran', \App\Http\Controllers\Admin\TujuanPembelajaranController::class)
+            ->names('tujuan_pembelajaran')
+            ->parameters(['tujuan-pembelajaran' => 'tujuan_pembelajaran'])
+            ->except(['show', 'create', 'edit']);
 
         // Pengaturan Sekolah & Dokumen
         Route::get('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('pengaturan.index');
@@ -114,7 +122,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/pengajuan/{pengajuan}/approve', [\App\Http\Controllers\Admin\PengajuanPklController::class, 'approve'])->name('pengajuan.approve');
         Route::post('/pengajuan/{pengajuan}/reject', [\App\Http\Controllers\Admin\PengajuanPklController::class, 'reject'])->name('pengajuan.reject');
 
-        // Pengumuman & Broadcast Pokja PKL
+        // Pengumuman & Broadcast Koordinator PKL
         Route::resource('pengumuman', \App\Http\Controllers\Admin\PengumumanController::class);
 
         // Log Aktivitas Sistem

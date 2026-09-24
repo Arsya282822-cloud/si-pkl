@@ -33,7 +33,7 @@
                 </div>
                 <h2 class="h4 fw-bold mb-1">Pusat Bantuan & FAQ PKL</h2>
                 <p class="mb-0 text-white-50" style="font-size: 0.9rem;">
-                    Informasi prosedur operasional standar (SOP), tata tertib di industri, panduan sistem SI-PKL, dan kontak Pokja PKL SMK Labor Binaan FKIP UNRI.
+                    Informasi prosedur operasional standar (SOP), tata tertib di industri, panduan sistem SI-PKL, dan kontak Koordinator PKL SMK Labor Binaan FKIP UNRI.
                 </p>
             </div>
             @if(Auth::user()->role?->nama_role === 'admin')
@@ -117,7 +117,7 @@
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                             <div class="accordion-body px-0 text-muted small" style="line-height: 1.7;">
-                                Anda dapat membuka menu <strong>Tempat PKL &rarr; Pengajuan Mandiri</strong> pada portal siswa, kemudian isi formulir profil perusahaan beserta kontak narahubung HRD. Usulan Anda akan ditinjau oleh Tim Pokja PKL untuk diverifikasi kesesuaian jurusannya.
+                                Anda dapat membuka menu <strong>Tempat PKL &rarr; Pengajuan Mandiri</strong> pada portal siswa, kemudian isi formulir profil perusahaan beserta kontak narahubung HRD. Usulan Anda akan ditinjau oleh Tim Koordinator PKL untuk diverifikasi kesesuaian jurusannya.
                             </div>
                         </div>
                     </div>
@@ -172,7 +172,7 @@
             <div class="pro-card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-                        <i class="ph ph-phone-call text-primary"></i> Kontak Pokja PKL & Hubin
+                        <i class="ph ph-phone-call text-primary"></i> Kontak Koordinator PKL & Hubin
                     </h6>
                     @if(Auth::user()->role?->nama_role === 'admin')
                         <button type="button" class="btn btn-sm btn-outline-primary px-2 py-1" data-bs-toggle="modal" data-bs-target="#modalEditKontak" title="Edit Data Kontak">
@@ -187,7 +187,7 @@
 
                 <!-- Box 1: Sekretariat -->
                 <div class="p-3 bg-light rounded-3 mb-3 border">
-                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $kontak['sekretariat_nama'] ?? 'Sekretariat Pokja PKL SMK Labor' }}</div>
+                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $kontak['sekretariat_nama'] ?? 'Sekretariat Koordinator PKL SMK Labor' }}</div>
                     <div class="small text-muted mt-1"><i class="ph ph-map-pin me-1 text-primary"></i> {{ $kontak['sekretariat_lokasi'] ?? 'Gedung Hubinmas Lantai 1' }}</div>
                     <div class="small text-muted"><i class="ph ph-envelope me-1 text-primary"></i> <a href="mailto:{{ $kontak['sekretariat_email'] ?? 'hubin@smklabor.sch.id' }}" class="text-decoration-none text-muted">{{ $kontak['sekretariat_email'] ?? 'hubin@smklabor.sch.id' }}</a></div>
                     <div class="small text-muted"><i class="ph ph-phone me-1 text-primary"></i> {{ $kontak['sekretariat_telepon'] ?? '(0761) 853245' }}</div>
@@ -196,7 +196,7 @@
                     @endif
                 </div>
 
-                <!-- Box 2: Ketua Pokja CP WhatsApp -->
+                <!-- Box 2: Koordinator PKL CP WhatsApp -->
                 @php
                     $waNumberClean = preg_replace('/[^0-9]/', '', $kontak['cp_whatsapp'] ?? '081275001122');
                     if (str_starts_with($waNumberClean, '0')) {
@@ -204,10 +204,10 @@
                     }
                 @endphp
                 <div class="p-3 bg-light rounded-3 border">
-                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $kontak['cp_jabatan'] ?? 'Ketua Pokja Hubin & PKL' }}</div>
-                    <div class="small text-dark fw-semibold mt-1">{{ $kontak['cp_nama'] ?? 'Dedi Hendrawan, S.Kom., M.Kom.' }}</div>
+                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $kontak['cp_jabatan'] ?? 'Koordinator PKL & Hubin' }}</div>
+                    <div class="small text-dark fw-semibold mt-1">{{ $kontak['cp_nama'] ?? 'Mahendra, S.Pd., M.Si.' }}</div>
                     <div class="mt-2">
-                        <a href="https://wa.me/{{ $waNumberClean }}?text=Halo%20Admin%20Pokja%20PKL%20SMK%20Labor,%20saya%20ingin%20bertanya%20mengenai%20PKL" target="_blank" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1.5 px-3" style="border-radius: 8px;">
+                        <a href="https://wa.me/{{ $waNumberClean }}?text=Halo%20Admin%20Koordinator%20PKL%20SMK%20Labor,%20saya%20ingin%20bertanya%20mengenai%20PKL" target="_blank" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1.5 px-3" style="border-radius: 8px;">
                             <i class="ph ph-whatsapp-logo" style="font-size: 16px;"></i>
                             <span>{{ $kontak['cp_whatsapp'] ?? '0812-7500-1122' }}</span>
                         </a>
@@ -227,7 +227,7 @@
                 @csrf
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold" id="modalEditKontakLabel">
-                        <i class="ph ph-pencil-simple text-primary me-1"></i> Edit Kontak Bantuan & CP Pokja
+                        <i class="ph ph-pencil-simple text-primary me-1"></i> Edit Kontak Bantuan & CP Koordinator
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -237,7 +237,7 @@
                     <h6 class="fw-bold text-primary mb-2" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">1. Informasi Sekretariat</h6>
                     <div class="mb-2.5">
                         <label class="form-label small fw-semibold">Nama Sekretariat / Kantor</label>
-                        <input type="text" name="sekretariat_nama" class="form-control" value="{{ $kontak['sekretariat_nama'] ?? 'Sekretariat Pokja PKL SMK Labor' }}" required style="border-radius: 8px;">
+                        <input type="text" name="sekretariat_nama" class="form-control" value="{{ $kontak['sekretariat_nama'] ?? 'Sekretariat Koordinator PKL SMK Labor' }}" required style="border-radius: 8px;">
                     </div>
                     <div class="mb-2.5">
                         <label class="form-label small fw-semibold">Lokasi / Ruangan</label>
@@ -257,12 +257,12 @@
                     <h6 class="fw-bold text-primary mb-2" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">2. Contact Person (CP) & Narahubung</h6>
                     <div class="mb-2.5">
                         <label class="form-label small fw-semibold">Nama Narahubung / Pejabat</label>
-                        <input type="text" name="cp_nama" class="form-control" value="{{ $kontak['cp_nama'] ?? 'Dedi Hendrawan, S.Kom., M.Kom.' }}" required style="border-radius: 8px;">
+                        <input type="text" name="cp_nama" class="form-control" value="{{ $kontak['cp_nama'] ?? 'Mahendra, S.Pd., M.Si.' }}" required style="border-radius: 8px;">
                     </div>
                     <div class="row g-2 mb-2.5">
                         <div class="col-6">
                             <label class="form-label small fw-semibold">Jabatan / Posisi</label>
-                            <input type="text" name="cp_jabatan" class="form-control" value="{{ $kontak['cp_jabatan'] ?? 'Ketua Pokja Hubin & PKL' }}" required style="border-radius: 8px;">
+                            <input type="text" name="cp_jabatan" class="form-control" value="{{ $kontak['cp_jabatan'] ?? 'Koordinator PKL & Hubin' }}" required style="border-radius: 8px;">
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-semibold">Nomor WhatsApp / HP</label>

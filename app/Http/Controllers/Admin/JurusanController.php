@@ -13,13 +13,14 @@ class JurusanController extends Controller
         $q = trim((string) $request->input('q'));
 
         $jurusan = Jurusan::query()
+            ->withCount(['siswa', 'kelas'])
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
                     $sub->where('kode_jurusan', 'like', "%{$q}%")
                         ->orWhere('nama_jurusan', 'like', "%{$q}%");
                 });
             })
-            ->latest('id')
+            ->orderBy('id')
             ->paginate(10)
             ->withQueryString();
 

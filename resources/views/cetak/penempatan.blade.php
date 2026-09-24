@@ -23,7 +23,7 @@
 <body>
     <div class="no-print">
         <button onclick="window.print()" style="padding: 10px 20px; cursor: pointer; background: #0d6efd; color: #fff; border: none; border-radius: 5px; font-size: 14px;">
-            🖨️ Cetak / Print
+            Cetak / Print
         </button>
         <a href="{{ route('admin.penempatan.index') }}" style="margin-left: 10px; color: #666;">← Kembali</a>
     </div>

@@ -66,7 +66,7 @@ class ActivityLogController extends Controller
             \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
             ActivityLog::query()->delete();
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-            return redirect()->route('admin.activity-log.index')->with('success', '✅ Seluruh riwayat log aktivitas berhasil dibersihkan.');
+            return redirect()->route('admin.activity-log.index')->with('success', 'Seluruh riwayat log aktivitas berhasil dibersihkan.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
             return redirect()->route('admin.activity-log.index')->with('error', 'Gagal membersihkan log: ' . $e->getMessage());

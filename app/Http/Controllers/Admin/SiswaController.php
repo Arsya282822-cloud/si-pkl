@@ -43,9 +43,28 @@ class SiswaController extends Controller
             ->paginate($per_page)
             ->withQueryString();
 
-        $jurusanList = Jurusan::orderBy('nama_jurusan')->get();
+        $jurusanList = Jurusan::orderBy('kode_jurusan')->get();
+        $kelasList = Kelas::with('jurusan')->orderBy('nama_kelas')->get();
 
-        return view('admin.siswa.index', compact('siswa', 'q', 'jurusan_id', 'jurusanList', 'per_page_input'));
+        return view('admin.siswa.index', compact('siswa', 'q', 'jurusan_id', 'jurusanList', 'kelasList', 'per_page_input'));
+    }
+
+    public function bulkUpdateKelas(Request $request)
+    {
+        $request->validate([
+            'kelas_id'   => 'required|exists:kelas,id',
+            'siswa_ids'  => 'required|array|min:1',
+            'siswa_ids.*'=> 'exists:siswa,id',
+        ]);
+
+        $kelas = Kelas::findOrFail($request->kelas_id);
+
+        Siswa::whereIn('id', $request->siswa_ids)->update([
+            'kelas_id'   => $kelas->id,
+            'jurusan_id' => $kelas->jurusan_id,
+        ]);
+
+        return back()->with('success', count($request->siswa_ids) . ' data siswa berhasil dipindahkan ke kelas ' . $kelas->nama_kelas . '.');
     }
 
     public function import(Request $request)
@@ -92,9 +111,10 @@ class SiswaController extends Controller
 
         DB::transaction(function () use ($validated) {
             $roleId = Role::where('nama_role', 'siswa')->value('id');
+            $namaUpper = mb_strtoupper(trim($validated['nama']));
 
             $user = User::create([
-                'name' => $validated['nama'],
+                'name' => $namaUpper,
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'role_id' => $roleId,
@@ -107,7 +127,7 @@ class SiswaController extends Controller
                 'jurusan_id' => $validated['jurusan_id'],
                 'nis' => $validated['nis'],
                 'nisn' => $validated['nisn'] ?? null,
-                'nama' => $validated['nama'],
+                'nama' => $namaUpper,
                 'jenis_kelamin' => $validated['jenis_kelamin'] ?? null,
                 'tempat_lahir' => $validated['tempat_lahir'] ?? null,
                 'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
@@ -153,12 +173,14 @@ class SiswaController extends Controller
         ]);
 
         DB::transaction(function () use ($validated, $siswa) {
+            $namaUpper = mb_strtoupper(trim($validated['nama']));
+
             $siswa->update([
                 'kelas_id' => $validated['kelas_id'],
                 'jurusan_id' => $validated['jurusan_id'],
                 'nis' => $validated['nis'],
                 'nisn' => $validated['nisn'] ?? null,
-                'nama' => $validated['nama'],
+                'nama' => $namaUpper,
                 'jenis_kelamin' => $validated['jenis_kelamin'] ?? null,
                 'tempat_lahir' => $validated['tempat_lahir'] ?? null,
                 'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
@@ -167,7 +189,7 @@ class SiswaController extends Controller
             ]);
 
             $userData = [
-                'name' => $validated['nama'],
+                'name' => $namaUpper,
                 'email' => $validated['email'],
                 'status' => $validated['status'],
             ];

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>404 - Halaman Tidak Ditemukan | SI-PKL SMK</title>
+    <title>503 - Pemeliharaan Sistem | SI-PKL SMK</title>
     <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-sipkl.jpg') }}">
     <link rel="shortcut icon" href="{{ asset('images/logo-sipkl.jpg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
             max-width: 520px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(56, 189, 248, 0.15);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(14, 165, 233, 0.15);
             position: relative;
             z-index: 1;
         }
@@ -50,21 +50,21 @@
         .floating-anim {
             animation: float 4s ease-in-out infinite;
         }
-        .pulse-glow {
-            animation: pulseGlow 3s ease-in-out infinite;
+        .pulse-glow-cyan {
+            animation: pulseGlowCyan 3s ease-in-out infinite;
         }
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-10px) rotate(2deg); }
         }
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.4)); opacity: 0.9; }
-            50% { filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.7)); opacity: 1; }
+        @keyframes pulseGlowCyan {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(14, 165, 233, 0.4)); opacity: 0.95; }
+            50% { filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.7)); opacity: 1; }
         }
         .error-code {
             font-size: 4.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 50%, #3b82f6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1;
@@ -112,52 +112,46 @@
 </head>
 <body>
     <div class="error-card">
-        <!-- 404 Illustration: Lost in Space / Radar Finder -->
+        <!-- 503 Illustration: Under Maintenance / Hologram Gears -->
         <div class="illustration-wrapper">
-            <svg class="floating-anim pulse-glow" width="160" height="140" viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Background Orbital Rings -->
-                <circle cx="80" cy="70" r="55" stroke="rgba(56, 189, 248, 0.2)" stroke-width="2" stroke-dasharray="6 6"/>
-                <ellipse cx="80" cy="70" rx="72" ry="32" stroke="rgba(129, 140, 248, 0.3)" stroke-width="1.5" transform="rotate(-20 80 70)"/>
-                
-                <!-- Glowing Center Radar Planet -->
-                <circle cx="80" cy="70" r="38" fill="url(#planet-grad-404)"/>
-                
-                <!-- Radar Compass Needle / Grid Lines -->
-                <line x1="80" y1="40" x2="80" y2="100" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5"/>
-                <line x1="50" y1="70" x2="110" y2="70" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5"/>
-                <circle cx="80" cy="70" r="24" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1.5"/>
-                
-                <!-- Compass Needle (North-South glowing pointer) -->
-                <polygon points="80,44 86,68 80,74 74,68" fill="#38bdf8"/>
-                <polygon points="80,96 86,72 80,74 74,72" fill="rgba(255, 255, 255, 0.7)"/>
-                <circle cx="80" cy="70" r="3.5" fill="#ffffff"/>
+            <svg class="floating-anim pulse-glow-cyan" width="160" height="140" viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Large Rotating Gear -->
+                <g transform="translate(80, 70)">
+                    <circle cx="0" cy="0" r="32" fill="url(#gear-grad)" stroke="#38bdf8" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="14" fill="#0f172a" stroke="#0ea5e9" stroke-width="2"/>
+                    <!-- Teeth -->
+                    <rect x="-6" y="-40" width="12" height="10" rx="3" fill="#38bdf8"/>
+                    <rect x="-6" y="30" width="12" height="10" rx="3" fill="#38bdf8"/>
+                    <rect x="-40" y="-6" width="10" height="12" rx="3" fill="#38bdf8"/>
+                    <rect x="30" y="-6" width="10" height="12" rx="3" fill="#38bdf8"/>
+                </g>
 
-                <!-- Satellite / Floating Elements -->
-                <circle cx="132" cy="42" r="5" fill="#38bdf8" filter="drop-shadow(0 0 6px #38bdf8)"/>
-                <circle cx="28" cy="98" r="3" fill="#c084fc" filter="drop-shadow(0 0 4px #c084fc)"/>
-                <circle cx="120" cy="108" r="2.5" fill="#818cf8"/>
-                <circle cx="38" cy="40" r="2" fill="#ffffff"/>
+                <!-- Floating Wrench / Screwdriver Hologram -->
+                <path d="M120 30 L135 45 L115 65 L100 50 Z" fill="#06b6d4" filter="drop-shadow(0 0 6px #06b6d4)"/>
+                <circle cx="128" cy="38" r="4" fill="#ffffff"/>
 
-                <!-- Gradient Definition -->
+                <!-- Glowing Sparks -->
+                <circle cx="36" cy="46" r="3" fill="#00f2fe" filter="drop-shadow(0 0 4px #00f2fe)"/>
+                <circle cx="124" cy="98" r="4" fill="#38bdf8" filter="drop-shadow(0 0 6px #38bdf8)"/>
+
                 <defs>
-                    <linearGradient id="planet-grad-404" x1="45" y1="35" x2="115" y2="105" gradientUnits="userSpaceOnUse">
+                    <linearGradient id="gear-grad" x1="-32" y1="-32" x2="32" y2="32" gradientUnits="userSpaceOnUse">
                         <stop offset="0%" stop-color="#0284c7"/>
-                        <stop offset="50%" stop-color="#1e3a8a"/>
-                        <stop offset="100%" stop-color="#0f172a"/>
+                        <stop offset="100%" stop-color="#082f49"/>
                     </linearGradient>
                 </defs>
             </svg>
         </div>
 
-        <div class="error-code">404</div>
-        <h1 class="h4 fw-bold mb-2">Halaman Tidak Ditemukan</h1>
+        <div class="error-code">503</div>
+        <h1 class="h4 fw-bold mb-2">Sistem Dalam Pemeliharaan</h1>
         <p class="text-secondary mb-4" style="color: #94a3b8 !important; font-size: 0.95rem; line-height: 1.55;">
-            Tautan yang Anda tuju mungkin rusak, telah dipindahkan, atau tidak tersedia di server SI-PKL.
+            Server sedang dalam proses peningkatan performa dan perawatan berkala. Kami akan segera kembali melayani Anda.
         </p>
         
         <div class="d-flex justify-content-center flex-wrap gap-2">
-            <button onclick="window.history.back()" class="btn-back">
-                <i class="ph-bold ph-arrow-left"></i> Kembali
+            <button onclick="location.reload()" class="btn-back">
+                <i class="ph-bold ph-arrows-clockwise"></i> Cek Status
             </button>
             <a href="{{ url('/') }}" class="btn-home">
                 <i class="ph-bold ph-house"></i> Halaman Utama

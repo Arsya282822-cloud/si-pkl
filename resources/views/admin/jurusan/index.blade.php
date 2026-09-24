@@ -109,6 +109,7 @@
                         <th style="width: 50px;" class="text-center text-muted fw-bold text-uppercase py-3">No</th>
                         <th class="text-muted fw-bold text-uppercase py-3">Kode Jurusan</th>
                         <th class="text-muted fw-bold text-uppercase py-3">Nama Program Keahlian</th>
+                        <th class="text-center text-muted fw-bold text-uppercase py-3">Jumlah Siswa</th>
                         <th class="text-muted fw-bold text-uppercase py-3">Deskripsi</th>
                         <th class="text-center text-muted fw-bold text-uppercase py-3">Status</th>
                         <th class="text-end text-muted fw-bold text-uppercase py-3 pe-3">Aksi</th>
@@ -127,6 +128,11 @@
                             </td>
                             <td>
                                 <div class="fw-bold text-dark">{{ $item->nama_jurusan }}</div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-info-subtle text-info border border-info-subtle px-2.5 py-1 rounded-pill fw-semibold">
+                                    <i class="ph-bold ph-student me-1"></i>{{ $item->siswa_count ?? 0 }} Siswa
+                                </span>
                             </td>
                             <td>
                                 <div class="text-muted small text-truncate" style="max-width: 320px;">

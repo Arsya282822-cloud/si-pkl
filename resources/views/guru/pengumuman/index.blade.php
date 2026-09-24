@@ -3,8 +3,8 @@
 @section('content')
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
-        <h3 class="fw-bold mb-1" style="color: var(--text-main);">Pesan & Informasi Pokja PKL</h3>
-        <p class="text-muted mb-0" style="font-size: 0.875rem;">Pengumuman resmi, jadwal penting, dan edaran teknis pembimbingan PKL dari Pokja PKL.</p>
+        <h3 class="fw-bold mb-1" style="color: var(--text-main);">Pesan & Informasi Koordinator PKL</h3>
+        <p class="text-muted mb-0" style="font-size: 0.875rem;">Pengumuman resmi, jadwal penting, dan edaran teknis pembimbingan PKL dari Koordinator PKL.</p>
     </div>
 </div>
 

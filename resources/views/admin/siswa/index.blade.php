@@ -202,11 +202,31 @@
             @endif
         </form>
 
+        <!-- Bulk Update Kelas Toolbar -->
+        <form id="bulkKelasForm" method="POST" action="{{ route('admin.siswa.bulk_update_kelas') }}" class="d-flex flex-wrap align-items-center gap-2 p-2.5 mb-3 rounded-3 border bg-light shadow-sm">
+            @csrf
+            <span class="small fw-semibold text-secondary ps-1">
+                <i class="ph-bold ph-check-square-offset me-1 text-primary"></i>Update Kelas Massal (Centang Siswa):
+            </span>
+            <select name="kelas_id" class="form-select form-select-sm" style="width: auto; min-width: 220px; border-radius: 8px;" required>
+                <option value="">-- Pilih Kelas Tujuan (XII) --</option>
+                @foreach($kelasList ?? [] as $kOpt)
+                    <option value="{{ $kOpt->id }}">{{ $kOpt->nama_kelas }} — {{ $kOpt->jurusan?->nama_jurusan }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary fw-semibold px-3" style="border-radius: 8px;" onclick="return document.querySelectorAll('.siswa-check:checked').length > 0 ? true : (alert('Silakan centang minimal 1 siswa terlebih dahulu.'), false)">
+                <i class="ph-bold ph-arrows-clockwise me-1"></i> Terapkan Kelas
+            </button>
+        </form>
+
         <!-- Table -->
         <div class="table-responsive rounded-3 border">
             <table class="table align-middle mb-0" style="font-size: 0.88rem;">
                 <thead class="bg-light">
                     <tr>
+                        <th style="width: 40px;" class="text-center py-3">
+                            <input type="checkbox" class="form-check-input" id="checkAllSiswa" title="Centang Semua" onclick="document.querySelectorAll('.siswa-check').forEach(cb => cb.checked = this.checked)">
+                        </th>
                         <th style="width: 50px;" class="text-center text-muted fw-bold text-uppercase py-3">No</th>
                         <th class="text-muted fw-bold text-uppercase py-3">Nama Siswa</th>
                         <th class="text-muted fw-bold text-uppercase py-3">NIS / NISN</th>
@@ -221,6 +241,9 @@
                             $initials = strtoupper(substr($item->nama, 0, 2));
                         @endphp
                         <tr>
+                            <td class="text-center">
+                                <input type="checkbox" name="siswa_ids[]" value="{{ $item->id }}" form="bulkKelasForm" class="form-check-input siswa-check">
+                            </td>
                             <td class="text-center fw-semibold text-muted">
                                 {{ $siswa->firstItem() + $loop->index }}
                             </td>
@@ -242,8 +265,8 @@
                                 <div class="small text-muted">{{ $item->nisn ?? '-' }}</div>
                             </td>
                             <td>
-                                <div class="fw-semibold text-dark">{{ $item->kelas?->nama_kelas ?? '-' }}</div>
-                                <span class="badge bg-light text-secondary border">{{ $item->jurusan?->kode_jurusan ?? '-' }}</span>
+                                <div class="fw-bold text-dark">{{ $item->kelas?->nama_kelas ?? '-' }}</div>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ $item->jurusan?->kode_jurusan ?? '-' }} — {{ $item->jurusan?->nama_jurusan ?? '-' }}</span>
                             </td>
                             <td>
                                 <span class="badge bg-{{ $item->user?->status === 'aktif' ? 'success':'secondary' }}-subtle text-{{ $item->user?->status === 'aktif' ? 'success':'secondary' }} border border-{{ $item->user?->status === 'aktif' ? 'success':'secondary' }}-subtle px-2.5 py-1 rounded-pill fw-semibold">

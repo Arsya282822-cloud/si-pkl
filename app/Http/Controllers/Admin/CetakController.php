@@ -75,7 +75,7 @@ class CetakController extends Controller
             'kota_terbit'         => \App\Models\Setting::get('sekolah_kota_terbit', 'Pekanbaru'),
             'nama_kepala_sekolah' => \App\Models\Setting::get('pejabat_kepala_sekolah', 'JEFFRI HUNTER, M.Pd'),
             'nip_kepala_sekolah'  => \App\Models\Setting::get('pejabat_nip_kepala_sekolah', '-'),
-            'ketua_pokja'         => \App\Models\Setting::get('pejabat_ketua_pokja', 'Dedi Hendrawan, S.Kom., M.Kom.'),
+            'ketua_pokja'         => \App\Models\Setting::get('pejabat_ketua_pokja', 'Mahendra, S.Pd., M.Si.'),
             'nip_ketua_pokja'     => \App\Models\Setting::get('pejabat_nip_ketua_pokja', '-'),
         ];
 

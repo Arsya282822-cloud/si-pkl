@@ -59,11 +59,12 @@ class GuruController extends Controller
 
         DB::transaction(function () use ($validated) {
             $roleId = Role::where('nama_role', 'guru')->value('id');
+            $namaUpper = mb_strtoupper(trim($validated['nama']));
 
             $password = !empty($validated['password']) ? $validated['password'] : 'guru1234';
 
             $user = User::create([
-                'name' => $validated['nama'],
+                'name' => $namaUpper,
                 'email' => $validated['email'],
                 'password' => Hash::make($password),
                 'role_id' => $roleId,
@@ -73,7 +74,7 @@ class GuruController extends Controller
             Guru::create([
                 'user_id' => $user->id,
                 'nip' => $validated['nip'] ?? null,
-                'nama' => $validated['nama'],
+                'nama' => $namaUpper,
                 'jenis_kelamin' => $validated['jenis_kelamin'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'alamat' => $validated['alamat'] ?? null,
@@ -108,7 +109,7 @@ class GuruController extends Controller
         );
 
         return redirect()->route('admin.guru.index')
-            ->with('success', "✅ Berhasil mereset password seluruh akun Guru ({$count} akun) menjadi 'guru1234'.");
+            ->with('success', "Berhasil mereset password seluruh akun Guru ({$count} akun) menjadi 'guru1234'.");
     }
 
     public function edit(Guru $guru)
@@ -133,16 +134,18 @@ class GuruController extends Controller
         ]);
 
         DB::transaction(function () use ($validated, $guru) {
+            $namaUpper = mb_strtoupper(trim($validated['nama']));
+
             $guru->update([
                 'nip' => $validated['nip'] ?? null,
-                'nama' => $validated['nama'],
+                'nama' => $namaUpper,
                 'jenis_kelamin' => $validated['jenis_kelamin'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'alamat' => $validated['alamat'] ?? null,
             ]);
 
             $userData = [
-                'name' => $validated['nama'],
+                'name' => $namaUpper,
                 'email' => $validated['email'],
                 'status' => $validated['status'],
             ];

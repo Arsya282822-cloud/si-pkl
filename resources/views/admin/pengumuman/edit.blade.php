@@ -40,10 +40,10 @@
                         <div class="col-md-4">
                             <label class="form-label fw-semibold text-dark">Kategori</label>
                             <select name="kategori" class="form-select" required>
-                                <option value="info" @selected(old('kategori', $pengumuman->kategori) === 'info')>ℹ️ Informasi Umum</option>
-                                <option value="penting" @selected(old('kategori', $pengumuman->kategori) === 'penting')>🚨 Penting / Urgent</option>
-                                <option value="jadwal" @selected(old('kategori', $pengumuman->kategori) === 'jadwal')>📅 Agenda & Jadwal</option>
-                                <option value="peringatan" @selected(old('kategori', $pengumuman->kategori) === 'peringatan')>⚠️ Peringatan</option>
+                                <option value="info" @selected(old('kategori', $pengumuman->kategori) === 'info')>Informasi Umum</option>
+                                <option value="penting" @selected(old('kategori', $pengumuman->kategori) === 'penting')>Penting / Urgent</option>
+                                <option value="jadwal" @selected(old('kategori', $pengumuman->kategori) === 'jadwal')>Agenda & Jadwal</option>
+                                <option value="peringatan" @selected(old('kategori', $pengumuman->kategori) === 'peringatan')>Peringatan</option>
                             </select>
                         </div>
                         <div class="col-md-4">
@@ -82,7 +82,7 @@
                             <div class="form-check form-switch mt-2">
                                 <input class="form-check-input" type="checkbox" name="is_pinned" id="is_pinned" value="1" @checked(old('is_pinned', $pengumuman->is_pinned))>
                                 <label class="form-check-label fw-semibold text-dark" for="is_pinned">
-                                    📌 Pin ke Bagian Teratas Beranda
+                                    Pin ke Bagian Teratas Beranda
                                 </label>
                             </div>
                         </div>

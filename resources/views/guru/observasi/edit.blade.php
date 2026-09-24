@@ -195,7 +195,7 @@
                             <td class="text-center text-muted">{{ $idx + 1 }}</td>
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" name="kompetensi_teknis[{{ $idx }}][tujuan]" class="form-control form-control-sm" value="{{ $item['tujuan'] ?? '' }}" placeholder="Tuliskan capaian kompetensi teknis...">
+                                    <input type="text" name="kompetensi_teknis[{{ $idx }}][tujuan]" class="form-control form-control-sm" value="{{ $item['tujuan'] ?? '' }}" placeholder="Pilih/ketik capaian kompetensi teknis..." list="datalistTpKelas">
                                     <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                                 </div>
                             </td>
@@ -228,7 +228,7 @@
                             <td class="text-center text-muted">{{ $idx + 1 }}</td>
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" name="kompetensi_baru[{{ $idx }}][tujuan]" class="form-control form-control-sm" value="{{ $item['tujuan'] ?? '' }}" placeholder="Tuliskan kompetensi baru...">
+                                    <input type="text" name="kompetensi_baru[{{ $idx }}][tujuan]" class="form-control form-control-sm" value="{{ $item['tujuan'] ?? '' }}" placeholder="Pilih/ketik kompetensi baru..." list="datalistTpKelas">
                                     <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                                 </div>
                             </td>
@@ -307,6 +307,19 @@
                 Simpan & Langsung Cetak PDF
             </button>
         </div>
+
+        <!-- DATALIST PILIHAN TUJUAN PEMBELAJARAN (KURIKULUM PKL 2026) -->
+        <datalist id="datalistTpKelas">
+            @if(isset($allTpGrouped))
+                @foreach($allTpGrouped as $kodeJ => $byCp)
+                    @foreach($byCp as $cpName => $tps)
+                        @foreach($tps as $tp)
+                            <option value="{{ $tp->tujuan_pembelajaran }}">[{{ $kodeJ }} - TP {{ $tp->nomor_urut }}] {{ $tp->tujuan_pembelajaran }}</option>
+                        @endforeach
+                    @endforeach
+                @endforeach
+            @endif
+        </datalist>
     </form>
 </div>
 
@@ -329,7 +342,7 @@
                 <td class="text-center text-muted">${idx + 1}</td>
                 <td>
                     <div class="input-group input-group-sm">
-                        <input type="text" name="kompetensi_teknis[${idx}][tujuan]" class="form-control form-control-sm" value="${item}" placeholder="Tuliskan capaian kompetensi teknis...">
+                        <input type="text" name="kompetensi_teknis[${idx}][tujuan]" class="form-control form-control-sm" value="${item}" placeholder="Pilih/ketik capaian kompetensi teknis..." list="datalistTpKelas">
                         <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                     </div>
                 </td>
@@ -351,7 +364,7 @@
             <td class="text-center text-muted">${idx + 1}</td>
             <td>
                 <div class="input-group input-group-sm">
-                    <input type="text" name="${prefixName}[${idx}][tujuan]" class="form-control form-control-sm" placeholder="Tuliskan butir capaian kompetensi...">
+                    <input type="text" name="${prefixName}[${idx}][tujuan]" class="form-control form-control-sm" placeholder="Pilih/ketik butir capaian kompetensi..." list="datalistTpKelas">
                     <button class="btn btn-outline-danger" type="button" onclick="deleteRow(this)" title="Hapus"><i class="ph ph-trash"></i></button>
                 </div>
             </td>

@@ -2,10 +2,129 @@
 
 namespace App\Services;
 
+use App\Models\TujuanPembelajaran;
+
 class KompetensiObservasiService
 {
     /**
-     * Daftar preset standar Capaian / Kompetensi Teknis per Jurusan (RPL, TKJ, AK, MP, BR)
+     * Resolve kode jurusan from string / code
+     */
+    public static function resolveKodeJurusan(?string $namaOrKode): string
+    {
+        if (!$namaOrKode) {
+            return 'RPL';
+        }
+
+        $namaUpper = strtoupper($namaOrKode);
+
+        if (in_array($namaUpper, ['RPL', 'TKJ', 'AK', 'MP', 'BR'])) {
+            return $namaUpper;
+        }
+
+        if (str_contains($namaUpper, 'RPL') || str_contains($namaUpper, 'PERANGKAT LUNAK') || str_contains($namaUpper, 'SOFTWARE') || (str_contains($namaUpper, 'KOMPUTER') && str_contains($namaUpper, 'PROGRAM'))) {
+            return 'RPL';
+        }
+        if (str_contains($namaUpper, 'TKJ') || str_contains($namaUpper, 'JARINGAN') || str_contains($namaUpper, 'NETWORK')) {
+            return 'TKJ';
+        }
+        if (str_contains($namaUpper, 'AK') || str_contains($namaUpper, 'AKL') || str_contains($namaUpper, 'AKUNTANSI') || str_contains($namaUpper, 'KEUANGAN')) {
+            return 'AK';
+        }
+        if (str_contains($namaUpper, 'MP') || str_contains($namaUpper, 'MPLB') || str_contains($namaUpper, 'PERKANTORAN') || str_contains($namaUpper, 'OTKP') || str_contains($namaUpper, 'SEKRETARIS')) {
+            return 'MP';
+        }
+        if (str_contains($namaUpper, 'BR') || str_contains($namaUpper, 'RITEL') || str_contains($namaUpper, 'RETAIL') || str_contains($namaUpper, 'BD') || str_contains($namaUpper, 'BDP') || str_contains($namaUpper, 'PEMASARAN') || str_contains($namaUpper, 'BISNIS') || str_contains($namaUpper, 'MARKETING')) {
+            return 'BR';
+        }
+
+        return 'RPL';
+    }
+
+    /**
+     * Get list of default soft skills
+     */
+    public static function getSoftSkills(): array
+    {
+        return [
+            'Etika dalam berkomunikasi lisan dan tulisan',
+            'Integritas dalam bekerja (Jujur, Disiplin, komitmen, dan tanggung jawab)',
+            'Bekerja secara mandiri',
+            'Bekerja secara tim',
+            'Kepedulian sosial',
+            'Ketaatan terhadap norma dan POS yang berlaku',
+            'K3LH di lingkungan kerja.',
+        ];
+    }
+
+    /**
+     * Get list of default business analysis
+     */
+    public static function getAnalisisUsaha(): array
+    {
+        return [
+            'Menjelaskan bidang usaha/pekerjaan, alur bisnis/kerja tempat PKL.',
+            'Memasarkan produk/jasa dengan menentukan harga produk dan segmen pasar.',
+            'Menentukan media yang tepat untuk mempromosikan produk/jasa',
+            'Memberikan layanan terhadap keluhan pelanggan',
+        ];
+    }
+
+    /**
+     * Find standard competencies (Capaian 1: POS Dunia Kerja) for Lembar Observasi
+     */
+    public static function getKompetensiByJurusan(?string $namaOrKode): array
+    {
+        $kode = self::resolveKodeJurusan($namaOrKode);
+
+        // Try getting from database first
+        $dbTps = TujuanPembelajaran::where('kode_jurusan', $kode)
+            ->where('status', 'aktif')
+            ->where('capaian_pembelajaran', 'like', '%POS%')
+            ->orderBy('nomor_urut')
+            ->take(6)
+            ->pluck('tujuan_pembelajaran')
+            ->toArray();
+
+        if (!empty($dbTps)) {
+            return $dbTps;
+        }
+
+        return self::getPresets()[$kode]['kompetensi'] ?? self::getPresets()['RPL']['kompetensi'];
+    }
+
+    /**
+     * Find new competencies (Capaian 2: Kompetensi Baru/Lanjutan) for Lembar Observasi
+     */
+    public static function getKompetensiBaruByJurusan(?string $namaOrKode): array
+    {
+        $kode = self::resolveKodeJurusan($namaOrKode);
+
+        return TujuanPembelajaran::where('kode_jurusan', $kode)
+            ->where('status', 'aktif')
+            ->where('capaian_pembelajaran', 'like', '%belum tuntas%')
+            ->orderBy('nomor_urut')
+            ->take(3)
+            ->pluck('tujuan_pembelajaran')
+            ->toArray();
+    }
+
+    /**
+     * Get ALL Tujuan Pembelajaran for a jurusan grouped by Capaian
+     */
+    public static function getAllTujuanPembelajaranByJurusan(?string $namaOrKode)
+    {
+        $kode = self::resolveKodeJurusan($namaOrKode);
+
+        return TujuanPembelajaran::where('kode_jurusan', $kode)
+            ->where('status', 'aktif')
+            ->orderBy('capaian_pembelajaran')
+            ->orderBy('nomor_urut')
+            ->get()
+            ->groupBy('capaian_pembelajaran');
+    }
+
+    /**
+     * Fallback preset list
      */
     public static function getPresets(): array
     {
@@ -67,71 +186,4 @@ class KompetensiObservasiService
             ],
         ];
     }
-
-    /**
-     * Get list of default soft skills
-     */
-    public static function getSoftSkills(): array
-    {
-        return [
-            'Etika dalam berkomunikasi lisan dan tulisan',
-            'Integritas dalam bekerja (Jujur, Disiplin, komitmen, dan tanggung jawab)',
-            'Bekerja secara mandiri',
-            'Bekerja secara tim',
-            'Kepedulian sosial',
-            'Ketaatan terhadap norma dan POS yang berlaku',
-            'K3LH di lingkungan kerja.',
-        ];
-    }
-
-    /**
-     * Get list of default business analysis
-     */
-    public static function getAnalisisUsaha(): array
-    {
-        return [
-            'Menjelaskan bidang usaha/pekerjaan, alur bisnis/kerja tempat PKL.',
-            'Memasarkan produk/jasa dengan menentukan harga produk dan segmen pasar.',
-            'Menentukan media yang tepat untuk mempromosikan produk/jasa',
-            'Memberikan layanan terhadap keluhan pelanggan',
-        ];
-    }
-
-    /**
-     * Find best matching competencies by jurusan string or code
-     */
-    public static function getKompetensiByJurusan(?string $namaOrKode): array
-    {
-        if (!$namaOrKode) {
-            return self::getPresets()['RPL']['kompetensi'];
-        }
-
-        $namaUpper = strtoupper($namaOrKode);
-        $presets = self::getPresets();
-
-        // 1. Direct match on code
-        if (isset($presets[$namaUpper])) {
-            return $presets[$namaUpper]['kompetensi'];
-        }
-
-        // 2. Keyword detection
-        if (str_contains($namaUpper, 'RPL') || str_contains($namaUpper, 'PERANGKAT LUNAK') || str_contains($namaUpper, 'SOFTWARE') || (str_contains($namaUpper, 'KOMPUTER') && str_contains($namaUpper, 'PROGRAM'))) {
-            return $presets['RPL']['kompetensi'];
-        }
-        if (str_contains($namaUpper, 'TKJ') || str_contains($namaUpper, 'JARINGAN') || str_contains($namaUpper, 'NETWORK')) {
-            return $presets['TKJ']['kompetensi'];
-        }
-        if (str_contains($namaUpper, 'AK') || str_contains($namaUpper, 'AKL') || str_contains($namaUpper, 'AKUNTANSI') || str_contains($namaUpper, 'KEUANGAN')) {
-            return $presets['AK']['kompetensi'];
-        }
-        if (str_contains($namaUpper, 'MP') || str_contains($namaUpper, 'MPLB') || str_contains($namaUpper, 'PERKANTORAN') || str_contains($namaUpper, 'OTKP') || str_contains($namaUpper, 'SEKRETARIS')) {
-            return $presets['MP']['kompetensi'];
-        }
-        if (str_contains($namaUpper, 'BR') || str_contains($namaUpper, 'RITEL') || str_contains($namaUpper, 'RETAIL') || str_contains($namaUpper, 'BD') || str_contains($namaUpper, 'BDP') || str_contains($namaUpper, 'PEMASARAN') || str_contains($namaUpper, 'BISNIS') || str_contains($namaUpper, 'MARKETING')) {
-            return $presets['BR']['kompetensi'];
-        }
-
-        return $presets['RPL']['kompetensi'];
-    }
 }
-

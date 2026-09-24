@@ -7,17 +7,18 @@
 
     <title>{{ config('app.name', 'SI-PKL') }}</title>
 
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Bootstrap 5 for Grid -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Bootstrap Icons & Phosphor Icons -->
+    <!-- Icons: Lucide, Phosphor, Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- PWA Manifest & Meta Tags -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -25,7 +26,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SI-PKL">
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-sipkl.jpg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo-sipkl.jpg') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-sipkl.jpg') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -62,13 +64,25 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 14px;
+            letter-spacing: -0.01em;
             color: var(--text-main);
             background-color: var(--bg-body);
             min-height: 100vh;
             overflow-x: hidden;
             margin: 0;
+        }
+
+        /* Ensure Bootstrap Modals and Backdrops are always top-level and never obscured */
+        .modal {
+            z-index: 1065 !important;
+        }
+        .modal-backdrop {
+            z-index: 1055 !important;
+        }
+        .modal-backdrop.show {
+            opacity: 0.5 !important;
         }
 
         /* Clean Card Class */
@@ -153,13 +167,15 @@
         }
 
         .nav-label {
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             font-weight: 700;
-            color: #475569;
+            color: #708198;
             text-transform: uppercase;
             letter-spacing: 0.9px;
-            padding: 14px 20px 6px 20px;
+            padding: 16px 20px 6px 20px;
             margin: 0;
+            display: flex;
+            align-items: center;
         }
 
         .pro-nav-link {
@@ -178,11 +194,16 @@
             position: relative;
         }
 
+        .pro-nav-link svg.nav-icon,
+        .pro-nav-link [data-lucide],
         .pro-nav-link i.nav-icon {
-            font-size: 20px;
-            min-width: 28px;
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            margin-right: 12px;
             color: #94a3b8;
             transition: all 0.18s ease;
+            stroke-width: 2;
         }
 
         .pro-nav-link:hover {
@@ -190,6 +211,8 @@
             color: #ffffff;
             padding-left: 22px;
         }
+        .pro-nav-link:hover svg.nav-icon,
+        .pro-nav-link:hover [data-lucide],
         .pro-nav-link:hover i.nav-icon {
             color: #38bdf8;
             transform: scale(1.08);
@@ -202,6 +225,8 @@
             font-weight: 600;
             box-shadow: inset 4px 0 14px -3px var(--sidebar-cyan-glow);
         }
+        .pro-nav-link.active svg.nav-icon,
+        .pro-nav-link.active [data-lucide],
         .pro-nav-link.active i.nav-icon {
             color: var(--sidebar-cyan);
             filter: drop-shadow(0 0 6px var(--sidebar-cyan-glow));
@@ -211,22 +236,28 @@
             background: rgba(255, 255, 255, 0.03);
             color: #ffffff;
         }
+        .pro-nav-link[aria-expanded="true"] svg.nav-icon,
+        .pro-nav-link[aria-expanded="true"] [data-lucide],
         .pro-nav-link[aria-expanded="true"] i.nav-icon {
             color: #38bdf8;
         }
 
-        .nav-arrow {
+        .nav-arrow,
+        svg.nav-arrow {
+            width: 15px;
+            height: 15px;
             margin-left: auto;
-            font-size: 13px;
             color: #64748b;
             transition: transform 0.22s ease, color 0.18s ease;
         }
 
-        .pro-nav-link:hover .nav-arrow {
+        .pro-nav-link:hover .nav-arrow,
+        .pro-nav-link:hover svg.nav-arrow {
             color: #cbd5e1;
         }
 
-        .pro-nav-link[aria-expanded="true"] .nav-arrow {
+        .pro-nav-link[aria-expanded="true"] .nav-arrow,
+        .pro-nav-link[aria-expanded="true"] svg.nav-arrow {
             transform: rotate(90deg);
             color: var(--sidebar-cyan);
         }
@@ -243,13 +274,41 @@
             box-shadow: 0 2px 8px rgba(244, 63, 94, 0.45);
         }
 
+        /* Native Reliable Accordion / Dropdown Navigation */
+        details.pro-nav-group summary {
+            list-style: none;
+            outline: none;
+        }
+        details.pro-nav-group summary::-webkit-details-marker,
+        details.pro-nav-group summary::marker {
+            display: none !important;
+            content: "";
+        }
+        details.pro-nav-group summary.pro-nav-link {
+            cursor: pointer;
+            user-select: none;
+        }
+        details.pro-nav-group[open] > summary.pro-nav-link {
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+        }
+        details.pro-nav-group[open] > summary.pro-nav-link .nav-arrow,
+        details.pro-nav-group[open] > summary.pro-nav-link svg.nav-arrow {
+            transform: rotate(90deg);
+            color: var(--sidebar-cyan);
+        }
+        details.pro-nav-group[open] > summary.pro-nav-link svg.nav-icon,
+        details.pro-nav-group[open] > summary.pro-nav-link [data-lucide] {
+            color: #38bdf8;
+        }
+
         .sub-nav {
             list-style: none;
             padding: 4px 0;
             margin: 0;
             background-color: var(--sidebar-sub-bg);
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .sub-nav-link {
@@ -544,8 +603,8 @@
             <!-- Header -->
             <header class="pro-header">
                 <div class="d-flex align-items-center gap-3">
-                    <button class="menu-toggle-btn" id="sidebarToggle">
-                        <i class="ph ph-list" style="font-size: 24px;"></i>
+                    <button class="menu-toggle-btn" id="sidebarToggle" aria-label="Toggle Sidebar">
+                        <i data-lucide="menu" style="width: 22px; height: 22px;"></i>
                     </button>
                     <h1 class="header-title">@yield('title', strip_tags($header ?? 'Dashboard'))</h1>
                 </div>
@@ -558,19 +617,19 @@
                             </div>
                             <div class="user-name d-none d-md-flex align-items-center gap-1">
                                 {{ Auth::user()->name ?? 'User' }}
-                                <i class="ph ph-caret-down" style="font-size: 14px;"></i>
+                                <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
                             </div>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><h6 class="dropdown-header text-muted" style="font-size: 0.75rem;">Masuk sebagai {{ ucfirst(Auth::user()->role?->nama_role ?? 'User') }}</h6></li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                    <i class="ph ph-user-circle" style="font-size: 18px;"></i> Profil Saya
+                                    <i data-lucide="user" style="width: 16px; height: 16px;"></i> Profil Saya
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('bantuan.index') }}">
-                                    <i class="ph ph-question" style="font-size: 18px;"></i> Pusat Bantuan
+                                    <i data-lucide="help-circle" style="width: 16px; height: 16px;"></i> Pusat Bantuan
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
@@ -578,7 +637,7 @@
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="dropdown-item text-danger" style="background: none; border: none; width: 100%; text-align: left;">
-                                        <i class="ph ph-sign-out" style="font-size: 18px;"></i> Keluar
+                                        <i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Keluar
                                     </button>
                                 </form>
                             </li>
@@ -588,13 +647,13 @@
             </header>
 
             <!-- Page Content -->
-            <div class="pro-content animate-fade-in">
+            <div class="pro-content">
                 <!-- Floating Toast Notification System -->
                 <div class="position-fixed top-0 end-0 p-4" style="z-index: 9999; max-width: 420px; width: 100%; pointer-events: none;">
                     @if (session('success'))
                         <div class="alert glass-card border-0 shadow-lg d-flex align-items-center gap-3 p-3 mb-3 text-dark animate-slide-in" role="alert" style="pointer-events: auto; border-radius: 12px; border-left: 5px solid #10b981 !important;">
                             <div class="d-flex align-items-center justify-content-center rounded-circle bg-success text-white flex-shrink-0" style="width: 38px; height: 38px; box-shadow: 0 4px 10px rgba(16,185,129,0.3);">
-                                <i class="ph-bold ph-check" style="font-size: 20px;"></i>
+                                <i data-lucide="check" style="width: 20px; height: 20px;"></i>
                             </div>
                             <div class="flex-grow-1" style="font-size: 0.875rem;">
                                 <div class="fw-bold text-success">Berhasil!</div>
@@ -607,7 +666,7 @@
                     @if (session('error'))
                         <div class="alert glass-card border-0 shadow-lg d-flex align-items-center gap-3 p-3 mb-3 text-dark animate-slide-in" role="alert" style="pointer-events: auto; border-radius: 12px; border-left: 5px solid #ef4444 !important;">
                             <div class="d-flex align-items-center justify-content-center rounded-circle bg-danger text-white flex-shrink-0" style="width: 38px; height: 38px; box-shadow: 0 4px 10px rgba(239,68,68,0.3);">
-                                <i class="ph-bold ph-warning-circle" style="font-size: 20px;"></i>
+                                <i data-lucide="alert-circle" style="width: 20px; height: 20px;"></i>
                             </div>
                             <div class="flex-grow-1" style="font-size: 0.875rem;">
                                 <div class="fw-bold text-danger">Terjadi Kesalahan!</div>
@@ -620,7 +679,7 @@
                     @if (session('info'))
                         <div class="alert glass-card border-0 shadow-lg d-flex align-items-center gap-3 p-3 mb-3 text-dark animate-slide-in" role="alert" style="pointer-events: auto; border-radius: 12px; border-left: 5px solid #0ea5e9 !important;">
                             <div class="d-flex align-items-center justify-content-center rounded-circle bg-info text-white flex-shrink-0" style="width: 38px; height: 38px; box-shadow: 0 4px 10px rgba(14,165,233,0.3);">
-                                <i class="ph-bold ph-info" style="font-size: 20px;"></i>
+                                <i data-lucide="info" style="width: 20px; height: 20px;"></i>
                             </div>
                             <div class="flex-grow-1" style="font-size: 0.875rem;">
                                 <div class="fw-bold text-primary">Informasi</div>
@@ -633,7 +692,7 @@
                     @if ($errors->any())
                         <div class="alert glass-card border-0 shadow-lg d-flex align-items-start gap-3 p-3 mb-3 text-dark animate-slide-in" role="alert" style="pointer-events: auto; border-radius: 12px; border-left: 5px solid #f59e0b !important;">
                             <div class="d-flex align-items-center justify-content-center rounded-circle bg-warning text-white flex-shrink-0" style="width: 38px; height: 38px; box-shadow: 0 4px 10px rgba(245,158,11,0.3);">
-                                <i class="ph-bold ph-warning" style="font-size: 20px;"></i>
+                                <i data-lucide="alert-triangle" style="width: 20px; height: 20px;"></i>
                             </div>
                             <div class="flex-grow-1" style="font-size: 0.85rem;">
                                 <div class="fw-bold text-warning mb-1">Perhatian (Validasi Gagal)</div>
@@ -653,6 +712,9 @@
             </div>
         </main>
     </div>
+
+    <!-- Modals Stack (Direct Child of Body to guarantee top-level stacking context) -->
+    @stack('modals')
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -716,13 +778,10 @@
             }
         });
 
-        // Sub-menu Collapse Behavior Enhancement
-        document.querySelectorAll('.pro-nav-link[data-bs-toggle="collapse"]').forEach(toggleBtn => {
-            toggleBtn.addEventListener('click', function(e) {
-                // Prevent page scroll jumps on hash href
-                if (this.getAttribute('href')?.startsWith('#')) {
-                    e.preventDefault();
-                }
+        // Refresh icons on native details dropdown toggle
+        document.querySelectorAll('details.pro-nav-group').forEach(detail => {
+            detail.addEventListener('toggle', () => {
+                refreshLucideIcons();
             });
         });
 
@@ -736,6 +795,15 @@
             });
         }, 5000);
 
+        // Initialize Lucide Icons
+        function refreshLucideIcons() {
+            if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+                lucide.createIcons();
+            }
+        }
+        refreshLucideIcons();
+        document.addEventListener('DOMContentLoaded', refreshLucideIcons);
+
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -746,5 +814,9 @@
         }
     </script>
     @stack('scripts')
+    <script>
+        // Ensure Lucide runs after page scripts as well
+        refreshLucideIcons();
+    </script>
 </body>
 </html>

@@ -37,6 +37,21 @@ class KelasController extends Controller
         return view('admin.kelas.create', compact('jurusan', 'guru'));
     }
 
+    private function normalizeKelasData(array $validated): array
+    {
+        $map = ['12' => 'XII', '11' => 'XI', '10' => 'X'];
+        $tingkatUpper = strtoupper(trim($validated['tingkat']));
+        $validated['tingkat'] = $map[$tingkatUpper] ?? $tingkatUpper;
+
+        $nama = trim($validated['nama_kelas']);
+        $nama = preg_replace('/\b12\b/', 'XII', $nama);
+        $nama = preg_replace('/\b11\b/', 'XI', $nama);
+        $nama = preg_replace('/\b10\b/', 'X', $nama);
+        $validated['nama_kelas'] = $nama;
+
+        return $validated;
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -46,6 +61,8 @@ class KelasController extends Controller
             'tingkat' => ['required', 'string', 'max:20'],
             'status' => ['required', 'boolean'],
         ]);
+
+        $validated = $this->normalizeKelasData($validated);
 
         Kelas::create($validated);
 
@@ -75,6 +92,8 @@ class KelasController extends Controller
             'tingkat' => ['required', 'string', 'max:20'],
             'status' => ['required', 'boolean'],
         ]);
+
+        $validated = $this->normalizeKelasData($validated);
 
         $kelas->update($validated);
 

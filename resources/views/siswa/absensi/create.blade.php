@@ -17,8 +17,8 @@
                 <div class="col-md-4">
                     <label class="form-label">Status Kehadiran <span class="text-danger">*</span></label>
                     <select name="status" class="form-select @error('status') is-invalid @enderror" required>
-                        <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>📋 Izin</option>
-                        <option value="sakit" {{ old('status') == 'sakit' ? 'selected' : '' }}>🤒 Sakit</option>
+                        <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>Izin</option>
+                        <option value="sakit" {{ old('status') == 'sakit' ? 'selected' : '' }}>Sakit</option>
                     </select>
                     @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

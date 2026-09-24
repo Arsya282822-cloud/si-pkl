@@ -74,7 +74,7 @@ class PengumumanController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', '✅ Pengumuman berhasil dipublikasikan!');
+        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil dipublikasikan!');
     }
 
     public function edit(Pengumuman $pengumuman)
@@ -115,7 +115,7 @@ class PengumumanController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', '✅ Pengumuman berhasil diperbarui!');
+        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui!');
     }
 
     public function destroy(Pengumuman $pengumuman)

@@ -119,7 +119,7 @@
                             </div>
                             <div>
                                 <h5 class="fw-bold mb-0 text-dark">2. Pejabat Penandatangan</h5>
-                                <small class="text-muted">Kelola data Kepala Sekolah (Baru & Lama) serta Ketua Pokja PKL</small>
+                                <small class="text-muted">Kelola data Kepala Sekolah (Baru & Lama) serta Koordinator PKL</small>
                             </div>
                         </div>
 
@@ -181,13 +181,13 @@
                             </div>
                         </div>
 
-                        <!-- 3. Ketua Pokja PKL -->
+                        <!-- 3. Koordinator PKL -->
                         <div class="p-3 bg-light rounded-3 mb-3 border">
                             <h6 class="fw-bold text-primary mb-2" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                <i class="ph ph-user-circle me-1"></i> Ketua Pokja PKL & Hubin
+                                <i class="ph ph-user-circle me-1"></i> Koordinator PKL & Hubin
                             </h6>
                             <div class="mb-2">
-                                <label class="form-label fw-semibold small">Nama Ketua Pokja PKL (Lengkap dengan Gelar)</label>
+                                <label class="form-label fw-semibold small">Nama Koordinator PKL (Lengkap dengan Gelar)</label>
                                 <input type="text" name="ketua_pokja" class="form-control bg-white" value="{{ old('ketua_pokja', $settings['ketua_pokja']) }}" required style="border-radius: 8px;">
                             </div>
                             <div>

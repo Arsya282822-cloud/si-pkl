@@ -16,7 +16,7 @@
             <i class="ph ph-buildings" style="font-size: 42px;"></i>
         </div>
         <h4 class="fw-bold text-dark">Belum Ada Data Penempatan</h4>
-        <p class="text-muted mb-0">Anda belum ditempatkan di perusahaan/instansi mitra. Silakan ajukan usulan PKL mandiri atau hubungi Pokja PKL sekolah.</p>
+        <p class="text-muted mb-0">Anda belum ditempatkan di perusahaan/instansi mitra. Silakan ajukan usulan PKL mandiri atau hubungi Koordinator PKL sekolah.</p>
     </div>
 @else
     <div class="row g-4">

@@ -9,7 +9,7 @@
     <!-- Clean Page Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
-            <h3 class="fw-bold mb-1" style="letter-spacing: -0.5px; color: var(--text-main);">Dashboard Overview 👋</h3>
+            <h3 class="fw-bold mb-1" style="letter-spacing: -0.5px; color: var(--text-main);">Dashboard Overview</h3>
             <p class="text-muted mb-0" style="font-size: 0.9rem;">
                 Monitoring penempatan, presensi realtime, jurnal harian, dan statistik kemitraan PKL.
             </p>
@@ -313,7 +313,7 @@
         </div>
     </div>
 
-    <!-- Bottom Banner (PANEL HUBIN & POKJA PKL) -->
+    <!-- Bottom Banner (PANEL HUBIN & KOORDINATOR PKL) -->
     <div class="pro-card p-4 mt-4" style="border-radius: 16px; background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%); color: #ffffff; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(12, 74, 110, 0.3);">
         <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.12; font-size: 150px; line-height: 1;">
             <i class="ph ph-buildings"></i>
@@ -321,16 +321,16 @@
         <div class="row align-items-center position-relative">
             <div class="col-lg-8">
                 <span class="badge bg-white text-primary px-3 py-1.5 mb-2 fw-semibold" style="border-radius: 20px; font-size: 0.75rem; letter-spacing: 0.5px;">
-                    PUSAT KENDALI HUBIN & POKJA PKL
+                    PUSAT KENDALI HUBIN & KOORDINATOR PKL
                 </span>
-                <h4 class="fw-bold mb-1" style="letter-spacing: -0.5px;">Sinergi Pendidikan Vokasi & Kemitraan Industri 🤝</h4>
+                <h4 class="fw-bold mb-1" style="letter-spacing: -0.5px;">Sinergi Pendidikan Vokasi & Kemitraan Industri</h4>
                 <p class="mb-0 opacity-85" style="font-size: 0.9rem; max-width: 650px; line-height: 1.5;">
                     Mewujudkan tata kelola Praktik Kerja Lapangan yang akuntabel, transparan, dan terintegrasi di SMK Labor Binaan FKIP UNRI Pekanbaru untuk mencetak lulusan unggul siap kerja.
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 d-flex justify-content-lg-end gap-2 flex-wrap">
                 <a href="{{ route('admin.pengaturan.index') }}" class="btn btn-light px-3.5 py-2 text-primary fw-semibold d-inline-flex align-items-center gap-2" style="border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                    <i class="ph ph-gear" style="font-size: 20px;"></i>
+                    <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
                     <span>Pengaturan Sekolah</span>
                 </a>
             </div>
@@ -352,11 +352,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     data: {!! json_encode($jurusanData) !!},
                     backgroundColor: [
-                        '#0284c7', // Sky Blue
-                        '#10b981', // Emerald
-                        '#f59e0b', // Amber
-                        '#8b5cf6', // Violet
-                        '#ec4899', // Pink
+                        '#0284c7', // Sky Blue (TKJ)
+                        '#10b981', // Emerald (RPL)
+                        '#f59e0b', // Amber (AK)
+                        '#8b5cf6', // Violet (MP)
+                        '#ec4899', // Pink (BR)
+                        '#06b6d4',
+                        '#f97316'
                     ],
                     borderWidth: 2,
                     borderColor: '#ffffff'
@@ -369,8 +371,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            boxWidth: 12,
+                            boxWidth: 10,
+                            usePointStyle: true,
                             font: { size: 11, family: 'Inter' }
+                        }
+                    },
+                    tooltip: {
+                        padding: 10,
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleFont: { size: 12, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let val = context.raw || 0;
+                                let total = context.chart._metasets[0].total || 1;
+                                let pct = Math.round((val / total) * 100);
+                                return ` ${val} Siswa (${pct}%)`;
+                            }
                         }
                     }
                 },

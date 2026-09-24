@@ -142,7 +142,7 @@
                             </div>
                         </div>
                         <p class="small text-muted mb-3 mt-2">
-                            Tim Pokja PKL sedang meninjau kelengkapan berkas dan kesesuaian keahlian tempat PKL yang Anda ajukan.
+                            Tim Koordinator PKL sedang meninjau kelengkapan berkas dan kesesuaian keahlian tempat PKL yang Anda ajukan.
                         </p>
                         <a href="{{ route('siswa.pengajuan.show', $pengajuanAktif->id) }}" class="btn btn-sm btn-warning text-dark fw-bold px-3" style="border-radius: 8px;">
                             <i class="ph ph-eye me-1"></i> Pantau Status Pengajuan

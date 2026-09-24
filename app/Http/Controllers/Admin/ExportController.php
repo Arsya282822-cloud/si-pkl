@@ -157,7 +157,7 @@ class ExportController extends Controller
             $handle = fopen('php://output', 'w');
             fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
             fputcsv($handle, ['nip', 'nama', 'jenis_kelamin', 'no_hp', 'alamat', 'email'], ';');
-            fputcsv($handle, ['198501152010011005', 'Dedi Hendrawan, S.Kom., M.Kom.', 'L', '081275001122', 'Jl. Garuda Sakti Km. 2', 'dedi.guru@smklabor.sch.id'], ';');
+            fputcsv($handle, ['198904122019031005', 'Mahendra, S.Pd., M.Si.', 'L', '081275001122', 'Jl. Garuda Sakti Km. 2', 'mahendra.guru@smklabor.sch.id'], ';');
             fclose($handle);
         }, 200, [
             'Content-Type' => 'text/csv; charset=UTF-8',

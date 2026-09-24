@@ -72,7 +72,7 @@
                     <ol class="small text-muted ps-3 mb-0" style="line-height: 1.7;">
                         <li>Isi formulir data profil perusahaan mitra.</li>
                         <li>Lampirkan surat balasan/penerimaan jika ada.</li>
-                        <li>Tim Pokja/Guru memeriksa kesesuaian kompetensi keahlian.</li>
+                        <li>Tim Koordinator/Guru memeriksa kesesuaian kompetensi keahlian.</li>
                         <li>Setelah disetujui, data penempatan & pembimbing aktif otomatis.</li>
                     </ol>
                 </div>

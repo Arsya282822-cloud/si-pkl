@@ -34,13 +34,23 @@ class JurnalController extends Controller
     public function create()
     {
         $user = Auth::user();
-        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
+        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->with('siswa.jurusan')->latest()->first();
 
         if (!$penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan, tidak dapat mengisi jurnal.');
         }
 
-        return view('siswa.jurnal.create', compact('penempatan'));
+        $kodeJurusan = $penempatan->siswa?->jurusan?->kode_jurusan;
+        $tujuanPembelajarans = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+            ->when($kodeJurusan, function ($q) use ($kodeJurusan) {
+                $q->where('kode_jurusan', $kodeJurusan);
+            })
+            ->orderBy('capaian_pembelajaran')
+            ->orderBy('nomor_urut')
+            ->get()
+            ->groupBy('capaian_pembelajaran');
+
+        return view('siswa.jurnal.create', compact('penempatan', 'tujuanPembelajarans'));
     }
 
     public function store(Request $request)
@@ -86,7 +96,7 @@ class JurnalController extends Controller
     public function edit(JurnalPkl $jurnal)
     {
         $user = Auth::user();
-        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
+        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->with('siswa.jurusan')->latest()->first();
 
         // Check ownership
         if ($jurnal->penempatan_id !== $penempatan->id) {
@@ -98,7 +108,17 @@ class JurnalController extends Controller
             return redirect()->route('siswa.jurnal.index')->with('error', 'Jurnal yang sudah diproses tidak dapat diedit.');
         }
 
-        return view('siswa.jurnal.edit', compact('jurnal', 'penempatan'));
+        $kodeJurusan = $penempatan->siswa?->jurusan?->kode_jurusan;
+        $tujuanPembelajarans = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+            ->when($kodeJurusan, function ($q) use ($kodeJurusan) {
+                $q->where('kode_jurusan', $kodeJurusan);
+            })
+            ->orderBy('capaian_pembelajaran')
+            ->orderBy('nomor_urut')
+            ->get()
+            ->groupBy('capaian_pembelajaran');
+
+        return view('siswa.jurnal.edit', compact('jurnal', 'penempatan', 'tujuanPembelajarans'));
     }
 
     public function update(Request $request, JurnalPkl $jurnal)

@@ -15,7 +15,7 @@ class BantuanController extends Controller
             'sekretariat_lokasi' => Setting::get('bantuan_sekretariat_lokasi', 'Gedung Hubinmas Lantai 1'),
             'sekretariat_email' => Setting::get('bantuan_sekretariat_email', 'hubin@smklabor.sch.id'),
             'sekretariat_telepon' => Setting::get('bantuan_sekretariat_telepon', '(0761) 853245'),
-            'cp_nama' => Setting::get('bantuan_cp_nama', 'Dedi Hendrawan, S.Kom., M.Kom.'),
+            'cp_nama' => Setting::get('bantuan_cp_nama', 'Mahendra, S.Pd., M.Si.'),
             'cp_jabatan' => Setting::get('bantuan_cp_jabatan', 'Ketua Pokja Hubin & PKL'),
             'cp_whatsapp' => Setting::get('bantuan_cp_whatsapp', '0812-7500-1122'),
             'jam_layanan' => Setting::get('bantuan_jam_layanan', 'Senin - Jumat (07.30 - 16.00 WIB)'),

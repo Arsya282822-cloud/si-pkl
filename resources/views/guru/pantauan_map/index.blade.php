@@ -127,9 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div style="font-family: 'Inter', sans-serif; padding: 4px;">
                             <h6 style="margin: 0 0 4px 0; font-weight: 700; color: #0f172a; font-size: 14px;">${absen.penempatan.siswa.nama}</h6>
                             <div style="font-size: 12px; color: #64748b; line-height: 1.5;">
-                                <div>🏢 <strong>${absen.penempatan.perusahaan.nama_perusahaan}</strong></div>
-                                <div>⏰ Masuk: <strong>${absen.jam_masuk || '-'}</strong> WIB</div>
-                                <div>📍 <span style="font-family: monospace; font-size: 11px;">${lat.toFixed(5)}, ${lng.toFixed(5)}</span></div>
+                                <div><strong class="text-dark">${absen.penempatan.perusahaan.nama_perusahaan}</strong></div>
+                                <div>Masuk: <strong>${absen.jam_masuk || '-'}</strong> WIB</div>
+                                <div>Koordinat: <span style="font-family: monospace; font-size: 11px;">${lat.toFixed(5)}, ${lng.toFixed(5)}</span></div>
                             </div>
                         </div>
                     `;

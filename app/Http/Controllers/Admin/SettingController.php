@@ -30,7 +30,7 @@ class SettingController extends Controller
             'kepala_sekolah_aktif' => Setting::get('pejabat_kepala_sekolah_aktif', 'sekarang'), // 'sekarang' atau 'lama'
 
             // Ketua Pokja PKL
-            'ketua_pokja' => Setting::get('pejabat_ketua_pokja', 'Dedi Hendrawan, S.Kom., M.Kom.'),
+            'ketua_pokja' => Setting::get('pejabat_ketua_pokja', 'Mahendra, S.Pd., M.Si.'),
             'nip_ketua_pokja' => Setting::get('pejabat_nip_ketua_pokja', '-'),
         ];
 

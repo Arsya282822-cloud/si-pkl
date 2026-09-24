@@ -188,88 +188,29 @@
 
                                         @if($p->status === 'menunggu')
                                             <!-- Tombol Setujui Modal -->
-                                            <button type="button" class="btn btn-sm btn-success text-white" data-bs-toggle="modal" data-bs-target="#approveModal{{ $p->id }}" title="Setujui Pengajuan">
+                                            <button type="button" 
+                                                class="btn btn-sm btn-success text-white" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#globalApproveModal" 
+                                                data-action="{{ route('admin.pengajuan.approve', $p->id) }}"
+                                                data-siswa="{{ $p->siswa->nama ?? 'Siswa' }}"
+                                                data-perusahaan="{{ $p->nama_perusahaan }}"
+                                                title="Setujui Pengajuan">
                                                 <i class="ph ph-check"></i>
                                             </button>
 
                                             <!-- Tombol Tolak Modal -->
-                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $p->id }}" title="Tolak Pengajuan">
+                                            <button type="button" 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#globalRejectModal" 
+                                                data-action="{{ route('admin.pengajuan.reject', $p->id) }}"
+                                                data-siswa="{{ $p->siswa->nama ?? 'Siswa' }}"
+                                                data-perusahaan="{{ $p->nama_perusahaan }}"
+                                                title="Tolak Pengajuan">
                                                 <i class="ph ph-x"></i>
                                             </button>
                                         @endif
-                                    </div>
-
-                                    <!-- Modal Approve -->
-                                    <div class="modal fade" id="approveModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered text-start">
-                                            <div class="modal-content border-0 pro-card">
-                                                <form action="{{ route('admin.pengajuan.approve', $p->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-header bg-success text-white">
-                                                        <h6 class="modal-title fw-bold"><i class="ph ph-check-circle me-1"></i> Persetujuan Tempat PKL</h6>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body p-4">
-                                                        <p class="small text-muted mb-3">
-                                                            Menyetujui usulan PKL untuk <strong>{{ $p->siswa->nama ?? 'Siswa' }}</strong> di <strong>{{ $p->nama_perusahaan }}</strong>. Sistem akan otomatis mendaftarkan perusahaan & menempatkan siswa.
-                                                        </p>
-
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-semibold small text-dark">Pilih Guru Pembimbing Sekolah (Opsional):</label>
-                                                            <select name="guru_id" class="form-select form-select-sm">
-                                                                <option value="">-- Tetapkan Nanti / Belum Ada --</option>
-                                                                @foreach($gurus as $g)
-                                                                    <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->nip ?? 'NIP -' }})</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="mb-2">
-                                                            <label class="form-label fw-semibold small text-dark">Catatan Persetujuan:</label>
-                                                            <textarea name="catatan_verifikasi" rows="2" class="form-control form-control-sm" placeholder="Contoh: Disetujui sesuai kompetensi keahlian jurusan."></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer bg-light p-2">
-                                                        <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-sm btn-success px-3 fw-bold text-white">
-                                                            <i class="ph ph-check"></i> Konfirmasi Setujui
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Modal Reject -->
-                                    <div class="modal fade" id="rejectModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered text-start">
-                                            <div class="modal-content border-0 pro-card">
-                                                <form action="{{ route('admin.pengajuan.reject', $p->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-header bg-danger text-white">
-                                                        <h6 class="modal-title fw-bold"><i class="ph ph-x-circle me-1"></i> Penolakan Usulan Tempat PKL</h6>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body p-4">
-                                                        <p class="small text-muted mb-3">
-                                                            Anda akan menolak usulan PKL dari <strong>{{ $p->siswa->nama ?? 'Siswa' }}</strong> di <strong>{{ $p->nama_perusahaan }}</strong>.
-                                                        </p>
-
-                                                        <div class="mb-2">
-                                                            <label class="form-label fw-semibold small text-dark">Alasan Penolakan <span class="text-danger">*</span>:</label>
-                                                            <textarea name="catatan_verifikasi" rows="3" class="form-control form-control-sm" placeholder="Contoh: Bidang kerja tidak sesuai dengan capaian kompetensi jurusan, atau kuota perusahaan tidak mencukupi." required></textarea>
-                                                            <small class="text-muted" style="font-size: 0.75rem;">Alasan ini akan ditampilkan langsung di akun siswa.</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer bg-light p-2">
-                                                        <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-sm btn-danger px-3 fw-bold text-white">
-                                                            <i class="ph ph-x"></i> Tolak Pengajuan
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -285,3 +226,108 @@
     </div>
 </div>
 @endsection
+
+@push('modals')
+<!-- Global Modal Approve -->
+<div class="modal fade" id="globalApproveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered text-start">
+        <div class="modal-content border-0 pro-card">
+            <form id="formApproveGlobal" action="" method="POST">
+                @csrf
+                <div class="modal-header bg-success text-white">
+                    <h6 class="modal-title fw-bold"><i class="ph ph-check-circle me-1"></i> Persetujuan Tempat PKL</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="small text-muted mb-3">
+                        Menyetujui usulan PKL untuk <strong id="approveModalSiswa">Siswa</strong> di <strong id="approveModalPerusahaan">Perusahaan</strong>. Sistem akan otomatis mendaftarkan perusahaan & menempatkan siswa.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-dark">Pilih Guru Pembimbing Sekolah (Opsional):</label>
+                        <select name="guru_id" class="form-select form-select-sm">
+                            <option value="">-- Tetapkan Nanti / Belum Ada --</option>
+                            @foreach($gurus as $g)
+                                <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->nip ?? 'NIP -' }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold small text-dark">Catatan Persetujuan:</label>
+                        <textarea name="catatan_verifikasi" rows="2" class="form-control form-control-sm" placeholder="Contoh: Disetujui sesuai kompetensi keahlian jurusan."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light p-2">
+                    <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-success px-3 fw-bold text-white">
+                        <i class="ph ph-check"></i> Konfirmasi Setujui
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Global Modal Reject -->
+<div class="modal fade" id="globalRejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered text-start">
+        <div class="modal-content border-0 pro-card">
+            <form id="formRejectGlobal" action="" method="POST">
+                @csrf
+                <div class="modal-header bg-danger text-white">
+                    <h6 class="modal-title fw-bold"><i class="ph ph-x-circle me-1"></i> Penolakan Usulan Tempat PKL</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="small text-muted mb-3">
+                        Anda akan menolak usulan PKL dari <strong id="rejectModalSiswa">Siswa</strong> di <strong id="rejectModalPerusahaan">Perusahaan</strong>.
+                    </p>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold small text-dark">Alasan Penolakan <span class="text-danger">*</span>:</label>
+                        <textarea name="catatan_verifikasi" rows="3" class="form-control form-control-sm" placeholder="Contoh: Bidang kerja tidak sesuai dengan capaian kompetensi jurusan, atau kuota perusahaan tidak mencukupi." required></textarea>
+                        <small class="text-muted" style="font-size: 0.75rem;">Alasan ini akan ditampilkan langsung di akun siswa.</small>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light p-2">
+                    <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-danger px-3 fw-bold text-white">
+                        <i class="ph ph-x"></i> Tolak Pengajuan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const approveModal = document.getElementById('globalApproveModal');
+        if (approveModal) {
+            approveModal.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                if (!btn) return;
+                const form = document.getElementById('formApproveGlobal');
+                if (form) form.action = btn.getAttribute('data-action') || '';
+                document.getElementById('approveModalSiswa').textContent = btn.getAttribute('data-siswa') || 'Siswa';
+                document.getElementById('approveModalPerusahaan').textContent = btn.getAttribute('data-perusahaan') || 'Perusahaan';
+            });
+        }
+
+        const rejectModal = document.getElementById('globalRejectModal');
+        if (rejectModal) {
+            rejectModal.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                if (!btn) return;
+                const form = document.getElementById('formRejectGlobal');
+                if (form) form.action = btn.getAttribute('data-action') || '';
+                document.getElementById('rejectModalSiswa').textContent = btn.getAttribute('data-siswa') || 'Siswa';
+                document.getElementById('rejectModalPerusahaan').textContent = btn.getAttribute('data-perusahaan') || 'Perusahaan';
+            });
+        }
+    });
+</script>
+@endpush

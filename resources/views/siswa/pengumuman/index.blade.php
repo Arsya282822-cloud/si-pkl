@@ -4,7 +4,7 @@
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
         <h3 class="fw-bold mb-1" style="color: var(--text-main);">Pesan & Informasi PKL</h3>
-        <p class="text-muted mb-0" style="font-size: 0.875rem;">Pengumuman resmi, jadwal penting, dan panduan pelaksanaan PKL dari Pokja PKL dan Sekolah.</p>
+        <p class="text-muted mb-0" style="font-size: 0.875rem;">Pengumuman resmi, jadwal penting, dan panduan pelaksanaan PKL dari Koordinator PKL dan Sekolah.</p>
     </div>
 </div>
 

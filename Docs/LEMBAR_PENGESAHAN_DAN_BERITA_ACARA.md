@@ -54,7 +54,7 @@ Pada hari ini, ..................... Tanggal .......... Bulan ..................
    **Status**: Pengembang Perangkat Lunak (*Developer*)  
    *Selanjutnya disebut sebagai **PIHAK PERTAMA (Yang Menyerahkan)**.*
 
-2. **Nama**: Dedi Hendrawan, S.Kom., M.Kom.  
+2. **Nama**: Mahendra, S.Pd., M.Si.  
    **Jabatan**: Ketua Pokja PKL / Hubungan Industri SMK Labor Binaan FKIP UNRI  
    *Selanjutnya disebut sebagai **PIHAK KEDUA (Yang Menerima)**.*
 
@@ -85,7 +85,7 @@ Demikian Berita Acara Serah Terima ini dibuat dengan sebenarnya dalam rangkap 2 
             <strong>PIHAK KEDUA</strong><br>
             <span>Ketua Pokja PKL SMK Labor</span>
             <br><br><br><br><br>
-            <strong style="text-decoration: underline;">Dedi Hendrawan, S.Kom., M.Kom.</strong>
+            <strong style="text-decoration: underline;">Mahendra, S.Pd., M.Si.</strong>
         </td>
     </tr>
 </table>

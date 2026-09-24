@@ -99,7 +99,7 @@ class PengajuanPklController extends Controller
             // 3. Update status Pengajuan
             $pengajuan->update([
                 'status' => 'disetujui',
-                'catatan_verifikasi' => $request->catatan_verifikasi ?? 'Pengajuan disetujui oleh Administrator/Pokja PKL.',
+                'catatan_verifikasi' => $request->catatan_verifikasi ?? 'Pengajuan disetujui oleh Administrator / Koordinator PKL.',
                 'diverifikasi_oleh' => Auth::id(),
                 'diverifikasi_pada' => now(),
             ]);
@@ -112,7 +112,7 @@ class PengajuanPklController extends Controller
                 "Pengajuan PKL siswa {$pengajuan->siswa->nama} di {$pengajuan->nama_perusahaan} disetujui oleh admin."
             );
 
-            return redirect()->back()->with('success', '✅ Pengajuan tempat PKL berhasil disetujui! Data Penempatan Siswa dan Perusahaan otomatis dibuat.');
+            return redirect()->back()->with('success', 'Pengajuan tempat PKL berhasil disetujui! Data Penempatan Siswa dan Perusahaan otomatis dibuat.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal memproses persetujuan: ' . $e->getMessage());

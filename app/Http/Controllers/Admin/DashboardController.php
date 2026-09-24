@@ -21,14 +21,28 @@ class DashboardController extends Controller
             'total_penempatan' => Penempatan::count(),
             'siswa_belum_ditempatkan' => Siswa::whereDoesntHave('penempatan')->count(),
             'jurnal_menunggu' => JurnalPkl::where('status_validasi', 'menunggu')->count(),
-            'total_pks' => \App\Models\Pks::count(),
+            'total_pks' => \Illuminate\Support\Facades\Schema::hasTable('pks') ? \App\Models\Pks::count() : 0,
         ];
 
         $periodeAktif = PeriodePkl::where('status', 'aktif')->first();
 
+        // 1. Sinkronisasi otomatis jurusan_id pada siswa berdasarkan kelas yang ditempati
+        if (\Illuminate\Support\Facades\Schema::hasTable('siswa') && \Illuminate\Support\Facades\Schema::hasTable('kelas')) {
+            \Illuminate\Support\Facades\DB::table('siswa')
+                ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
+                ->where(function ($q) {
+                    $q->whereColumn('siswa.jurusan_id', '!=', 'kelas.jurusan_id')
+                      ->orWhereNull('siswa.jurusan_id');
+                })
+                ->update(['siswa.jurusan_id' => \Illuminate\Support\Facades\DB::raw('kelas.jurusan_id')]);
+        }
+
         // Chart 1: Persebaran Siswa per Jurusan
-        $jurusanLabels = \App\Models\Jurusan::pluck('nama_jurusan')->toArray();
-        $jurusanData = \App\Models\Jurusan::withCount('siswa')->pluck('siswa_count')->toArray();
+        $jurusanStats = \App\Models\Jurusan::withCount('siswa')->orderBy('id')->get();
+        $jurusanLabels = $jurusanStats->map(function ($j) {
+            return $j->kode_jurusan ? "{$j->kode_jurusan} - {$j->nama_jurusan}" : $j->nama_jurusan;
+        })->toArray();
+        $jurusanData = $jurusanStats->pluck('siswa_count')->toArray();
 
         // Chart 2: Top 5 Perusahaan Penempatan
         $topPerusahaan = Perusahaan::withCount('penempatan')
@@ -64,6 +78,7 @@ class DashboardController extends Controller
             'stats', 
             'periodeAktif', 
             'recentJurnal',
+            'jurusanStats',
             'jurusanLabels',
             'jurusanData',
             'perusahaanLabels',

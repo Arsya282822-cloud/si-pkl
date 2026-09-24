@@ -99,7 +99,7 @@ class PengajuanPklController extends Controller
             'status' => 'menunggu',
         ]);
 
-        return redirect()->route('siswa.pengajuan.index')->with('success', '🎉 Pengajuan tempat PKL mandiri berhasil dikirim! Silakan tunggu verifikasi dari Koordinator PKL / Guru Pembimbing.');
+        return redirect()->route('siswa.pengajuan.index')->with('success', 'Pengajuan tempat PKL mandiri berhasil dikirim! Silakan tunggu verifikasi dari Koordinator PKL / Guru Pembimbing.');
     }
 
     public function show($id)
