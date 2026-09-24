@@ -151,6 +151,20 @@
                 <td>: <span class="badge bg-success px-2.5 py-1">{{ number_format($nilaiAkhir, 1) }} — {{ $predikat }}</span></td>
             </tr>
             <tr>
+                <td>Rekap Presensi & Jurnal</td>
+                <td>: {{ $absensiHadir ?? 0 }} Hari Hadir &bull; {{ $jurnalDisetujui ?? 0 }} Jurnal Disetujui</td>
+            </tr>
+            <tr>
+                <td>Status Lembar Observasi</td>
+                <td>: 
+                    @if(!empty($observasi))
+                        <span class="text-success fw-bold">Terverifikasi (Skor: {{ number_format((float)($observasi->skor_akhir ?? $nilaiAkhir), 1) }})</span>
+                    @else
+                        <span class="text-secondary">Tercatat pada Evaluasi Pembimbing</span>
+                    @endif
+                </td>
+            </tr>
+            <tr>
                 <td>Guru Pembimbing Sekolah</td>
                 <td>: {{ $penempatan->guru?->nama ?: 'Tim Pokja PKL' }}</td>
             </tr>

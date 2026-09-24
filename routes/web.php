@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'welcome')->name('welcome');
 
 // Verifikasi Publik Keaslian E-Sertifikat via QR Code
 Route::get('/verifikasi/{penempatan}', [\App\Http\Controllers\VerifikasiController::class, 'sertifikat'])->name('verifikasi.sertifikat');
@@ -23,147 +21,13 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin/dev-tools')
     ->name('admin.devtools.')
     ->group(function () {
-        // Setup Dummy Data
-        Route::get('/setup-dummy', function () {
-            $roleGuru = \App\Models\Role::firstOrCreate(['nama_role' => 'guru']);
-            $roleSiswa = \App\Models\Role::firstOrCreate(['nama_role' => 'siswa']);
-
-            $jurusan = \App\Models\Jurusan::firstOrCreate(['kode_jurusan' => 'RPL'], ['nama_jurusan' => 'Rekayasa Perangkat Lunak', 'status' => true]);
-            $kelas = \App\Models\Kelas::firstOrCreate(['nama_kelas' => 'XII RPL 1'], ['jurusan_id' => $jurusan->id, 'tingkat' => 'XII', 'wali_kelas' => 'Bapak Wali', 'status' => true]);
-            
-            $perusahaanList = [];
-            for ($i = 1; $i <= 3; $i++) {
-                $perusahaanList[] = \App\Models\Perusahaan::firstOrCreate(
-                    ['nama_perusahaan' => 'PT Teknologi Masa Depan ' . $i],
-                    ['bidang_usaha' => 'IT Software House', 'alamat' => 'Jl. Sudirman No. 12' . $i, 'pembimbing_industri' => 'Bpk. Budi ' . $i]
-                );
-            }
-            
-            $periode = \App\Models\PeriodePkl::firstOrCreate(
-                ['nama_periode' => 'Gelombang 1 Tahun 2026'],
-                ['tahun_ajaran' => '2026/2027', 'tanggal_mulai' => now()->subDays(15)->format('Y-m-d'), 'tanggal_selesai' => now()->addMonths(3)->format('Y-m-d'), 'status' => 'aktif']
-            );
-
-            $gurus = [];
-            for ($i = 1; $i <= 5; $i++) {
-                $userGuru = \App\Models\User::firstOrCreate(
-                    ['email' => "guru{$i}@guru.com"],
-                    ['name' => "Bapak Guru {$i}", 'password' => bcrypt('guru1234'), 'role_id' => $roleGuru->id, 'status' => 'aktif']
-                );
-                $gurus[] = \App\Models\Guru::firstOrCreate(
-                    ['nip' => "1000000{$i}"],
-                    ['user_id' => $userGuru->id, 'nama' => "Bapak Guru {$i}", 'no_hp' => "0812000000{$i}"]
-                );
-            }
-
-            for ($i = 1; $i <= 20; $i++) {
-                $userSiswa = \App\Models\User::firstOrCreate(
-                    ['email' => "siswa{$i}@siswa.com"],
-                    ['name' => "Siswa Teladan {$i}", 'password' => bcrypt('password'), 'role_id' => $roleSiswa->id, 'status' => 'aktif']
-                );
-                
-                $nis = str_pad($i, 4, '0', STR_PAD_LEFT);
-                $siswa = \App\Models\Siswa::firstOrCreate(
-                    ['nis' => "2026{$nis}"],
-                    ['user_id' => $userSiswa->id, 'kelas_id' => $kelas->id, 'jurusan_id' => $jurusan->id, 'nama' => "Siswa Teladan {$i}"]
-                );
-
-                $guru_id = $gurus[$i % 5]->id;
-                $perusahaan_id = $perusahaanList[$i % 3]->id;
-
-                $penempatan = \App\Models\Penempatan::firstOrCreate([
-                    'siswa_id' => $siswa->id,
-                    'periode_pkl_id' => $periode->id,
-                ], [
-                    'guru_id' => $guru_id,
-                    'perusahaan_id' => $perusahaan_id,
-                ]);
-
-                $hari_terakhir = rand(3, 6);
-                for ($j = $hari_terakhir; $j >= 0; $j--) {
-                    $tanggal = now()->subDays($j)->format('Y-m-d');
-                    
-                    \App\Models\AbsensiPkl::firstOrCreate(
-                        ['penempatan_id' => $penempatan->id, 'tanggal' => $tanggal],
-                        ['status' => 'hadir', 'jam_masuk' => '08:00', 'jam_keluar' => '16:00', 'keterangan' => '-']
-                    );
-
-                    \App\Models\JurnalPkl::firstOrCreate(
-                        ['penempatan_id' => $penempatan->id, 'tanggal' => $tanggal],
-                        ['kegiatan' => "Melakukan tugas harian ke-".(10-$j)." di industri.", 'status_validasi' => $j > 2 ? 'disetujui' : 'menunggu']
-                    );
-                }
-
-                if ($i % 3 == 0) {
-                    \App\Models\PenilaianPkl::firstOrCreate(
-                        ['penempatan_id' => $penempatan->id],
-                        ['nilai_sikap' => rand(80, 95), 'nilai_keterampilan' => rand(80, 95), 'nilai_pengetahuan' => rand(80, 95), 'nilai_akhir' => rand(80, 95), 'catatan_guru' => 'Siswa berkinerja baik.']
-                    );
-                }
-            }
-
-            foreach ($gurus as $index => $g) {
-                \App\Models\Monitoring::firstOrCreate(
-                    ['guru_id' => $g->id, 'perusahaan_id' => $perusahaanList[$index % 3]->id, 'tanggal_kunjungan' => now()->subDays(rand(1, 5))->format('Y-m-d')],
-                    ['catatan' => 'Kunjungan monitoring berjalan lancar, siswa dalam keadaan sehat dan aktif.']
-                );
-            }
-
-            return redirect()->route('admin.dashboard')->with('success', 'Data Dummy PKL berhasil di-generate!');
-        });
-
-        // Wipe only dummy
-        Route::get('/wipe-dummy', function () {
-            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-            try {
-                $dummyUsers = \App\Models\User::where('email', 'like', '%@guru.com')
-                                              ->orWhere('email', 'like', '%@siswa.com')
-                                              ->get();
-                                              
-                $userIds = $dummyUsers->pluck('id')->toArray();
-                
-                if (count($userIds) > 0) {
-                    $siswaIds = \App\Models\Siswa::whereIn('user_id', $userIds)->pluck('id')->toArray();
-                    $guruIds = \App\Models\Guru::whereIn('user_id', $userIds)->pluck('id')->toArray();
-                    
-                    $penempatanIds = \App\Models\Penempatan::whereIn('siswa_id', $siswaIds)
-                                                           ->orWhereIn('guru_id', $guruIds)
-                                                           ->pluck('id')->toArray();
-                    
-                    \App\Models\Monitoring::whereIn('guru_id', $guruIds)->delete();
-                    \App\Models\PenilaianPkl::whereIn('penempatan_id', $penempatanIds)->delete();
-                    \App\Models\AbsensiPkl::whereIn('penempatan_id', $penempatanIds)->delete();
-                    \App\Models\JurnalPkl::whereIn('penempatan_id', $penempatanIds)->delete();
-                    \App\Models\Penempatan::whereIn('id', $penempatanIds)->delete();
-                    
-                    \App\Models\Siswa::whereIn('id', $siswaIds)->delete();
-                    \App\Models\Guru::whereIn('id', $guruIds)->delete();
-                    \App\Models\User::whereIn('id', $userIds)->delete();
-                }
-
-                \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-                return redirect()->route('admin.dashboard')->with('success', 'Akun Dummy berhasil dibersihkan.');
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-                return redirect()->route('admin.dashboard')->with('error', 'Gagal: ' . $e->getMessage());
-            }
-        });
+        Route::match(['get', 'post'], '/setup-dummy', [\App\Http\Controllers\Admin\DevToolController::class, 'setupDummy'])->name('setup_dummy');
+        Route::match(['get', 'post'], '/wipe-dummy', [\App\Http\Controllers\Admin\DevToolController::class, 'wipeDummy'])->name('wipe_dummy');
     });
 
-Route::get('/dashboard', function () {
-    $user = auth()->user();
-    if (!$user) return redirect('login');
-    
-    $role = $user->role?->nama_role ?? '';
-    
-    return match ($role) {
-        'admin'      => redirect()->route('admin.dashboard'),
-        'siswa'      => redirect()->route('siswa.dashboard'),
-        'guru'       => redirect()->route('guru.dashboard'),
-        'instruktur' => redirect()->route('instruktur.dashboard'),
-        default      => view('dashboard'),
-    };
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [\App\Http\Controllers\Admin\DevToolController::class, 'dashboardRedirect'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

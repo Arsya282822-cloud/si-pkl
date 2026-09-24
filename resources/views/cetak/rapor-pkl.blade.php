@@ -337,9 +337,13 @@
         </table>
 
         <!-- TANDA TANGAN & QR CODE -->
+        @php
+            $qrVerifyUrl = route('verifikasi.sertifikat', $penempatan->id);
+            $qrImageSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=' . urlencode($qrVerifyUrl);
+        @endphp
         <table class="signature-table">
             <tr>
-                <td>
+                <td style="width: 38%;">
                     Mengetahui / Menyetujui,<br>
                     <strong>Pembimbing Industri (DUDI)</strong><br>
                     {{ $penempatan->perusahaan->nama_perusahaan ?? '-' }}
@@ -347,8 +351,14 @@
                     <strong><u>{{ $penempatan->perusahaan->pembimbing_industri ?? 'Pembimbing Lapangan' }}</u></strong><br>
                     <span style="font-size: 8.5pt; color: #555;">NIP / ID Pegawai: -</span>
                 </td>
-                <td>
-                    Pekanbaru, {{ date('d F Y') }}<br>
+                <td style="width: 24%; vertical-align: middle; text-align: center;">
+                    <img src="{{ $qrImageSrc }}" alt="QR Verifikasi" style="width: 68px; height: 68px; border: 1px solid #cbd5e1; padding: 3px; background: #fff;">
+                    <div style="font-size: 7.5pt; color: #475569; margin-top: 3px; font-family: 'Inter', sans-serif;">
+                        Scan Verifikasi Resmi
+                    </div>
+                </td>
+                <td style="width: 38%;">
+                    {{ $settings['kota_terbit'] ?? 'Pekanbaru' }}, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
                     <strong>Guru Pembimbing Sekolah</strong><br>
                     {{ $settings['nama_sekolah'] ?? 'SMK Labor FKIP UNRI' }}
                     <div style="height: 55px;"></div>
@@ -357,12 +367,12 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding-top: 18px; text-align: center;">
+                <td colspan="3" style="padding-top: 16px; text-align: center;">
                     Mengetahui,<br>
-                    <strong>Kepala Sekolah {{ $settings['nama_sekolah'] ?? 'SMK Labor FKIP UNRI' }}</strong>
+                    <strong>Kepala {{ $settings['nama_sekolah'] ?? 'SMK Labor Binaan FKIP UNRI Pekanbaru' }}</strong>
                     <div style="height: 50px;"></div>
-                    <strong><u>{{ $settings['nama_kepala_sekolah'] ?? 'Drs. H. Hendripides, M.Si.' }}</u></strong><br>
-                    <span style="font-size: 8.5pt; color: #555;">NIP: {{ $settings['nip_kepala_sekolah'] ?? '19680512 199403 1 004' }}</span>
+                    <strong><u>{{ $settings['nama_kepala_sekolah'] ?? 'JEFFRI HUNTER, M.Pd' }}</u></strong><br>
+                    <span style="font-size: 8.5pt; color: #555;">NIP: {{ $settings['nip_kepala_sekolah'] ?? '-' }}</span>
                 </td>
             </tr>
         </table>
@@ -370,10 +380,13 @@
         <!-- FOOTER VERIFIKASI QR -->
         <div style="margin-top: 15px; border-top: 1px dashed #aaa; padding-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; font-family: 'Inter', sans-serif; color: #666;">
             <div>
-                Dokumen ini sah dan diterbitkan secara resmi melalui <strong>SI-PKL SMK Labor Binaan FKIP UNRI</strong>.
+                Dokumen ini sah dan diterbitkan secara resmi melalui <strong>SI-PKL {{ $settings['nama_sekolah'] ?? 'SMK Labor Binaan FKIP UNRI' }}</strong>
+                @if(!empty($observasi))
+                    &bull; <span>Lembar Observasi Terdata (Skor: {{ number_format((float)($observasi->skor_akhir ?? 0), 1) }})</span>
+                @endif
             </div>
             <div>
-                Verifikasi: <a href="{{ route('verifikasi.sertifikat', $penempatan->id) }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ url('/verifikasi/'.$penempatan->id) }}</a>
+                Verifikasi: <a href="{{ $qrVerifyUrl }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ url('/verifikasi/'.$penempatan->id) }}</a>
             </div>
         </div>
     </div>

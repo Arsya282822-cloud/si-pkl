@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('activity_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('user_name')->nullable();
-            $table->string('role', 50)->nullable();
-            $table->string('modul', 100);
-            $table->string('aktivitas', 255);
-            $table->text('deskripsi')->nullable();
-            $table->string('ip_address', 50)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('activity_logs')) {
+            Schema::create('activity_logs', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+                $table->string('user_name')->nullable();
+                $table->string('role', 50)->nullable();
+                $table->string('modul', 100);
+                $table->string('aktivitas', 255);
+                $table->text('deskripsi')->nullable();
+                $table->string('ip_address', 50)->nullable();
+                $table->text('user_agent')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

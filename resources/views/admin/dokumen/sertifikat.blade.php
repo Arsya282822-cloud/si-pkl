@@ -189,15 +189,21 @@
                 {{ strtoupper($penempatan->perusahaan?->nama_perusahaan ?? 'NAMA PERUSAHAAN / DUDI') }}
             </h4>
 
+            @php
+                $tglMulaiCert = $penempatan->periodePkl?->tanggal_mulai ? \Carbon\Carbon::parse($penempatan->periodePkl->tanggal_mulai)->translatedFormat('d F Y') : '-';
+                $tglSelesaiCert = $penempatan->periodePkl?->tanggal_selesai ? \Carbon\Carbon::parse($penempatan->periodePkl->tanggal_selesai)->translatedFormat('d F Y') : '-';
+                $skorAkhirCert = $penempatan->penilaian?->nilai_akhir ?? 88;
+                $predikatCert = $skorAkhirCert >= 85 ? 'SANGAT BAIK (A)' : ($skorAkhirCert >= 75 ? 'BAIK (B)' : 'CUKUP (C)');
+            @endphp
             <div style="font-size: 12px; color: #475569;">
-                Terhitung mulai tanggal <strong class="editable-field px-1" contenteditable="true">{{ $penempatan->periodePkl?->tanggal_mulai ? $penempatan->periodePkl->tanggal_mulai->translatedFormat('d F Y') : '-' }}</strong> 
-                sampai dengan <strong class="editable-field px-1" contenteditable="true">{{ $penempatan->periodePkl?->tanggal_selesai ? $penempatan->periodePkl->tanggal_selesai->translatedFormat('d F Y') : '-' }}</strong> 
+                Terhitung mulai tanggal <strong class="editable-field px-1" contenteditable="true">{{ $tglMulaiCert }}</strong> 
+                sampai dengan <strong class="editable-field px-1" contenteditable="true">{{ $tglSelesaiCert }}</strong> 
                 dengan predikat:
             </div>
 
             <div class="mt-2">
                 <span class="editable-field px-3 py-1 fw-bold text-white d-inline-block" contenteditable="true" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border-radius: 20px; font-size: 13px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);">
-                    SANGAT BAIK (A)
+                    {{ $predikatCert }}
                 </span>
             </div>
         </div>
