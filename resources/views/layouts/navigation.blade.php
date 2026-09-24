@@ -208,6 +208,11 @@
     <!-- ============================================ -->
     <div class="nav-label">Sistem & Akun</div>
 
+    <a href="{{ route('admin.users.index') }}" class="pro-nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" title="Manajemen Pengguna & Hak Akses">
+        <i data-lucide="users-2" class="nav-icon"></i>
+        <span>Manajemen Pengguna</span>
+    </a>
+
     <a href="{{ route('admin.pengaturan.index') }}" class="pro-nav-link {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}" title="Pengaturan Sekolah">
         <i data-lucide="settings" class="nav-icon"></i>
         <span>Pengaturan Sekolah</span>

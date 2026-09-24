@@ -80,6 +80,11 @@ Route::middleware(['auth', 'role:admin'])
             ->parameters(['tujuan-pembelajaran' => 'tujuan_pembelajaran'])
             ->except(['show', 'create', 'edit']);
 
+        // Manajemen Pengguna & Hak Akses
+        Route::post('/users/{user}/toggle-status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::post('/users/{user}/reset-password', [\App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('users.reset-password');
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->except(['create', 'show', 'edit']);
+
         // Pengaturan Sekolah & Dokumen
         Route::get('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('pengaturan.index');
         Route::post('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('pengaturan.update');
