@@ -33,7 +33,7 @@
                 </div>
                 <h2 class="h4 fw-bold mb-1">Pusat Bantuan & FAQ PKL</h2>
                 <p class="mb-0 text-white-50" style="font-size: 0.9rem;">
-                    Informasi prosedur operasional standar (SOP), tata tertib di industri, panduan sistem SI-PKL, dan kontak Pokja PKL SMK Labor FKIP UNRI.
+                    Informasi prosedur operasional standar (SOP), tata tertib di industri, panduan sistem SI-PKL, dan kontak Pokja PKL SMK Labor Binaan FKIP UNRI.
                 </p>
             </div>
             @if(Auth::user()->role?->nama_role === 'admin')

@@ -37,22 +37,22 @@
         </div>
     </div>
 
-    <!-- 4. SARPRAS / OPERASIONAL PKL -->
+    <!-- 4. MANAJEMEN / OPERASIONAL PKL -->
     @php
-        $isSarprasOpen = request()->routeIs('admin.periode.*') || request()->routeIs('admin.pengajuan.*') || request()->routeIs('admin.penempatan.*');
+        $isManajemenPklOpen = request()->routeIs('admin.periode.*') || request()->routeIs('admin.pengajuan.*') || request()->routeIs('admin.penempatan.*');
         $pendingPengajuan = \App\Models\PengajuanPkl::where('status', 'menunggu')->count();
     @endphp
     <div>
-        <a class="pro-nav-link {{ $isSarprasOpen ? 'active' : '' }}" data-bs-toggle="collapse" href="#menuSarpras" data-bs-target="#menuSarpras" role="button" aria-expanded="{{ $isSarprasOpen ? 'true' : 'false' }}" aria-controls="menuSarpras">
-            <i class="ph ph-road-horizon nav-icon"></i>
-            <span>Sarpras PKL</span>
+        <a class="pro-nav-link {{ $isManajemenPklOpen ? 'active' : '' }}" data-bs-toggle="collapse" href="#menuManajemenPkl" data-bs-target="#menuManajemenPkl" role="button" aria-expanded="{{ $isManajemenPklOpen ? 'true' : 'false' }}" aria-controls="menuManajemenPkl">
+            <i class="ph ph-calendar-check nav-icon"></i>
+            <span>Manajemen PKL</span>
             <span class="badge-new">NEW</span>
             @if($pendingPengajuan > 0)
                 <span class="nav-badge">{{ $pendingPengajuan }}</span>
             @endif
             <i class="ph ph-caret-right nav-arrow"></i>
         </a>
-        <div class="collapse {{ $isSarprasOpen ? 'show' : '' }}" id="menuSarpras">
+        <div class="collapse {{ $isManajemenPklOpen ? 'show' : '' }}" id="menuManajemenPkl">
             <ul class="sub-nav">
                 <li>
                     <a href="{{ route('admin.periode.index') }}" class="sub-nav-link {{ request()->routeIs('admin.periode.*') ? 'active' : '' }}">

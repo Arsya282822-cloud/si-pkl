@@ -370,7 +370,7 @@
         <!-- FOOTER VERIFIKASI QR -->
         <div style="margin-top: 15px; border-top: 1px dashed #aaa; padding-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; font-family: 'Inter', sans-serif; color: #666;">
             <div>
-                Dokumen ini sah dan diterbitkan secara resmi melalui <strong>SI-PKL SMK Labor FKIP UNRI</strong>.
+                Dokumen ini sah dan diterbitkan secara resmi melalui <strong>SI-PKL SMK Labor Binaan FKIP UNRI</strong>.
             </div>
             <div>
                 Verifikasi: <a href="{{ route('verifikasi.sertifikat', $penempatan->id) }}" target="_blank" style="color: #0284c7; text-decoration: none;">{{ url('/verifikasi/'.$penempatan->id) }}</a>

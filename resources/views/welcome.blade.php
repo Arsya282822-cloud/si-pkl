@@ -311,13 +311,13 @@
         <div class="logo-box">
             <img src="{{ asset('images/logo-sipkl.jpg') }}" alt="Logo SI-PKL">
         </div>
-        <div class="badge">SISTEM INFORMASI TERPADU</div>
+        <div class="badge"><i class="ph ph-sparkle me-1" style="vertical-align: middle;"></i> PLATFORM DIGITAL PRAKTIK KERJA LAPANGAN</div>
         
         <h1 style="margin-bottom: 24px; line-height: 1.2;">
-            <span style="font-size: 2.25rem; color: var(--text-main); font-weight: 700; display: inline-block; margin-bottom: 8px;">Manajemen Praktik Kerja Lapangan</span><br>
-            <span style="font-size: 3.5rem; color: var(--primary-blue); font-weight: 800;">Lebih Mudah & Terstruktur</span>
+            <span style="font-size: 2.25rem; color: var(--text-main); font-weight: 700; display: inline-block; margin-bottom: 8px;">Transformasi Digital Praktik Kerja Lapangan</span><br>
+            <span style="font-size: 3.5rem; color: var(--primary-blue); font-weight: 800;">Lebih Cerdas, Akurat & Terintegrasi</span>
         </h1>
-        <p>Platform digital untuk mengelola, memantau, dan melaporkan kegiatan Praktik Kerja Lapangan siswa dengan pengalaman visual yang sejuk dan profesional.</p>
+        <p>Sistem cerdas untuk mengelola, memantau absensi & jurnal, serta mengevaluasi pelaksanaan Praktik Kerja Lapangan secara akurat, transparan, dan terintegrasi.</p>
         
         <div class="hero-actions">
             @if (Route::has('login'))
@@ -363,7 +363,7 @@
     </div>
 
     <footer>
-        &copy; {{ date('Y') }} SI-PKL. Dirancang untuk efisiensi dan kenyamanan mata.
+        &copy; {{ date('Y') }} SI-PKL SMK Labor Binaan FKIP UNRI Pekanbaru. All rights reserved.
     </footer>
 </body>
 </html>

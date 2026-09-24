@@ -5,7 +5,7 @@ namespace App\Services;
 class KompetensiObservasiService
 {
     /**
-     * Daftar preset standar Capaian / Kompetensi Teknis per Jurusan
+     * Daftar preset standar Capaian / Kompetensi Teknis per Jurusan (RPL, TKJ, AK, MP, BR)
      */
     public static function getPresets(): array
     {
@@ -32,30 +32,19 @@ class KompetensiObservasiService
                     'Melakukan instalasi dan troubleshooting wireless network (Access Point / Hotspot Gateway)',
                 ]
             ],
-            'DKV' => [
-                'nama' => 'Desain Komunikasi Visual (DKV)',
-                'kompetensi' => [
-                    'Merancang identitas visual (Logo, Brand Guideline, Typography, Stationery)',
-                    'Membuat materi desain grafis promosi (Poster, Banner, Brosur, Feed Medsos)',
-                    'Mengoperasikan perangkat lunak desain standar industri (Photoshop, Illustrator, CorelDraw)',
-                    'Melakukan pengambilan foto/video dokumentasi produk dan editing digital',
-                    'Melakukan editing video, motion graphics, dan animasi promosi',
-                    'Menyiapkan layout dan berkas siap cetak (Pre-press standard)',
-                ]
-            ],
-            'AKL' => [
-                'nama' => 'Akuntansi dan Keuangan Lembaga (AKL)',
+            'AK' => [
+                'nama' => 'Akuntansi (AK)',
                 'kompetensi' => [
                     'Memverifikasi dan mengelola bukti transaksi keuangan serta dokumen kas',
                     'Melakukan pencatatan jurnal umum, jurnal khusus, dan posting buku besar',
-                    'Mengoperasikan aplikasi komputer akuntansi (MYOB / Accurate / Spreadsheet)',
+                    'Mengoperasikan aplikasi komputer akuntansi (MYOB / Accurate / Spreadsheet Excel)',
                     'Menyusun laporan keuangan periodik (Laba Rugi, Neraca, Perubahan Modal, Arus Kas)',
                     'Mengelola administrasi kas kecil (Petty Cash) dan rekonsiliasi bank',
                     'Melakukan perhitungan dan administrasi perpajakan sederhana (PPh / PPN)',
                 ]
             ],
-            'MPLB' => [
-                'nama' => 'Manajemen Perkantoran dan Layanan Bisnis (MP/OTKP)',
+            'MP' => [
+                'nama' => 'Manajemen Perkantoran (MP)',
                 'kompetensi' => [
                     'Mengelola korespondensi dan tata naskah surat dinas/bisnis (masuk & keluar)',
                     'Melakukan sistem kearsipan dokumen fisik dan digital (E-filing system)',
@@ -65,37 +54,15 @@ class KompetensiObservasiService
                     'Mengelola kas kecil kantor dan inventarisasi sarana prasarana kerja',
                 ]
             ],
-            'BD' => [
-                'nama' => 'Bisnis Digital / Pemasaran (BDP)',
+            'BR' => [
+                'nama' => 'Bisnis Ritel (BR)',
                 'kompetensi' => [
                     'Melakukan riset pasar, identifikasi segmen target, dan analisis produk kompetitor',
                     'Mengelola toko online dan katalog produk di platform E-Commerce / Marketplace',
-                    'Merancang dan menjalankan kampanye digital marketing di media sosial',
-                    'Menerapkan teknik copywriting promosi dan penanganan pesan pelanggan (Live Chat)',
-                    'Melakukan display produk (Visual Merchandising) dan penataan stok barang',
-                    'Melakukan transaksi penjualan, kasir (POS), dan rekapitulasi penjualan harian',
-                ]
-            ],
-            'TKRO' => [
-                'nama' => 'Teknik Kendaraan Ringan Otomotif (TKRO)',
-                'kompetensi' => [
-                    'Melakukan perawatan berkala mesin (Engine tune-up) dan penggantian oli/filter',
-                    'Memeriksa dan memperbaiki sistem rem, kemudi, dan suspensi kendaraan',
-                    'Menggunakan scanner diagnostic tools (OBD) untuk mendeteksi gangguan mesin',
-                    'Memperbaiki dan merawat sistem kelistrikan body, starter, dan pengisian',
-                    'Melakukan servis sistem transmisi, kopling, dan pemindah tenaga',
-                    'Menerapkan standar K3LH bengkel dan penggunaan alat ukur presisi',
-                ]
-            ],
-            'TBSM' => [
-                'nama' => 'Teknik dan Bisnis Sepeda Motor (TBSM)',
-                'kompetensi' => [
-                    'Melakukan servis berkala mesin sepeda motor karburator dan injeksi (FI)',
-                    'Memeriksa dan menyetel sistem bahan bakar, pengapian, dan klep mesin',
-                    'Memperbaiki dan merawat sistem CVT dan rantai penggerak roda',
-                    'Memperbaiki sistem pengereman, suspensi, dan roda sepeda motor',
-                    'Menggunakan alat diagnostic scanner injeksi dan multitester',
-                    'Menerapkan SOP bengkel resmi dan pelayanan kepuasan pelanggan',
+                    'Merancang dan menjalankan materi promosi digital di media sosial',
+                    'Menerapkan teknik copywriting promosi dan penanganan komunikasi pelanggan (Customer Service)',
+                    'Melakukan display produk (Visual Merchandising) dan penataan stok barang di toko/ritel',
+                    'Melakukan operasional transaksi kasir (POS), scan barcode, dan rekapitulasi penjualan harian',
                 ]
             ],
         ];
@@ -142,38 +109,29 @@ class KompetensiObservasiService
         $namaUpper = strtoupper($namaOrKode);
         $presets = self::getPresets();
 
-        foreach ($presets as $code => $data) {
-            if (str_contains($namaUpper, $code) || str_contains($namaUpper, strtoupper($data['nama']))) {
-                return $data['kompetensi'];
-            }
+        // 1. Direct match on code
+        if (isset($presets[$namaUpper])) {
+            return $presets[$namaUpper]['kompetensi'];
         }
 
-        // Keywords detection
-        if (str_contains($namaUpper, 'PERANGKAT LUNAK') || str_contains($namaUpper, 'SOFTWARE') || str_contains($namaUpper, 'KOMPUTER') && str_contains($namaUpper, 'PROGRAM')) {
+        // 2. Keyword detection
+        if (str_contains($namaUpper, 'RPL') || str_contains($namaUpper, 'PERANGKAT LUNAK') || str_contains($namaUpper, 'SOFTWARE') || (str_contains($namaUpper, 'KOMPUTER') && str_contains($namaUpper, 'PROGRAM'))) {
             return $presets['RPL']['kompetensi'];
         }
-        if (str_contains($namaUpper, 'JARINGAN') || str_contains($namaUpper, 'NETWORK') || str_contains($namaUpper, 'TKJ')) {
+        if (str_contains($namaUpper, 'TKJ') || str_contains($namaUpper, 'JARINGAN') || str_contains($namaUpper, 'NETWORK')) {
             return $presets['TKJ']['kompetensi'];
         }
-        if (str_contains($namaUpper, 'DESAIN') || str_contains($namaUpper, 'VISUAL') || str_contains($namaUpper, 'DKV') || str_contains($namaUpper, 'MULTIMEDIA')) {
-            return $presets['DKV']['kompetensi'];
+        if (str_contains($namaUpper, 'AK') || str_contains($namaUpper, 'AKL') || str_contains($namaUpper, 'AKUNTANSI') || str_contains($namaUpper, 'KEUANGAN')) {
+            return $presets['AK']['kompetensi'];
         }
-        if (str_contains($namaUpper, 'AKUNTANSI') || str_contains($namaUpper, 'KEUANGAN') || str_contains($namaUpper, 'AKL')) {
-            return $presets['AKL']['kompetensi'];
+        if (str_contains($namaUpper, 'MP') || str_contains($namaUpper, 'MPLB') || str_contains($namaUpper, 'PERKANTORAN') || str_contains($namaUpper, 'OTKP') || str_contains($namaUpper, 'SEKRETARIS')) {
+            return $presets['MP']['kompetensi'];
         }
-        if (str_contains($namaUpper, 'PERKANTORAN') || str_contains($namaUpper, 'OTKP') || str_contains($namaUpper, 'SEKRETARIS') || str_contains($namaUpper, 'MPLB')) {
-            return $presets['MPLB']['kompetensi'];
-        }
-        if (str_contains($namaUpper, 'PEMASARAN') || str_contains($namaUpper, 'BISNIS') || str_contains($namaUpper, 'MARKETING')) {
-            return $presets['BD']['kompetensi'];
-        }
-        if (str_contains($namaUpper, 'KENDARAAN') || str_contains($namaUpper, 'MOBIL') || str_contains($namaUpper, 'OTOMOTIF') || str_contains($namaUpper, 'TKRO')) {
-            return $presets['TKRO']['kompetensi'];
-        }
-        if (str_contains($namaUpper, 'MOTOR') || str_contains($namaUpper, 'TBSM')) {
-            return $presets['TBSM']['kompetensi'];
+        if (str_contains($namaUpper, 'BR') || str_contains($namaUpper, 'RITEL') || str_contains($namaUpper, 'RETAIL') || str_contains($namaUpper, 'BD') || str_contains($namaUpper, 'BDP') || str_contains($namaUpper, 'PEMASARAN') || str_contains($namaUpper, 'BISNIS') || str_contains($namaUpper, 'MARKETING')) {
+            return $presets['BR']['kompetensi'];
         }
 
         return $presets['RPL']['kompetensi'];
     }
 }
+

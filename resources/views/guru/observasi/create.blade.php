@@ -363,19 +363,29 @@
         document.getElementById('nama_instruktur').value = opt.getAttribute('data-instruktur') || '';
         document.getElementById('jabatan_instruktur').value = opt.getAttribute('data-jabataninstruktur') || 'Pembimbing Lapangan / Instruktur';
 
-        const kodeJurusan = opt.getAttribute('data-kodejurusan');
-        const namaJurusan = opt.getAttribute('data-jurusan');
+        const kodeJurusan = opt.getAttribute('data-kodejurusan') || '';
+        const namaJurusan = opt.getAttribute('data-jurusan') || '';
 
-        // Match preset
+        // Match preset (RPL, TKJ, AK, MP, BR)
         let matchCode = 'RPL';
-        for (const [code, val] of Object.entries(presetsData)) {
-            if ((kodeJurusan && code.toUpperCase() === kodeJurusan.toUpperCase()) || (namaJurusan && val.nama.toLowerCase().includes(namaJurusan.toLowerCase()))) {
-                matchCode = code;
-                break;
-            }
+        const str = (kodeJurusan + ' ' + namaJurusan).toUpperCase();
+        if (str.includes('TKJ') || str.includes('JARINGAN') || str.includes('NETWORK')) {
+            matchCode = 'TKJ';
+        } else if (str.includes('AK') || str.includes('AKL') || str.includes('AKUNTANSI') || str.includes('KEUANGAN')) {
+            matchCode = 'AK';
+        } else if (str.includes('MP') || str.includes('MPLB') || str.includes('PERKANTORAN') || str.includes('OTKP') || str.includes('SEKRETARIS')) {
+            matchCode = 'MP';
+        } else if (str.includes('BR') || str.includes('RITEL') || str.includes('RETAIL') || str.includes('PEMASARAN') || str.includes('BISNIS') || str.includes('BD')) {
+            matchCode = 'BR';
+        } else if (str.includes('RPL') || str.includes('PERANGKAT LUNAK') || str.includes('SOFTWARE') || str.includes('PROGRAM')) {
+            matchCode = 'RPL';
         }
-        document.getElementById('presetSelector').value = matchCode;
-        loadPresetJurusan(matchCode);
+
+        const presetSelect = document.getElementById('presetSelector');
+        if (presetSelect) {
+            presetSelect.value = matchCode;
+            loadPresetJurusan(matchCode);
+        }
     }
 
     function loadPresetJurusan(code) {
