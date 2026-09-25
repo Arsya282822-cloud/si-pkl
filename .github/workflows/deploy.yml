@@ -1,0 +1,109 @@
+name: Laravel CI/CD - SI-PKL SMK
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # =============================================================
+  # JOB 1: INTEGRATION TEST & BUILD (CI)
+  # =============================================================
+  laravel-tests:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup PHP Environment
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pdo_mysql, bcmath, zip, gd
+        coverage: none
+
+    - name: Cache Composer Dependencies
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install Composer Dependencies
+      run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+    - name: Setup Node.js & Build Assets
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install Node Dependencies & Build Vite
+      run: |
+        npm ci
+        npm run build
+
+    - name: Prepare Laravel Environment
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+
+    - name: Execute Tests via PHPUnit
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: ':memory:'
+      run: php artisan test --without-tty
+
+  # =============================================================
+  # JOB 2: AUTOMATIC DEPLOYMENT TO SERVER (CD)
+  # =============================================================
+  deploy:
+    name: Auto Deploy to Production Server
+    runs-on: ubuntu-latest
+    needs: [laravel-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - name: Execute Remote SSH Commands for Deployment
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT || 22 }}
+        script: |
+          cd ${{ secrets.DEPLOY_PATH || '/var/www/si-pkl' }}
+          echo "🚀 Memulai proses deploy..."
+          
+          # 1. Masuk mode maintenance (opsional, minim downtime)
+          php artisan down || true
+
+          # 2. Tarik kode terbaru dari GitHub
+          git fetch origin main
+          git reset --hard origin/main
+
+          # 3. Install composer & optimize
+          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+          # 4. Migrasi database & seeder
+          php artisan migrate --force
+          php artisan db:seed --class=TujuanPembelajaranSeeder --force
+
+          # 5. Build / Cache Laravel
+          php artisan storage:link || true
+          php artisan optimize:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
+          # 6. Set permission folder storage
+          chmod -R 775 storage bootstrap/cache
+          
+          # 7. Aktifkan kembali aplikasi
+          php artisan up
+
+          echo "✅ Deploy SI-PKL berhasil diselesaikan!"
