@@ -302,5 +302,8 @@ class DatabaseSeeder extends Seeder
 
         // 10. Tujuan Pembelajaran Kurikulum PKL 2026 (Semua Jurusan)
         $this->call(TujuanPembelajaranSeeder::class);
+
+        // 11. 76 Data Master Perusahaan Mitra DUDI Pekanbaru
+        $this->call(PerusahaanMitraSeeder::class);
     }
 }

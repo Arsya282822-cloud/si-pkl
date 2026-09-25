@@ -54,6 +54,7 @@ jobs:
           echo "🗄️ Running database migrations & seeders..."
           php artisan migrate --force
           php artisan db:seed --class=TujuanPembelajaranSeeder --force
+          php artisan db:seed --class=PerusahaanMitraSeeder --force
 
           echo "🔗 Linking storage..."
           php artisan storage:link || true
