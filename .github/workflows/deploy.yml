@@ -31,6 +31,9 @@ jobs:
 
           cd "$DEPLOY_PATH"
 
+          echo "👤 Runner User: $(whoami) ($(id))"
+          echo "📁 Directory Owner: $(ls -ld "$DEPLOY_PATH")"
+
           echo "🔒 Avoiding git safe.directory issue..."
           git config --global --add safe.directory "$DEPLOY_PATH" || true
 
