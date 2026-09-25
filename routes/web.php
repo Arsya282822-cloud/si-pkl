@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('welcome');
 
 // Verifikasi Publik Keaslian E-Sertifikat via QR Code
-Route::get('/verifikasi/{penempatan}', [\App\Http\Controllers\VerifikasiController::class, 'sertifikat'])->name('verifikasi.sertifikat');
+Route::get('/verifikasi/{penempatan}', [VerifikasiController::class, 'sertifikat'])->name('verifikasi.sertifikat');
 
 // ============================================
 // ADMIN DEV & MAINTENANCE UTILITIES (PROTECTED)
@@ -21,11 +21,11 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin/dev-tools')
     ->name('admin.devtools.')
     ->group(function () {
-        Route::match(['get', 'post'], '/setup-dummy', [\App\Http\Controllers\Admin\DevToolController::class, 'setupDummy'])->name('setup_dummy');
-        Route::match(['get', 'post'], '/wipe-dummy', [\App\Http\Controllers\Admin\DevToolController::class, 'wipeDummy'])->name('wipe_dummy');
+        Route::match(['get', 'post'], '/setup-dummy', [DevToolController::class, 'setupDummy'])->name('setup_dummy');
+        Route::match(['get', 'post'], '/wipe-dummy', [DevToolController::class, 'wipeDummy'])->name('wipe_dummy');
     });
 
-Route::get('/dashboard', [\App\Http\Controllers\Admin\DevToolController::class, 'dashboardRedirect'])
+Route::get('/dashboard', [DevToolController::class, 'dashboardRedirect'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -33,24 +33,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/bantuan', [\App\Http\Controllers\BantuanController::class, 'index'])->name('bantuan.index');
-    Route::post('/bantuan/kontak', [\App\Http\Controllers\BantuanController::class, 'updateKontak'])->name('bantuan.update_kontak');
+    Route::get('/bantuan', [BantuanController::class, 'index'])->name('bantuan.index');
+    Route::post('/bantuan/kontak', [BantuanController::class, 'updateKontak'])->name('bantuan.update_kontak');
 });
-
 
 // ============================================
 // ADMIN ROUTES
 // ============================================
+use App\Http\Controllers\Admin\CetakController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\JurusanController;
 use App\Http\Controllers\Admin\KelasController;
-use App\Http\Controllers\Admin\PerusahaanController;
-use App\Http\Controllers\Admin\PeriodePklController;
-use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Admin\PenempatanController;
-use App\Http\Controllers\Admin\ExportController;
-use App\Http\Controllers\Admin\CetakController;
+use App\Http\Controllers\Admin\PeriodePklController;
+use App\Http\Controllers\Admin\PerusahaanController;
+use App\Http\Controllers\Admin\SiswaController;
 
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
@@ -69,46 +68,46 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('perusahaan/sync-instruktur', [PerusahaanController::class, 'syncAllInstruktur'])->name('perusahaan.sync_instruktur');
         Route::post('perusahaan/{perusahaan}/instruktur', [PerusahaanController::class, 'createInstruktur'])->name('perusahaan.instruktur');
         Route::resource('perusahaan', PerusahaanController::class)->except(['show']);
-        Route::resource('pks', \App\Http\Controllers\Admin\PksController::class)->except(['show']);
+        Route::resource('pks', PksController::class)->except(['show']);
         Route::resource('periode', PeriodePklController::class)->except(['show']);
         Route::resource('penempatan', PenempatanController::class)->except(['show']);
 
         // Tujuan Pembelajaran Kurikulum PKL 2026
-        Route::get('/tujuan-pembelajaran/cetak', [\App\Http\Controllers\Admin\TujuanPembelajaranController::class, 'cetak'])->name('tujuan_pembelajaran.cetak');
-        Route::resource('tujuan-pembelajaran', \App\Http\Controllers\Admin\TujuanPembelajaranController::class)
+        Route::get('/tujuan-pembelajaran/cetak', [TujuanPembelajaranController::class, 'cetak'])->name('tujuan_pembelajaran.cetak');
+        Route::resource('tujuan-pembelajaran', TujuanPembelajaranController::class)
             ->names('tujuan_pembelajaran')
             ->parameters(['tujuan-pembelajaran' => 'tujuan_pembelajaran'])
             ->except(['show', 'create', 'edit']);
 
         // Manajemen Pengguna & Hak Akses
-        Route::post('/users/{user}/toggle-status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggle-status');
-        Route::post('/users/{user}/reset-password', [\App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('users.reset-password');
-        Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->except(['create', 'show', 'edit']);
+        Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
+        Route::resource('users', UserController::class)->except(['create', 'show', 'edit']);
 
         // Pengaturan Sekolah & Dokumen
-        Route::get('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('pengaturan.index');
-        Route::post('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('pengaturan.update');
+        Route::get('/pengaturan', [SettingController::class, 'index'])->name('pengaturan.index');
+        Route::post('/pengaturan', [SettingController::class, 'update'])->name('pengaturan.update');
 
         // Laporan & Rekapitulasi
-        Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
 
-        Route::get('/laporan/absensi', [\App\Http\Controllers\Admin\LaporanController::class, 'absensi'])->name('laporan.absensi');
-        Route::get('/laporan/nilai', [\App\Http\Controllers\Admin\LaporanController::class, 'nilai'])->name('laporan.nilai');
+        Route::get('/laporan/absensi', [LaporanController::class, 'absensi'])->name('laporan.absensi');
+        Route::get('/laporan/nilai', [LaporanController::class, 'nilai'])->name('laporan.nilai');
 
         // Cetak Dokumen / Surat
-        Route::get('/dokumen', [\App\Http\Controllers\Admin\DokumenController::class, 'index'])->name('dokumen.index');
-        Route::get('/dokumen/surat-pengantar/{penempatan}', [\App\Http\Controllers\Admin\DokumenController::class, 'suratPengantar'])->name('dokumen.surat_pengantar');
-        Route::get('/dokumen/batch-surat-pengantar', [\App\Http\Controllers\Admin\DokumenController::class, 'batchSuratPengantar'])->name('dokumen.batch_surat_pengantar');
-        Route::get('/dokumen/surat-tugas/{guru}', [\App\Http\Controllers\Admin\DokumenController::class, 'suratTugas'])->name('dokumen.surat_tugas');
-        Route::get('/dokumen/surat-penarikan/{penempatan}', [\App\Http\Controllers\Admin\DokumenController::class, 'suratPenarikan'])->name('dokumen.surat_penarikan');
-        Route::get('/dokumen/sertifikat/{penempatan}', [\App\Http\Controllers\Admin\DokumenController::class, 'sertifikat'])->name('dokumen.sertifikat');
-        Route::get('/dokumen/batch-sertifikat', [\App\Http\Controllers\Admin\DokumenController::class, 'batchSertifikat'])->name('dokumen.batch_sertifikat');
-        Route::get('/dokumen/piagam-dudi/{penempatan}', [\App\Http\Controllers\Admin\DokumenController::class, 'piagamDudi'])->name('dokumen.piagam_dudi');
-        Route::get('/observasi/{observasi}/cetak', [\App\Http\Controllers\Guru\LembarObservasiController::class, 'cetak'])->name('observasi.cetak');
-        Route::get('/observasi/{observasi}/excel', [\App\Http\Controllers\Guru\LembarObservasiController::class, 'exportExcel'])->name('observasi.excel');
-        Route::get('/monitoring/blanko', [\App\Http\Controllers\Guru\MonitoringController::class, 'blanko'])->name('monitoring.blanko');
-        Route::get('/monitoring/excel', [\App\Http\Controllers\Guru\MonitoringController::class, 'exportExcel'])->name('monitoring.excel');
-        Route::resource('observasi', \App\Http\Controllers\Guru\LembarObservasiController::class);
+        Route::get('/dokumen', [DokumenController::class, 'index'])->name('dokumen.index');
+        Route::get('/dokumen/surat-pengantar/{penempatan}', [DokumenController::class, 'suratPengantar'])->name('dokumen.surat_pengantar');
+        Route::get('/dokumen/batch-surat-pengantar', [DokumenController::class, 'batchSuratPengantar'])->name('dokumen.batch_surat_pengantar');
+        Route::get('/dokumen/surat-tugas/{guru}', [DokumenController::class, 'suratTugas'])->name('dokumen.surat_tugas');
+        Route::get('/dokumen/surat-penarikan/{penempatan}', [DokumenController::class, 'suratPenarikan'])->name('dokumen.surat_penarikan');
+        Route::get('/dokumen/sertifikat/{penempatan}', [DokumenController::class, 'sertifikat'])->name('dokumen.sertifikat');
+        Route::get('/dokumen/batch-sertifikat', [DokumenController::class, 'batchSertifikat'])->name('dokumen.batch_sertifikat');
+        Route::get('/dokumen/piagam-dudi/{penempatan}', [DokumenController::class, 'piagamDudi'])->name('dokumen.piagam_dudi');
+        Route::get('/observasi/{observasi}/cetak', [LembarObservasiController::class, 'cetak'])->name('observasi.cetak');
+        Route::get('/observasi/{observasi}/excel', [LembarObservasiController::class, 'exportExcel'])->name('observasi.excel');
+        Route::get('/monitoring/blanko', [MonitoringController::class, 'blanko'])->name('monitoring.blanko');
+        Route::get('/monitoring/excel', [MonitoringController::class, 'exportExcel'])->name('monitoring.excel');
+        Route::resource('observasi', LembarObservasiController::class);
 
         // Export Excel & Download Template
         Route::get('/export/siswa', [ExportController::class, 'siswa'])->name('export.siswa');
@@ -122,20 +121,20 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/backup/database', [ExportController::class, 'backupDatabase'])->name('backup.database');
 
         // Pengajuan Tempat PKL Mandiri Siswa
-        Route::get('/pengajuan', [\App\Http\Controllers\Admin\PengajuanPklController::class, 'index'])->name('pengajuan.index');
-        Route::get('/pengajuan/{pengajuan}', [\App\Http\Controllers\Admin\PengajuanPklController::class, 'show'])->name('pengajuan.show');
-        Route::post('/pengajuan/{pengajuan}/approve', [\App\Http\Controllers\Admin\PengajuanPklController::class, 'approve'])->name('pengajuan.approve');
-        Route::post('/pengajuan/{pengajuan}/reject', [\App\Http\Controllers\Admin\PengajuanPklController::class, 'reject'])->name('pengajuan.reject');
+        Route::get('/pengajuan', [PengajuanPklController::class, 'index'])->name('pengajuan.index');
+        Route::get('/pengajuan/{pengajuan}', [PengajuanPklController::class, 'show'])->name('pengajuan.show');
+        Route::post('/pengajuan/{pengajuan}/approve', [PengajuanPklController::class, 'approve'])->name('pengajuan.approve');
+        Route::post('/pengajuan/{pengajuan}/reject', [PengajuanPklController::class, 'reject'])->name('pengajuan.reject');
 
         // Pengumuman & Broadcast Koordinator PKL
-        Route::resource('pengumuman', \App\Http\Controllers\Admin\PengumumanController::class);
+        Route::resource('pengumuman', PengumumanController::class);
 
         // Log Aktivitas Sistem
-        Route::get('/activity-log', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-log.index');
-        Route::get('/log-aktivitas', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-log.alias');
-        Route::get('/activity_log', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index']);
-        Route::post('/activity-log/clear', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clear'])->name('activity-log.clear');
-        Route::delete('/activity-log/{activityLog}', [\App\Http\Controllers\Admin\ActivityLogController::class, 'destroy'])->name('activity-log.destroy');
+        Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
+        Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])->name('activity-log.alias');
+        Route::get('/activity_log', [ActivityLogController::class, 'index']);
+        Route::post('/activity-log/clear', [ActivityLogController::class, 'clear'])->name('activity-log.clear');
+        Route::delete('/activity-log/{activityLog}', [ActivityLogController::class, 'destroy'])->name('activity-log.destroy');
 
         // Cetak PDF
         Route::get('/cetak/penempatan', [CetakController::class, 'penempatan'])->name('cetak.penempatan');
@@ -147,9 +146,9 @@ Route::middleware(['auth', 'role:admin'])
 // ============================================
 // SISWA ROUTES
 // ============================================
+use App\Http\Controllers\Siswa\AbsensiController as SiswaAbsensiController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Siswa\JurnalController as SiswaJurnalController;
-use App\Http\Controllers\Siswa\AbsensiController as SiswaAbsensiController;
 use App\Http\Controllers\Siswa\PenempatanInfoController;
 
 Route::middleware(['auth', 'role:siswa'])
@@ -157,8 +156,8 @@ Route::middleware(['auth', 'role:siswa'])
     ->name('siswa.')
     ->group(function () {
         Route::get('/dashboard', [SiswaDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/pengumuman', [\App\Http\Controllers\Siswa\PengumumanInfoController::class, 'index'])->name('pengumuman.index');
-        Route::resource('pengajuan', \App\Http\Controllers\Siswa\PengajuanPklController::class);
+        Route::get('/pengumuman', [PengumumanInfoController::class, 'index'])->name('pengumuman.index');
+        Route::resource('pengajuan', App\Http\Controllers\Siswa\PengajuanPklController::class);
         Route::get('/penempatan', [PenempatanInfoController::class, 'index'])->name('penempatan.index');
         Route::get('/nilai', [PenempatanInfoController::class, 'nilai'])->name('nilai.index');
         Route::get('/sertifikat', [PenempatanInfoController::class, 'sertifikat'])->name('sertifikat');
@@ -172,18 +171,18 @@ Route::middleware(['auth', 'role:siswa'])
 // GURU ROUTES
 // ============================================
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
-use App\Http\Controllers\Guru\ValidasiJurnalController;
-use App\Http\Controllers\Guru\PenilaianController;
 use App\Http\Controllers\Guru\MonitoringController;
 use App\Http\Controllers\Guru\PantauanMapController;
+use App\Http\Controllers\Guru\PenilaianController;
+use App\Http\Controllers\Guru\ValidasiJurnalController;
 
 Route::middleware(['auth', 'role:guru'])
     ->prefix('guru')
     ->name('guru.')
     ->group(function () {
         Route::get('/dashboard', [GuruDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/pengumuman', [\App\Http\Controllers\Guru\PengumumanInfoController::class, 'index'])->name('pengumuman.index');
-        Route::get('/siswa-bimbingan', [\App\Http\Controllers\Guru\SiswaBimbinganController::class, 'index'])->name('siswa.index');
+        Route::get('/pengumuman', [App\Http\Controllers\Guru\PengumumanInfoController::class, 'index'])->name('pengumuman.index');
+        Route::get('/siswa-bimbingan', [SiswaBimbinganController::class, 'index'])->name('siswa.index');
         Route::get('/validasi', [ValidasiJurnalController::class, 'index'])->name('validasi.index');
         Route::get('/validasi/{jurnal}', [ValidasiJurnalController::class, 'show'])->name('validasi.show');
         Route::put('/validasi/{jurnal}', [ValidasiJurnalController::class, 'update'])->name('validasi.update');
@@ -197,25 +196,40 @@ Route::middleware(['auth', 'role:guru'])
         Route::get('/pantauan-peta', [PantauanMapController::class, 'index'])->name('pantauan_map.index');
 
         // Lembar Observasi Online & Cetak PDF Resmi
-        Route::get('/observasi/{observasi}/cetak', [\App\Http\Controllers\Guru\LembarObservasiController::class, 'cetak'])->name('observasi.cetak');
-        Route::get('/observasi/{observasi}/excel', [\App\Http\Controllers\Guru\LembarObservasiController::class, 'exportExcel'])->name('observasi.excel');
-        Route::resource('observasi', \App\Http\Controllers\Guru\LembarObservasiController::class);
+        Route::get('/observasi/{observasi}/cetak', [LembarObservasiController::class, 'cetak'])->name('observasi.cetak');
+        Route::get('/observasi/{observasi}/excel', [LembarObservasiController::class, 'exportExcel'])->name('observasi.excel');
+        Route::resource('observasi', LembarObservasiController::class);
 
         // Laporan Guru
-        Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.index');
-        Route::get('/laporan/absensi', [\App\Http\Controllers\Admin\LaporanController::class, 'absensi'])->name('laporan.absensi');
-        Route::get('/laporan/nilai', [\App\Http\Controllers\Admin\LaporanController::class, 'nilai'])->name('laporan.nilai');
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/absensi', [LaporanController::class, 'absensi'])->name('laporan.absensi');
+        Route::get('/laporan/nilai', [LaporanController::class, 'nilai'])->name('laporan.nilai');
     });
 
 // ============================================
 // INSTRUKTUR DUDI (PEMBIMBING INDUSTRI) ROUTES
 // ============================================
-use App\Http\Controllers\Instruktur\DashboardController as InstrukturDashboardController;
-use App\Http\Controllers\Instruktur\SiswaController as InstrukturSiswaController;
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\DevToolController;
+use App\Http\Controllers\Admin\DokumenController;
+use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\PengajuanPklController;
+use App\Http\Controllers\Admin\PengumumanController;
+use App\Http\Controllers\Admin\PksController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TujuanPembelajaranController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\BantuanController;
+use App\Http\Controllers\Guru\LembarObservasiController;
+use App\Http\Controllers\Guru\SiswaBimbinganController;
 use App\Http\Controllers\Instruktur\AbsensiController as InstrukturAbsensiController;
+use App\Http\Controllers\Instruktur\DashboardController as InstrukturDashboardController;
 use App\Http\Controllers\Instruktur\JurnalController as InstrukturJurnalController;
 use App\Http\Controllers\Instruktur\PenilaianController as InstrukturPenilaianController;
 use App\Http\Controllers\Instruktur\ProfilController as InstrukturProfilController;
+use App\Http\Controllers\Instruktur\SiswaController as InstrukturSiswaController;
+use App\Http\Controllers\Siswa\PengumumanInfoController;
+use App\Http\Controllers\VerifikasiController;
 
 Route::middleware(['auth', 'role:instruktur'])
     ->prefix('instruktur')

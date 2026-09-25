@@ -15,7 +15,7 @@ class SiswaController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan) {
+        if (! $perusahaan) {
             return redirect()->route('instruktur.dashboard')->with('error', 'Akun belum terhubung ke perusahaan.');
         }
 
@@ -27,8 +27,8 @@ class SiswaController extends Controller
         if ($search) {
             $query->whereHas('siswa', function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('nisn', 'like', "%{$search}%")
-                  ->orWhere('nis', 'like', "%{$search}%");
+                    ->orWhere('nisn', 'like', "%{$search}%")
+                    ->orWhere('nis', 'like', "%{$search}%");
             });
         }
 

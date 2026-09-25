@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PembimbingIndustri extends Model
 {
     protected $table = 'pembimbing_industri';
+
     protected $guarded = [];
 
     public function user()

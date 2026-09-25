@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Siswa;
 use App\Http\Controllers\Controller;
 use App\Models\AbsensiPkl;
 use App\Models\Penempatan;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class AbsensiController extends Controller
         $user = Auth::user();
         $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
 
-        if (!$penempatan) {
+        if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan.');
         }
 
@@ -44,7 +45,7 @@ class AbsensiController extends Controller
         $user = Auth::user();
         $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
 
-        if (!$penempatan) {
+        if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan.');
         }
 
@@ -69,7 +70,7 @@ class AbsensiController extends Controller
         $today = AbsensiPkl::where('penempatan_id', $penempatan->id)
             ->where('tanggal', now()->format('Y-m-d'))
             ->first();
-            
+
         if ($today) {
             return redirect()->route('siswa.absensi.index')->with('error', 'Anda sudah melakukan absensi hari ini.');
         }
@@ -88,13 +89,13 @@ class AbsensiController extends Controller
                 'keterangan' => $request->keterangan,
             ]);
 
-            \App\Services\ActivityLogger::log(
+            ActivityLogger::log(
                 'Presensi Siswa',
-                'Pengajuan ' . ucfirst($request->status),
-                'Mengajukan ' . $request->status . ': ' . $request->keterangan
+                'Pengajuan '.ucfirst($request->status),
+                'Mengajukan '.$request->status.': '.$request->keterangan
             );
 
-            return redirect()->route('siswa.absensi.index')->with('success', 'Pengajuan ' . ucfirst($request->status) . ' berhasil dikirim.');
+            return redirect()->route('siswa.absensi.index')->with('success', 'Pengajuan '.ucfirst($request->status).' berhasil dikirim.');
         }
 
         // Jika tombol Absen Masuk diklik (Hadir Real-time)
@@ -104,22 +105,22 @@ class AbsensiController extends Controller
             'tanggal' => $waktuMasuk->format('Y-m-d'),
             'status' => 'hadir',
             'jam_masuk' => $waktuMasuk->format('H:i:s'),
-            'lokasi_masuk' => $request->lokasi // Menerima data koordinat GPS
+            'lokasi_masuk' => $request->lokasi, // Menerima data koordinat GPS
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Presensi Siswa',
             'Presensi Masuk',
-            'Presensi masuk pukul ' . $waktuMasuk->format('H:i') . ' WIB' . ($request->lokasi ? ' (Koordinat: ' . $request->lokasi . ')' : '')
+            'Presensi masuk pukul '.$waktuMasuk->format('H:i').' WIB'.($request->lokasi ? ' (Koordinat: '.$request->lokasi.')' : '')
         );
 
-        return redirect()->route('siswa.absensi.index')->with('success', 'Berhasil Presensi Masuk pada ' . $waktuMasuk->format('H:i') . ' WIB');
+        return redirect()->route('siswa.absensi.index')->with('success', 'Berhasil Presensi Masuk pada '.$waktuMasuk->format('H:i').' WIB');
     }
 
     public function update(Request $request, string $id)
     {
         $absensi = AbsensiPkl::findOrFail($id);
-        
+
         $user = Auth::user();
         $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
 
@@ -135,15 +136,15 @@ class AbsensiController extends Controller
         $waktuKeluar = now();
         $absensi->update([
             'jam_keluar' => $waktuKeluar->format('H:i:s'),
-            'lokasi_keluar' => $request->lokasi // Menerima data koordinat GPS
+            'lokasi_keluar' => $request->lokasi, // Menerima data koordinat GPS
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Presensi Siswa',
             'Presensi Pulang',
-            'Presensi pulang pukul ' . $waktuKeluar->format('H:i') . ' WIB'
+            'Presensi pulang pukul '.$waktuKeluar->format('H:i').' WIB'
         );
 
-        return redirect()->route('siswa.absensi.index')->with('success', 'Berhasil Presensi Pulang pada ' . $waktuKeluar->format('H:i') . ' WIB');
+        return redirect()->route('siswa.absensi.index')->with('success', 'Berhasil Presensi Pulang pada '.$waktuKeluar->format('H:i').' WIB');
     }
 }

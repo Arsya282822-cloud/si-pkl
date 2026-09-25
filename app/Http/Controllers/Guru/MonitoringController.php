@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Guru;
 
+use App\Exports\LembarObservasiExport;
 use App\Http\Controllers\Controller;
 use App\Models\Monitoring;
 use App\Models\Penempatan;
 use App\Models\Perusahaan;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class MonitoringController extends Controller
 {
@@ -54,25 +56,25 @@ class MonitoringController extends Controller
         // Upload foto
         if ($request->hasFile('foto')) {
             $dir = public_path('uploads/monitoring');
-            if (!file_exists($dir)) {
+            if (! file_exists($dir)) {
                 @mkdir($dir, 0777, true);
             }
             $file = $request->file('foto');
-            $fileName = 'foto_obs_' . time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $fileName = 'foto_obs_'.time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $file->move($dir, $fileName);
-            $fotoPath = 'uploads/monitoring/' . $fileName;
+            $fotoPath = 'uploads/monitoring/'.$fileName;
         }
 
         // Upload berkas scan observasi
         if ($request->hasFile('file_observasi')) {
             $dir = public_path('uploads/berkas_observasi');
-            if (!file_exists($dir)) {
+            if (! file_exists($dir)) {
                 @mkdir($dir, 0777, true);
             }
             $file = $request->file('file_observasi');
-            $fileName = 'berkas_obs_' . time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $fileName = 'berkas_obs_'.time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $file->move($dir, $fileName);
-            $berkasPath = 'uploads/berkas_observasi/' . $fileName;
+            $berkasPath = 'uploads/berkas_observasi/'.$fileName;
         }
 
         $perusahaan = Perusahaan::find($request->perusahaan_id);
@@ -90,10 +92,10 @@ class MonitoringController extends Controller
             'file_observasi' => $berkasPath,
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Monitoring & Observasi',
             'Unggah Berkas Observasi',
-            'Guru ' . $guru->nama . ' mendokumentasikan observasi di ' . ($perusahaan?->nama_perusahaan ?? 'DUDI')
+            'Guru '.$guru->nama.' mendokumentasikan observasi di '.($perusahaan?->nama_perusahaan ?? 'DUDI')
         );
 
         return redirect()->route('guru.monitoring.index')->with('success', 'Berkas & Catatan Kunjungan Observasi PKL berhasil disimpan!');
@@ -102,6 +104,7 @@ class MonitoringController extends Controller
     public function blanko()
     {
         $guru = Auth::user()->guru;
+
         return view('guru.monitoring.blanko', compact('guru'));
     }
 
@@ -128,15 +131,16 @@ class MonitoringController extends Controller
             }
         }
 
-        $export = new \App\Exports\LembarObservasiExport($data);
-        $namaFile = 'lembar_observasi_' . ($data['nama_murid'] ? \Illuminate\Support\Str::slug($data['nama_murid']) : 'pkl') . '.xlsx';
+        $export = new LembarObservasiExport($data);
+        $namaFile = 'lembar_observasi_'.($data['nama_murid'] ? Str::slug($data['nama_murid']) : 'pkl').'.xlsx';
+
         return $export->download($namaFile);
     }
 
     public function cetak(Monitoring $monitoring)
     {
         $monitoring->load(['guru', 'perusahaan']);
-        
+
         // Get all students under this teacher at this company
         $siswaList = Penempatan::where('perusahaan_id', $monitoring->perusahaan_id)
             ->where('guru_id', $monitoring->guru_id)

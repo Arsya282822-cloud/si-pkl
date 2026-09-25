@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -89,7 +90,7 @@ class SettingController extends Controller
         Setting::set('pejabat_ketua_pokja', $request->ketua_pokja, 'pejabat');
         Setting::set('pejabat_nip_ketua_pokja', $request->nip_ketua_pokja, 'pejabat');
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Pengaturan',
             'Update Pengaturan',
             'Memperbarui data identitas sekolah & pejabat penandatangan'
@@ -98,4 +99,3 @@ class SettingController extends Controller
         return redirect()->route('admin.pengaturan.index')->with('success', 'Pengaturan Identitas Sekolah & Data Kepala Sekolah (Lama & Baru) berhasil disimpan!');
     }
 }
-

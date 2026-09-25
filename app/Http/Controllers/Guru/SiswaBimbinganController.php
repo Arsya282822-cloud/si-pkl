@@ -13,7 +13,7 @@ class SiswaBimbinganController extends Controller
     {
         $guru = Auth::user()->guru;
 
-        if (!$guru) {
+        if (! $guru) {
             return redirect()->route('guru.dashboard')->with('error', 'Data guru tidak ditemukan.');
         }
 
@@ -24,7 +24,7 @@ class SiswaBimbinganController extends Controller
             ->when($q, function ($query) use ($q) {
                 $query->whereHas('siswa', function ($qSiswa) use ($q) {
                     $qSiswa->where('nama', 'like', "%{$q}%")
-                           ->orWhere('nis', 'like', "%{$q}%");
+                        ->orWhere('nis', 'like', "%{$q}%");
                 });
             })
             ->latest()

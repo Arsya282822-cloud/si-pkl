@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\GuruImport;
 use App\Models\Guru;
 use App\Models\Role;
 use App\Models\User;
-use App\Imports\GuruImport;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GuruController extends Controller
 {
@@ -61,7 +62,7 @@ class GuruController extends Controller
             $roleId = Role::where('nama_role', 'guru')->value('id');
             $namaUpper = mb_strtoupper(trim($validated['nama']));
 
-            $password = !empty($validated['password']) ? $validated['password'] : 'guru1234';
+            $password = ! empty($validated['password']) ? $validated['password'] : 'guru1234';
 
             $user = User::create([
                 'name' => $namaUpper,
@@ -94,7 +95,7 @@ class GuruController extends Controller
         if ($roleGuru) {
             $query->where('role_id', $roleGuru->id);
         }
-        if (!empty($guruUserIds)) {
+        if (! empty($guruUserIds)) {
             $query->orWhereIn('id', $guruUserIds);
         }
 
@@ -102,10 +103,10 @@ class GuruController extends Controller
             'password' => Hash::make('guru1234'),
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Master Data Guru',
             'Reset Massal Password Guru',
-            'Admin mereset password ' . $count . ' akun guru menjadi guru1234'
+            'Admin mereset password '.$count.' akun guru menjadi guru1234'
         );
 
         return redirect()->route('admin.guru.index')
@@ -115,6 +116,7 @@ class GuruController extends Controller
     public function edit(Guru $guru)
     {
         $guru->load('user');
+
         return view('admin.guru.edit', compact('guru'));
     }
 
@@ -124,11 +126,11 @@ class GuruController extends Controller
 
         $validated = $request->validate([
             'nama' => ['required', 'string', 'max:255'],
-            'nip' => ['nullable', 'string', 'max:50', 'unique:guru,nip,' . $guru->id],
+            'nip' => ['nullable', 'string', 'max:50', 'unique:guru,nip,'.$guru->id],
             'jenis_kelamin' => ['nullable', 'in:L,P'],
             'no_hp' => ['nullable', 'string', 'max:20'],
             'alamat' => ['nullable', 'string'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $guru->user_id],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$guru->user_id],
             'password' => ['nullable', 'string', 'min:8'],
             'status' => ['required', 'in:aktif,nonaktif'],
         ]);
@@ -150,7 +152,7 @@ class GuruController extends Controller
                 'status' => $validated['status'],
             ];
 
-            if (!empty($validated['password'])) {
+            if (! empty($validated['password'])) {
                 $userData['password'] = Hash::make($validated['password']);
             }
 
@@ -182,14 +184,15 @@ class GuruController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file_excel' => 'required|mimes:xlsx,xls,csv|max:10240'
+            'file_excel' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
         try {
             Excel::import(new GuruImport, $request->file('file_excel'));
+
             return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil diimport!');
         } catch (\Exception $e) {
-            return redirect()->route('admin.guru.index')->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+            return redirect()->route('admin.guru.index')->with('error', 'Terjadi kesalahan saat import: '.$e->getMessage());
         }
     }
 }

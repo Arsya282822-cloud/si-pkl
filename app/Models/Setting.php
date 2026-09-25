@@ -3,17 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class Setting extends Model
 {
     protected $table = 'settings';
+
     protected $guarded = [];
 
     public static function ensureTableExists()
     {
-        if (!Schema::hasTable('settings')) {
+        if (! Schema::hasTable('settings')) {
             Schema::create('settings', function (Blueprint $table) {
                 $table->id();
                 $table->string('key')->unique();
@@ -30,6 +31,7 @@ class Setting extends Model
 
         try {
             $setting = self::where('key', $key)->first();
+
             return $setting ? $setting->value : $default;
         } catch (\Exception $e) {
             return $default;

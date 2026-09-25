@@ -3,18 +3,17 @@
 namespace App\Imports;
 
 use App\Models\Guru;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class GuruImport implements ToModel, WithHeadingRow
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @return Model|null
+     */
     public function model(array $row)
     {
         if (empty($row['nama'])) {
@@ -25,8 +24,8 @@ class GuruImport implements ToModel, WithHeadingRow
 
         // Cari atau buat User berdasarkan email atau NIP
         $role = Role::where('nama_role', 'guru')->first();
-        
-        $email = !empty($row['email']) ? $row['email'] : strtolower(str_replace(' ', '', $namaGuru)) . '@guru.com';
+
+        $email = ! empty($row['email']) ? $row['email'] : strtolower(str_replace(' ', '', $namaGuru)).'@guru.com';
 
         $user = User::firstOrCreate(
             ['email' => $email],
@@ -34,7 +33,7 @@ class GuruImport implements ToModel, WithHeadingRow
                 'name' => $namaGuru,
                 'password' => bcrypt('guru1234'), // Password default guru
                 'role_id' => $role->id ?? 2,
-                'status' => 'aktif'
+                'status' => 'aktif',
             ]
         );
 

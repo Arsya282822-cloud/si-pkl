@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\PembimbingIndustri;
+use App\Models\Perusahaan;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Perusahaan;
-use App\Models\PembimbingIndustri;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class InstrukturAccountService
 {
@@ -15,7 +14,6 @@ class InstrukturAccountService
      * Generate / Sync concise user accounts for all DUDI companies
      * Format: dudi1@dudi.com, dudi2@dudi.com, ... (Password: dudi1234)
      *
-     * @param string $defaultPassword
      * @return int Count of accounts synced/created
      */
     public static function syncAllDudiAccounts(string $defaultPassword = 'dudi1234'): int
@@ -26,7 +24,7 @@ class InstrukturAccountService
 
         foreach ($companies as $company) {
             // Short, concise email: dudi1@dudi.com, dudi2@dudi.com, etc.
-            $shortEmail = 'dudi' . $company->id . '@dudi.com';
+            $shortEmail = 'dudi'.$company->id.'@dudi.com';
             $pembimbing = PembimbingIndustri::where('perusahaan_id', $company->id)->first();
 
             // Find existing user by short email or linked user_id
@@ -42,7 +40,7 @@ class InstrukturAccountService
             }
 
             if ($user) {
-                $user->name = 'Instruktur ' . ($company->nama_perusahaan ?: 'DUDI ' . $company->id);
+                $user->name = 'Instruktur '.($company->nama_perusahaan ?: 'DUDI '.$company->id);
                 $user->email = $shortEmail;
                 $user->role_id = $roleInstruktur->id;
                 $user->status = 'aktif';
@@ -50,7 +48,7 @@ class InstrukturAccountService
                 $user->save();
             } else {
                 $user = User::create([
-                    'name' => 'Instruktur ' . ($company->nama_perusahaan ?: 'DUDI ' . $company->id),
+                    'name' => 'Instruktur '.($company->nama_perusahaan ?: 'DUDI '.$company->id),
                     'email' => $shortEmail,
                     'password' => Hash::make($defaultPassword),
                     'role_id' => $roleInstruktur->id,
@@ -62,7 +60,7 @@ class InstrukturAccountService
                 $pembimbing->update([
                     'user_id' => $user->id,
                     'email' => $shortEmail,
-                    'nama' => $pembimbing->nama ?: ($company->nama_pimpinan ?: 'Pembimbing ' . $company->nama_perusahaan),
+                    'nama' => $pembimbing->nama ?: ($company->nama_pimpinan ?: 'Pembimbing '.$company->nama_perusahaan),
                     'jabatan' => $pembimbing->jabatan ?: 'Pembimbing Lapangan DUDI',
                     'no_hp' => $pembimbing->no_hp ?: ($company->no_telepon ?: '081200000000'),
                 ]);
@@ -70,7 +68,7 @@ class InstrukturAccountService
                 PembimbingIndustri::create([
                     'perusahaan_id' => $company->id,
                     'user_id' => $user->id,
-                    'nama' => $company->nama_pimpinan ?: ('Pembimbing ' . $company->nama_perusahaan),
+                    'nama' => $company->nama_pimpinan ?: ('Pembimbing '.$company->nama_perusahaan),
                     'jabatan' => 'Pembimbing Lapangan DUDI',
                     'no_hp' => $company->no_telepon ?: '081200000000',
                     'email' => $shortEmail,

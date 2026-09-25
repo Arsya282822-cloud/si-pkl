@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Penempatan;
-use App\Models\Siswa;
 use App\Models\Guru;
-use App\Models\Perusahaan;
+use App\Models\Penempatan;
 use App\Models\PeriodePkl;
+use App\Models\Perusahaan;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 
 class PenempatanController extends Controller
@@ -16,14 +16,14 @@ class PenempatanController extends Controller
     {
         $q = $request->q;
         $penempatan = Penempatan::with(['siswa', 'guru', 'perusahaan', 'periodePkl'])
-            ->when($q, function($query) use ($q) {
-                $query->whereHas('siswa', function($qSiswa) use ($q) {
+            ->when($q, function ($query) use ($q) {
+                $query->whereHas('siswa', function ($qSiswa) use ($q) {
                     $qSiswa->where('nama', 'like', "%{$q}%")
-                           ->orWhere('nis', 'like', "%{$q}%");
+                        ->orWhere('nis', 'like', "%{$q}%");
                 })
-                ->orWhereHas('perusahaan', function($qPerusahaan) use ($q) {
-                    $qPerusahaan->where('nama_perusahaan', 'like', "%{$q}%");
-                });
+                    ->orWhereHas('perusahaan', function ($qPerusahaan) use ($q) {
+                        $qPerusahaan->where('nama_perusahaan', 'like', "%{$q}%");
+                    });
             })
             ->latest()
             ->paginate(10);
@@ -35,12 +35,12 @@ class PenempatanController extends Controller
     {
         // Get active periods
         $periode = PeriodePkl::where('status', 'aktif')->get();
-        
+
         // Get siswa that are NOT placed in active periods
-        $placedSiswaIds = Penempatan::whereHas('periodePkl', function($q) {
+        $placedSiswaIds = Penempatan::whereHas('periodePkl', function ($q) {
             $q->where('status', 'aktif');
         })->pluck('siswa_id');
-        
+
         $siswa = Siswa::whereNotIn('id', $placedSiswaIds)->get();
         $guru = Guru::all();
         $perusahaan = Perusahaan::where('status', 'aktif')->get();
@@ -97,6 +97,7 @@ class PenempatanController extends Controller
     public function destroy(Penempatan $penempatan)
     {
         $penempatan->delete();
+
         return redirect()->route('admin.penempatan.index')->with('success', 'Data Penempatan berhasil dihapus!');
     }
 }

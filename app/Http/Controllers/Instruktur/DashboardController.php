@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Instruktur;
 
 use App\Http\Controllers\Controller;
-use App\Models\Penempatan;
 use App\Models\AbsensiPkl;
 use App\Models\JurnalPkl;
+use App\Models\Penempatan;
+use App\Models\Pengumuman;
 use App\Models\PenilaianPkl;
 use App\Models\PeriodePkl;
-use App\Models\Pengumuman;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan) {
+        if (! $perusahaan) {
             // Fallback jika belum terikat ke perusahaan tertentu
             return view('instruktur.dashboard_empty');
         }
@@ -87,4 +87,3 @@ class DashboardController extends Controller
         ));
     }
 }
-

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class LembarObservasi extends Model
 {
     protected $table = 'lembar_observasi';
+
     protected $guarded = [];
 
     protected $casts = [

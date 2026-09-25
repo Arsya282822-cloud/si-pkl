@@ -42,12 +42,12 @@ class UserController extends Controller
 
         // Data Ringkasan / Statistik
         $stats = [
-            'total'      => User::count(),
-            'admin'      => User::whereHas('role', fn($r) => $r->where('nama_role', 'admin'))->count(),
-            'guru'       => User::whereHas('role', fn($r) => $r->where('nama_role', 'guru'))->count(),
-            'siswa'      => User::whereHas('role', fn($r) => $r->where('nama_role', 'siswa'))->count(),
-            'instruktur' => User::whereHas('role', fn($r) => $r->where('nama_role', 'instruktur'))->count(),
-            'nonaktif'   => User::where('status', 'nonaktif')->count(),
+            'total' => User::count(),
+            'admin' => User::whereHas('role', fn ($r) => $r->where('nama_role', 'admin'))->count(),
+            'guru' => User::whereHas('role', fn ($r) => $r->where('nama_role', 'guru'))->count(),
+            'siswa' => User::whereHas('role', fn ($r) => $r->where('nama_role', 'siswa'))->count(),
+            'instruktur' => User::whereHas('role', fn ($r) => $r->where('nama_role', 'instruktur'))->count(),
+            'nonaktif' => User::where('status', 'nonaktif')->count(),
         ];
 
         $roles = Role::orderBy('id')->get();
@@ -61,29 +61,29 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
-            'role_id'  => ['required', 'exists:roles,id'],
-            'status'   => ['required', 'in:aktif,nonaktif'],
+            'role_id' => ['required', 'exists:roles,id'],
+            'status' => ['required', 'in:aktif,nonaktif'],
         ], [
-            'name.required'     => 'Nama lengkap pengguna wajib diisi.',
-            'email.required'    => 'Alamat email wajib diisi.',
-            'email.email'       => 'Format email tidak valid.',
-            'email.unique'      => 'Email ini sudah digunakan oleh akun lain.',
+            'name.required' => 'Nama lengkap pengguna wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah digunakan oleh akun lain.',
             'password.required' => 'Password akun wajib diisi.',
-            'password.min'      => 'Password minimal berisi 6 karakter.',
-            'role_id.required'  => 'Role hak akses wajib dipilih.',
-            'role_id.exists'    => 'Role yang dipilih tidak valid.',
-            'status.required'   => 'Status akun wajib ditentukan.',
+            'password.min' => 'Password minimal berisi 6 karakter.',
+            'role_id.required' => 'Role hak akses wajib dipilih.',
+            'role_id.exists' => 'Role yang dipilih tidak valid.',
+            'status.required' => 'Status akun wajib ditentukan.',
         ]);
 
         $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => strtolower(trim($validated['email'])),
+            'name' => $validated['name'],
+            'email' => strtolower(trim($validated['email'])),
             'password' => Hash::make($validated['password']),
-            'role_id'  => $validated['role_id'],
-            'status'   => $validated['status'],
+            'role_id' => $validated['role_id'],
+            'status' => $validated['status'],
         ]);
 
         ActivityLogger::log(
@@ -102,16 +102,16 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:6'],
-            'role_id'  => ['required', 'exists:roles,id'],
-            'status'   => ['required', 'in:aktif,nonaktif'],
+            'role_id' => ['required', 'exists:roles,id'],
+            'status' => ['required', 'in:aktif,nonaktif'],
         ], [
-            'name.required'    => 'Nama lengkap pengguna wajib diisi.',
-            'email.required'   => 'Alamat email wajib diisi.',
-            'email.unique'     => 'Email ini sudah digunakan oleh akun lain.',
-            'password.min'     => 'Password minimal berisi 6 karakter jika ingin diubah.',
+            'name.required' => 'Nama lengkap pengguna wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.unique' => 'Email ini sudah digunakan oleh akun lain.',
+            'password.min' => 'Password minimal berisi 6 karakter jika ingin diubah.',
             'role_id.required' => 'Role hak akses wajib dipilih.',
         ]);
 
@@ -126,7 +126,7 @@ class UserController extends Controller
         $user->role_id = $validated['role_id'];
         $user->status = $validated['status'];
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
 
@@ -162,7 +162,7 @@ class UserController extends Controller
         );
 
         return redirect()->back()
-            ->with('success', "Status akun {$user->name} berhasil diubah menjadi " . strtoupper($user->status) . "!");
+            ->with('success', "Status akun {$user->name} berhasil diubah menjadi ".strtoupper($user->status).'!');
     }
 
     /**
@@ -174,7 +174,7 @@ class UserController extends Controller
             'new_password' => ['required', 'string', 'min:6'],
         ], [
             'new_password.required' => 'Password baru wajib diisi.',
-            'new_password.min'      => 'Password minimal 6 karakter.',
+            'new_password.min' => 'Password minimal 6 karakter.',
         ]);
 
         $user->password = Hash::make($validated['new_password']);

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Penempatan extends Model
 {
     protected $table = 'penempatan';
+
     protected $guarded = [];
 
     public function siswa()

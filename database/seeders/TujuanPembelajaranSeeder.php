@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Jurusan;
 use App\Models\TujuanPembelajaran;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
 
 class TujuanPembelajaranSeeder extends Seeder
 {
@@ -502,6 +501,6 @@ class TujuanPembelajaranSeeder extends Seeder
             TujuanPembelajaran::insert($chunk);
         }
 
-        $this->command->info('Berhasil men-generate ' . count($data) . ' Tujuan Pembelajaran PKL 2026 untuk 5 Konsentrasi Keahlian.');
+        $this->command->info('Berhasil men-generate '.count($data).' Tujuan Pembelajaran PKL 2026 untuk 5 Konsentrasi Keahlian.');
     }
 }

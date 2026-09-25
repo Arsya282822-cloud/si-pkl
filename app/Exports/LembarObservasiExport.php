@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -23,13 +24,13 @@ class LembarObservasiExport
      */
     public function download(string $filename = 'lembar_observasi_pkl.xlsx'): StreamedResponse
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Lembar Observasi');
 
         // Page setup
-        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
-        $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        $sheet->getPageSetup()->setOrientation(PageSetup::ORIENTATION_PORTRAIT);
+        $sheet->getPageSetup()->setPaperSize(PageSetup::PAPERSIZE_A4);
         $sheet->getPageMargins()->setTop(0.5)->setBottom(0.5)->setLeft(0.6)->setRight(0.5);
 
         // Set Column Widths
@@ -72,49 +73,49 @@ class LembarObservasiExport
         $sheet->getStyle("A{$row}")->getFont()->setBold(true);
         $row++;
         $sheet->setCellValue("A{$row}", '- NAMA LENGKAP INSTITUSI');
-        $sheet->setCellValue("B{$row}", ': ' . $institusi);
+        $sheet->setCellValue("B{$row}", ': '.$institusi);
         $row++;
         $sheet->setCellValue("A{$row}", '- ALAMAT');
-        $sheet->setCellValue("B{$row}", ': ' . $alamat);
+        $sheet->setCellValue("B{$row}", ': '.$alamat);
         $row++;
         $sheet->setCellValue("A{$row}", '- TELP/FAX');
-        $sheet->setCellValue("B{$row}", ': ' . $telp);
+        $sheet->setCellValue("B{$row}", ': '.$telp);
         $row++;
 
         $sheet->setCellValue("A{$row}", 'II. DATA PIMPINAN');
         $sheet->getStyle("A{$row}")->getFont()->setBold(true);
         $row++;
         $sheet->setCellValue("A{$row}", '- NAMA LENGKAP PIMPINAN');
-        $sheet->setCellValue("B{$row}", ': ' . $pimpinan);
+        $sheet->setCellValue("B{$row}", ': '.$pimpinan);
         $row++;
         $sheet->setCellValue("A{$row}", '- NIP/NO. REGISTRASI');
-        $sheet->setCellValue("B{$row}", ': ' . $nipPimpinan);
+        $sheet->setCellValue("B{$row}", ': '.$nipPimpinan);
         $row++;
         $sheet->setCellValue("A{$row}", '- JABATAN');
-        $sheet->setCellValue("B{$row}", ': ' . $jabatanPimpinan);
+        $sheet->setCellValue("B{$row}", ': '.$jabatanPimpinan);
         $row++;
 
         $sheet->setCellValue("A{$row}", 'III. DATA INSTRUKTUR');
         $sheet->getStyle("A{$row}")->getFont()->setBold(true);
         $row++;
         $sheet->setCellValue("A{$row}", '- NAMA LENGKAP INSTRUKTUR');
-        $sheet->setCellValue("B{$row}", ': ' . $instruktur);
+        $sheet->setCellValue("B{$row}", ': '.$instruktur);
         $row++;
         $sheet->setCellValue("A{$row}", '- NIP/NO. REGISTRASI');
-        $sheet->setCellValue("B{$row}", ': ' . $nipInstruktur);
+        $sheet->setCellValue("B{$row}", ': '.$nipInstruktur);
         $row++;
         $sheet->setCellValue("A{$row}", '- JABATAN');
-        $sheet->setCellValue("B{$row}", ': ' . $jabatanInstruktur);
+        $sheet->setCellValue("B{$row}", ': '.$jabatanInstruktur);
         $row++;
 
         $sheet->setCellValue("A{$row}", 'IV. MURID');
         $sheet->getStyle("A{$row}")->getFont()->setBold(true);
         $row++;
         $sheet->setCellValue("A{$row}", '- NAMA LENGKAP MURID');
-        $sheet->setCellValue("B{$row}", ': ' . $murid);
+        $sheet->setCellValue("B{$row}", ': '.$murid);
         $row++;
         $sheet->setCellValue("A{$row}", '- KONSENTRASI KEAHLIAN');
-        $sheet->setCellValue("B{$row}", ': ' . $jurusan);
+        $sheet->setCellValue("B{$row}", ': '.$jurusan);
         $row += 2;
 
         // TABLE HEADER
@@ -131,12 +132,12 @@ class LembarObservasiExport
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical' => Alignment::VERTICAL_CENTER,
-                'wrapText' => true
+                'wrapText' => true,
             ],
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => 'E2E8F0']
-            ]
+                'startColor' => ['rgb' => 'E2E8F0'],
+            ],
         ];
         $sheet->getStyle("A{$row}:F{$row}")->applyFromArray($headerStyle);
         $sheet->getRowDimension($row)->setRowHeight(26);
@@ -158,7 +159,7 @@ class LembarObservasiExport
             'Bekerja secara tim',
             'Kepedulian sosial',
             'Ketaatan terhadap norma dan POS yang berlaku',
-            'K3LH di lingkungan kerja.'
+            'K3LH di lingkungan kerja.',
         ];
 
         foreach ($softskills as $item) {
@@ -179,7 +180,7 @@ class LembarObservasiExport
 
         // 6 blank rows for specific technical competence
         for ($i = 0; $i < 6; $i++) {
-            $sheet->setCellValue("B{$row}", "");
+            $sheet->setCellValue("B{$row}", '');
             $sheet->setCellValue("F{$row}", "=IF(COUNT(C{$row}:E{$row})>0, ROUND(AVERAGE(C{$row}:E{$row}), 1), \"\")");
             $sheet->getStyle("C{$row}:F{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->getRowDimension($row)->setRowHeight(20);
@@ -196,7 +197,7 @@ class LembarObservasiExport
 
         // 6 blank rows for new technical skills
         for ($i = 0; $i < 6; $i++) {
-            $sheet->setCellValue("B{$row}", "");
+            $sheet->setCellValue("B{$row}", '');
             $sheet->setCellValue("F{$row}", "=IF(COUNT(C{$row}:E{$row})>0, ROUND(AVERAGE(C{$row}:E{$row}), 1), \"\")");
             $sheet->getStyle("C{$row}:F{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->getRowDimension($row)->setRowHeight(20);
@@ -205,7 +206,7 @@ class LembarObservasiExport
 
         // SECTION IV: Analisis Usaha
         $sheet->setCellValue("A{$row}", 'IV');
-        $sheet->setCellValue("B{$row}", "Melakukan analisis usaha secara mandiri");
+        $sheet->setCellValue("B{$row}", 'Melakukan analisis usaha secara mandiri');
         $sheet->getStyle("A{$row}:B{$row}")->getFont()->setBold(true);
         $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $row++;
@@ -214,7 +215,7 @@ class LembarObservasiExport
             "Menjelaskan bidang usaha/pekerjaan, alur\nbisnis/kerja tempat PKL.",
             "Memasarkan produk/jasa dengan menentukan\nharga produk dan segmen pasar.",
             "Menentukan media yang tepat untuk\nmempromosikan produk/jasa",
-            "Memberikan layanan terhadap keluhan\npelanggan"
+            "Memberikan layanan terhadap keluhan\npelanggan",
         ];
 
         foreach ($analisis as $item) {
@@ -227,19 +228,19 @@ class LembarObservasiExport
 
         // Tanggal Pelaksanaan & Tanda Tangan Table Footer
         $sheet->mergeCells("A{$row}:B{$row}");
-        $sheet->setCellValue("A{$row}", "Tanggal Pelaksanaan Observasi");
+        $sheet->setCellValue("A{$row}", 'Tanggal Pelaksanaan Observasi');
         $sheet->getStyle("A{$row}")->getFont()->setBold(true);
         $sheet->getRowDimension($row)->setRowHeight(22);
         $row++;
 
         $sheet->mergeCells("A{$row}:B{$row}");
-        $sheet->setCellValue("A{$row}", "Tanda Tangan Instruktur");
+        $sheet->setCellValue("A{$row}", 'Tanda Tangan Instruktur');
         $sheet->getStyle("A{$row}")->getFont()->setBold(true);
         $sheet->getRowDimension($row)->setRowHeight(35);
         $row++;
 
         $sheet->mergeCells("A{$row}:B{$row}");
-        $sheet->setCellValue("A{$row}", "Tanda Tangan Guru Pembimbing");
+        $sheet->setCellValue("A{$row}", 'Tanda Tangan Guru Pembimbing');
         $sheet->getStyle("A{$row}")->getFont()->setBold(true);
         $sheet->getRowDimension($row)->setRowHeight(35);
         $tableEndRow = $row;
@@ -249,26 +250,26 @@ class LembarObservasiExport
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['rgb' => '000000']
+                    'color' => ['rgb' => '000000'],
                 ],
             ],
             'alignment' => [
-                'vertical' => Alignment::VERTICAL_CENTER
-            ]
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
         ];
         $sheet->getStyle("A{$tableStartRow}:F{$tableEndRow}")->applyFromArray($tableStyle);
 
         // Signatures Footer Pimpinan
         $row += 2;
-        $sheet->setCellValue("D{$row}", "Pekanbaru, " . date('Y'));
+        $sheet->setCellValue("D{$row}", 'Pekanbaru, '.date('Y'));
         $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $row++;
-        $sheet->setCellValue("D{$row}", "Pimpinan");
+        $sheet->setCellValue("D{$row}", 'Pimpinan');
         $sheet->getStyle("D{$row}")->getFont()->setBold(true);
         $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        
+
         $row += 4;
-        $sheet->setCellValue("D{$row}", "( " . ($pimpinan ?: '................................................') . " )");
+        $sheet->setCellValue("D{$row}", '( '.($pimpinan ?: '................................................').' )');
         $sheet->getStyle("D{$row}")->getFont()->setBold(true);
         $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 

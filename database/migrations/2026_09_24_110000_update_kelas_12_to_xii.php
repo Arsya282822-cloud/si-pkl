@@ -31,7 +31,7 @@ return new class extends Migration
                 } else {
                     $kls->update([
                         'nama_kelas' => $newNama,
-                        'tingkat'    => 'XII',
+                        'tingkat' => 'XII',
                     ]);
                 }
             }
@@ -41,12 +41,12 @@ return new class extends Migration
                     ->where('tingkat', 'XII')
                     ->exists();
 
-                if (!$hasXii) {
+                if (! $hasXii) {
                     Kelas::create([
                         'jurusan_id' => $jur->id,
-                        'nama_kelas' => 'XII ' . $jur->kode_jurusan . ' 1',
-                        'tingkat'    => 'XII',
-                        'status'     => true,
+                        'nama_kelas' => 'XII '.$jur->kode_jurusan.' 1',
+                        'tingkat' => 'XII',
+                        'status' => true,
                     ]);
                 }
             }

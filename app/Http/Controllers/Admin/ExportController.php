@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\LembarObservasiExport;
 use App\Http\Controllers\Controller;
-use App\Models\Siswa;
-use App\Models\Guru;
-use App\Models\Perusahaan;
-use App\Models\Penempatan;
 use App\Models\AbsensiPkl;
+use App\Models\Guru;
+use App\Models\Penempatan;
 use App\Models\PenilaianPkl;
-use Illuminate\Http\Request;
+use App\Models\Perusahaan;
+use App\Models\Siswa;
+use App\Services\ActivityLogger;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -30,7 +32,7 @@ class ExportController extends Controller
         });
 
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename.'"');
         $response->headers->set('Cache-Control', 'max-age=0');
 
         return $response;
@@ -55,8 +57,8 @@ class ExportController extends Controller
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ],
             'borders' => [
                 'allBorders' => [
@@ -100,7 +102,7 @@ class ExportController extends Controller
      */
     public function templateSiswa()
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Template Import Siswa');
 
@@ -134,7 +136,7 @@ class ExportController extends Controller
         foreach ($sampleData as $item) {
             $col = 'A';
             foreach ($item as $val) {
-                $sheet->setCellValueExplicit($col . $row, $val, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValueExplicit($col.$row, $val, DataType::TYPE_STRING);
                 $col++;
             }
             $row++;
@@ -142,7 +144,7 @@ class ExportController extends Controller
 
         // Styling
         $this->styleHeader($spreadsheet, 'A1:K1', '0284C7');
-        $this->styleDataGrid($spreadsheet, 'A2:K' . ($row - 1));
+        $this->styleDataGrid($spreadsheet, 'A2:K'.($row - 1));
 
         // Auto Width Columns
         foreach (range('A', 'K') as $col) {
@@ -157,7 +159,7 @@ class ExportController extends Controller
      */
     public function templateGuru()
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Template Import Guru');
 
@@ -183,14 +185,14 @@ class ExportController extends Controller
         foreach ($sampleData as $item) {
             $col = 'A';
             foreach ($item as $val) {
-                $sheet->setCellValueExplicit($col . $row, $val, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValueExplicit($col.$row, $val, DataType::TYPE_STRING);
                 $col++;
             }
             $row++;
         }
 
         $this->styleHeader($spreadsheet, 'A1:F1', '059669');
-        $this->styleDataGrid($spreadsheet, 'A2:F' . ($row - 1));
+        $this->styleDataGrid($spreadsheet, 'A2:F'.($row - 1));
 
         foreach (range('A', 'F') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
@@ -204,7 +206,7 @@ class ExportController extends Controller
      */
     public function templatePerusahaan()
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Template Import DUDI');
 
@@ -231,14 +233,14 @@ class ExportController extends Controller
         foreach ($sampleData as $item) {
             $col = 'A';
             foreach ($item as $val) {
-                $sheet->setCellValueExplicit($col . $row, $val, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValueExplicit($col.$row, $val, DataType::TYPE_STRING);
                 $col++;
             }
             $row++;
         }
 
         $this->styleHeader($spreadsheet, 'A1:G1', 'D97706');
-        $this->styleDataGrid($spreadsheet, 'A2:G' . ($row - 1));
+        $this->styleDataGrid($spreadsheet, 'A2:G'.($row - 1));
 
         foreach (range('A', 'G') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
@@ -252,7 +254,8 @@ class ExportController extends Controller
      */
     public function templateObservasi()
     {
-        $export = new \App\Exports\LembarObservasiExport();
+        $export = new LembarObservasiExport;
+
         return $export->download('template_lembar_observasi_pkl.xlsx');
     }
 
@@ -265,42 +268,42 @@ class ExportController extends Controller
      */
     public function siswa()
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Data Siswa');
 
         $headers = ['No', 'NIS', 'NISN', 'Nama Lengkap', 'Jenis Kelamin', 'Kelas', 'Jurusan', 'No HP', 'Alamat', 'Email'];
         $col = 'A';
         foreach ($headers as $h) {
-            $sheet->setCellValue($col . '1', $h);
+            $sheet->setCellValue($col.'1', $h);
             $col++;
         }
 
         $siswa = Siswa::with(['kelas', 'jurusan', 'user'])->orderBy('nama', 'asc')->get();
         $row = 2;
         foreach ($siswa as $i => $s) {
-            $sheet->setCellValue('A' . $row, $i + 1);
-            $sheet->setCellValueExplicit('B' . $row, $s->nis, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValueExplicit('C' . $row, $s->nisn ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $row, $s->nama);
-            $sheet->setCellValue('E' . $row, $s->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan');
-            $sheet->setCellValue('F' . $row, $s->kelas?->nama_kelas ?? '-');
-            $sheet->setCellValue('G' . $row, $s->jurusan?->nama_jurusan ?? '-');
-            $sheet->setCellValueExplicit('H' . $row, $s->no_hp ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('I' . $row, $s->alamat ?? '-');
-            $sheet->setCellValue('J' . $row, $s->user?->email ?? '-');
+            $sheet->setCellValue('A'.$row, $i + 1);
+            $sheet->setCellValueExplicit('B'.$row, $s->nis, DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('C'.$row, $s->nisn ?? '-', DataType::TYPE_STRING);
+            $sheet->setCellValue('D'.$row, $s->nama);
+            $sheet->setCellValue('E'.$row, $s->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan');
+            $sheet->setCellValue('F'.$row, $s->kelas?->nama_kelas ?? '-');
+            $sheet->setCellValue('G'.$row, $s->jurusan?->nama_jurusan ?? '-');
+            $sheet->setCellValueExplicit('H'.$row, $s->no_hp ?? '-', DataType::TYPE_STRING);
+            $sheet->setCellValue('I'.$row, $s->alamat ?? '-');
+            $sheet->setCellValue('J'.$row, $s->user?->email ?? '-');
             $row++;
         }
 
         $lastRow = max(2, $row - 1);
         $this->styleHeader($spreadsheet, 'A1:J1', '0284C7');
-        $this->styleDataGrid($spreadsheet, 'A2:J' . $lastRow);
+        $this->styleDataGrid($spreadsheet, 'A2:J'.$lastRow);
 
         foreach (range('A', 'J') as $c) {
             $sheet->getColumnDimension($c)->setAutoSize(true);
         }
 
-        return $this->streamXlsx($spreadsheet, 'data_siswa_' . date('Ymd_His') . '.xlsx');
+        return $this->streamXlsx($spreadsheet, 'data_siswa_'.date('Ymd_His').'.xlsx');
     }
 
     /**
@@ -308,39 +311,39 @@ class ExportController extends Controller
      */
     public function penempatan()
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Data Penempatan PKL');
 
         $headers = ['No', 'NIS', 'Nama Siswa', 'Kelas / Jurusan', 'Perusahaan Mitra DUDI', 'Guru Pembimbing', 'Periode PKL'];
         $col = 'A';
         foreach ($headers as $h) {
-            $sheet->setCellValue($col . '1', $h);
+            $sheet->setCellValue($col.'1', $h);
             $col++;
         }
 
         $data = Penempatan::with(['siswa.kelas', 'siswa.jurusan', 'guru', 'perusahaan', 'periodePkl'])->get();
         $row = 2;
         foreach ($data as $i => $d) {
-            $sheet->setCellValue('A' . $row, $i + 1);
-            $sheet->setCellValueExplicit('B' . $row, $d->siswa?->nis ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('C' . $row, $d->siswa?->nama ?? '-');
-            $sheet->setCellValue('D' . $row, ($d->siswa?->kelas?->nama_kelas ?? '') . ' / ' . ($d->siswa?->jurusan?->nama_jurusan ?? '-'));
-            $sheet->setCellValue('E' . $row, $d->perusahaan?->nama_perusahaan ?? '-');
-            $sheet->setCellValue('F' . $row, $d->guru?->nama ?? '-');
-            $sheet->setCellValue('G' . $row, $d->periodePkl?->nama_periode ?? '-');
+            $sheet->setCellValue('A'.$row, $i + 1);
+            $sheet->setCellValueExplicit('B'.$row, $d->siswa?->nis ?? '-', DataType::TYPE_STRING);
+            $sheet->setCellValue('C'.$row, $d->siswa?->nama ?? '-');
+            $sheet->setCellValue('D'.$row, ($d->siswa?->kelas?->nama_kelas ?? '').' / '.($d->siswa?->jurusan?->nama_jurusan ?? '-'));
+            $sheet->setCellValue('E'.$row, $d->perusahaan?->nama_perusahaan ?? '-');
+            $sheet->setCellValue('F'.$row, $d->guru?->nama ?? '-');
+            $sheet->setCellValue('G'.$row, $d->periodePkl?->nama_periode ?? '-');
             $row++;
         }
 
         $lastRow = max(2, $row - 1);
         $this->styleHeader($spreadsheet, 'A1:G1', '4F46E5');
-        $this->styleDataGrid($spreadsheet, 'A2:G' . $lastRow);
+        $this->styleDataGrid($spreadsheet, 'A2:G'.$lastRow);
 
         foreach (range('A', 'G') as $c) {
             $sheet->getColumnDimension($c)->setAutoSize(true);
         }
 
-        return $this->streamXlsx($spreadsheet, 'data_penempatan_' . date('Ymd_His') . '.xlsx');
+        return $this->streamXlsx($spreadsheet, 'data_penempatan_'.date('Ymd_His').'.xlsx');
     }
 
     /**
@@ -348,41 +351,41 @@ class ExportController extends Controller
      */
     public function absensi()
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Rekapitulasi Presensi');
 
         $headers = ['No', 'Tanggal', 'NIS', 'Nama Siswa', 'Perusahaan Mitra', 'Status Presensi', 'Jam Masuk', 'Jam Pulang', 'Keterangan'];
         $col = 'A';
         foreach ($headers as $h) {
-            $sheet->setCellValue($col . '1', $h);
+            $sheet->setCellValue($col.'1', $h);
             $col++;
         }
 
         $data = AbsensiPkl::with(['penempatan.siswa', 'penempatan.perusahaan'])->orderBy('tanggal', 'desc')->get();
         $row = 2;
         foreach ($data as $i => $d) {
-            $sheet->setCellValue('A' . $row, $i + 1);
-            $sheet->setCellValue('B' . $row, $d->tanggal);
-            $sheet->setCellValueExplicit('C' . $row, $d->penempatan?->siswa?->nis ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $row, $d->penempatan?->siswa?->nama ?? '-');
-            $sheet->setCellValue('E' . $row, $d->penempatan?->perusahaan?->nama_perusahaan ?? '-');
-            $sheet->setCellValue('F' . $row, ucfirst($d->status));
-            $sheet->setCellValue('G' . $row, $d->jam_masuk ?? '-');
-            $sheet->setCellValue('H' . $row, $d->jam_keluar ?? '-');
-            $sheet->setCellValue('I' . $row, $d->keterangan ?? '-');
+            $sheet->setCellValue('A'.$row, $i + 1);
+            $sheet->setCellValue('B'.$row, $d->tanggal);
+            $sheet->setCellValueExplicit('C'.$row, $d->penempatan?->siswa?->nis ?? '-', DataType::TYPE_STRING);
+            $sheet->setCellValue('D'.$row, $d->penempatan?->siswa?->nama ?? '-');
+            $sheet->setCellValue('E'.$row, $d->penempatan?->perusahaan?->nama_perusahaan ?? '-');
+            $sheet->setCellValue('F'.$row, ucfirst($d->status));
+            $sheet->setCellValue('G'.$row, $d->jam_masuk ?? '-');
+            $sheet->setCellValue('H'.$row, $d->jam_keluar ?? '-');
+            $sheet->setCellValue('I'.$row, $d->keterangan ?? '-');
             $row++;
         }
 
         $lastRow = max(2, $row - 1);
         $this->styleHeader($spreadsheet, 'A1:I1', '059669');
-        $this->styleDataGrid($spreadsheet, 'A2:I' . $lastRow);
+        $this->styleDataGrid($spreadsheet, 'A2:I'.$lastRow);
 
         foreach (range('A', 'I') as $c) {
             $sheet->getColumnDimension($c)->setAutoSize(true);
         }
 
-        return $this->streamXlsx($spreadsheet, 'rekap_absensi_' . date('Ymd_His') . '.xlsx');
+        return $this->streamXlsx($spreadsheet, 'rekap_absensi_'.date('Ymd_His').'.xlsx');
     }
 
     /**
@@ -390,42 +393,42 @@ class ExportController extends Controller
      */
     public function nilai()
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Rekapitulasi Nilai PKL');
 
         $headers = ['No', 'NIS', 'Nama Siswa', 'Perusahaan Mitra DUDI', 'Guru Pembimbing', 'Nilai Sikap', 'Nilai Keterampilan', 'Nilai Pengetahuan', 'Nilai Akhir', 'Catatan Pembimbing'];
         $col = 'A';
         foreach ($headers as $h) {
-            $sheet->setCellValue($col . '1', $h);
+            $sheet->setCellValue($col.'1', $h);
             $col++;
         }
 
         $data = PenilaianPkl::with(['penempatan.siswa', 'penempatan.perusahaan', 'penempatan.guru'])->get();
         $row = 2;
         foreach ($data as $i => $d) {
-            $sheet->setCellValue('A' . $row, $i + 1);
-            $sheet->setCellValueExplicit('B' . $row, $d->penempatan?->siswa?->nis ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('C' . $row, $d->penempatan?->siswa?->nama ?? '-');
-            $sheet->setCellValue('D' . $row, $d->penempatan?->perusahaan?->nama_perusahaan ?? '-');
-            $sheet->setCellValue('E' . $row, $d->penempatan?->guru?->nama ?? '-');
-            $sheet->setCellValue('F' . $row, $d->nilai_sikap);
-            $sheet->setCellValue('G' . $row, $d->nilai_keterampilan);
-            $sheet->setCellValue('H' . $row, $d->nilai_pengetahuan);
-            $sheet->setCellValue('I' . $row, $d->nilai_akhir);
-            $sheet->setCellValue('J' . $row, $d->catatan_guru ?? '-');
+            $sheet->setCellValue('A'.$row, $i + 1);
+            $sheet->setCellValueExplicit('B'.$row, $d->penempatan?->siswa?->nis ?? '-', DataType::TYPE_STRING);
+            $sheet->setCellValue('C'.$row, $d->penempatan?->siswa?->nama ?? '-');
+            $sheet->setCellValue('D'.$row, $d->penempatan?->perusahaan?->nama_perusahaan ?? '-');
+            $sheet->setCellValue('E'.$row, $d->penempatan?->guru?->nama ?? '-');
+            $sheet->setCellValue('F'.$row, $d->nilai_sikap);
+            $sheet->setCellValue('G'.$row, $d->nilai_keterampilan);
+            $sheet->setCellValue('H'.$row, $d->nilai_pengetahuan);
+            $sheet->setCellValue('I'.$row, $d->nilai_akhir);
+            $sheet->setCellValue('J'.$row, $d->catatan_guru ?? '-');
             $row++;
         }
 
         $lastRow = max(2, $row - 1);
         $this->styleHeader($spreadsheet, 'A1:J1', 'D97706');
-        $this->styleDataGrid($spreadsheet, 'A2:J' . $lastRow);
+        $this->styleDataGrid($spreadsheet, 'A2:J'.$lastRow);
 
         foreach (range('A', 'J') as $c) {
             $sheet->getColumnDimension($c)->setAutoSize(true);
         }
 
-        return $this->streamXlsx($spreadsheet, 'rekap_nilai_' . date('Ymd_His') . '.xlsx');
+        return $this->streamXlsx($spreadsheet, 'rekap_nilai_'.date('Ymd_His').'.xlsx');
     }
 
     /**
@@ -434,16 +437,16 @@ class ExportController extends Controller
     public function backupDatabase()
     {
         $dbPath = database_path('database.sqlite');
-        if (!file_exists($dbPath)) {
-            return back()->with('error', 'File database tidak ditemukan di ' . $dbPath);
+        if (! file_exists($dbPath)) {
+            return back()->with('error', 'File database tidak ditemukan di '.$dbPath);
         }
 
-        $backupFileName = 'sipkl_backup_' . date('Y_m_d_His') . '.sqlite';
+        $backupFileName = 'sipkl_backup_'.date('Y_m_d_His').'.sqlite';
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Backup Database',
             'Unduh Cadangan Database',
-            'Admin mengunduh file backup: ' . $backupFileName
+            'Admin mengunduh file backup: '.$backupFileName
         );
 
         return response()->download($dbPath, $backupFileName, [

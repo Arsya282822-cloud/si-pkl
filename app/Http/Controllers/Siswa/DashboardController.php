@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penempatan;
-use Illuminate\Http\Request;
+use App\Models\PengajuanPkl;
+use App\Models\Pengumuman;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -12,7 +13,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         // Find penempatan for this student
         // Assuming the currently active periode is what we want, or just get the latest one
         $penempatan = null;
@@ -23,12 +24,12 @@ class DashboardController extends Controller
                 ->latest()
                 ->first();
 
-            $pengajuanAktif = \App\Models\PengajuanPkl::where('siswa_id', $user->siswa->id)
+            $pengajuanAktif = PengajuanPkl::where('siswa_id', $user->siswa->id)
                 ->latest()
                 ->first();
         }
 
-        $pengumumans = \App\Models\Pengumuman::aktif()
+        $pengumumans = Pengumuman::aktif()
             ->forRole('siswa')
             ->orderByDesc('is_pinned')
             ->latest()

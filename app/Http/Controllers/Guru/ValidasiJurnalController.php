@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use App\Models\JurnalPkl;
 use App\Models\Penempatan;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class ValidasiJurnalController extends Controller
         $user = Auth::user();
         $guru = $user->guru;
 
-        if (!$guru) {
+        if (! $guru) {
             return redirect()->route('guru.dashboard')->with('error', 'Data guru tidak ditemukan.');
         }
 
@@ -60,7 +61,7 @@ class ValidasiJurnalController extends Controller
 
         // Check ownership
         $penempatanIds = Penempatan::where('guru_id', $guru->id)->pluck('id');
-        if (!$penempatanIds->contains($jurnal->penempatan_id)) {
+        if (! $penempatanIds->contains($jurnal->penempatan_id)) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -76,7 +77,7 @@ class ValidasiJurnalController extends Controller
 
         // Check ownership
         $penempatanIds = Penempatan::where('guru_id', $guru->id)->pluck('id');
-        if (!$penempatanIds->contains($jurnal->penempatan_id)) {
+        if (! $penempatanIds->contains($jurnal->penempatan_id)) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -92,7 +93,7 @@ class ValidasiJurnalController extends Controller
 
         $statusLabel = $request->status_validasi === 'disetujui' ? 'disetujui' : 'ditolak';
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'jurnal',
             "Validasi Jurnal {$statusLabel}",
             "Guru {$guru->nama} memvalidasi jurnal milik siswa {$jurnal->penempatan->siswa->nama} (Status: {$statusLabel})"

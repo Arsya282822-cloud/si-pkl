@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Instruktur;
 
 use App\Http\Controllers\Controller;
-use App\Models\Penempatan;
 use App\Models\AbsensiPkl;
+use App\Models\Penempatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +16,7 @@ class AbsensiController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan) {
+        if (! $perusahaan) {
             return redirect()->route('instruktur.dashboard')->with('error', 'Akun belum terhubung ke perusahaan.');
         }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Instruktur;
 use App\Http\Controllers\Controller;
 use App\Models\Penempatan;
 use App\Models\PenilaianPkl;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +17,7 @@ class PenilaianController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan) {
+        if (! $perusahaan) {
             return redirect()->route('instruktur.dashboard')->with('error', 'Akun belum terhubung ke perusahaan.');
         }
 
@@ -33,7 +34,7 @@ class PenilaianController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan || $penempatan->perusahaan_id !== $perusahaan->id) {
+        if (! $perusahaan || $penempatan->perusahaan_id !== $perusahaan->id) {
             abort(403);
         }
 
@@ -48,7 +49,7 @@ class PenilaianController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan || $penempatan->perusahaan_id !== $perusahaan->id) {
+        if (! $perusahaan || $penempatan->perusahaan_id !== $perusahaan->id) {
             abort(403);
         }
 
@@ -68,14 +69,14 @@ class PenilaianController extends Controller
                 'nilai_keterampilan' => $request->nilai_keterampilan,
                 'nilai_pengetahuan' => $request->nilai_pengetahuan,
                 'nilai_akhir' => $nilaiAkhir,
-                'catatan_guru' => $request->catatan_guru ? '[Catatan Instruktur]: ' . $request->catatan_guru : 'Siswa berkinerja baik di industri.',
+                'catatan_guru' => $request->catatan_guru ? '[Catatan Instruktur]: '.$request->catatan_guru : 'Siswa berkinerja baik di industri.',
             ]
         );
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Penilaian PKL DUDI',
             'Input Nilai Siswa oleh Instruktur',
-            'Instruktur memberi nilai akhir ' . $nilaiAkhir . ' untuk ' . ($penempatan->siswa?->nama ?? 'siswa')
+            'Instruktur memberi nilai akhir '.$nilaiAkhir.' untuk '.($penempatan->siswa?->nama ?? 'siswa')
         );
 
         return redirect()->route('instruktur.penilaian.index')->with('success', 'Nilai PKL siswa berhasil disimpan!');

@@ -37,7 +37,7 @@ class Pengumuman extends Model
     {
         return $query->where(function ($q) use ($roleName) {
             $q->where('target_role', 'semua')
-              ->orWhere('target_role', $roleName);
+                ->orWhere('target_role', $roleName);
         });
     }
 }

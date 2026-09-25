@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use App\Services\InstrukturAccountService;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -12,7 +12,7 @@ return new class extends Migration
     {
         try {
             InstrukturAccountService::syncAllDudiAccounts('dudi1234');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Log or continue
         }
     }

@@ -55,7 +55,7 @@ class JurusanController extends Controller
     public function update(Request $request, Jurusan $jurusan)
     {
         $validated = $request->validate([
-            'kode_jurusan' => ['required', 'string', 'max:20', 'unique:jurusan,kode_jurusan,' . $jurusan->id],
+            'kode_jurusan' => ['required', 'string', 'max:20', 'unique:jurusan,kode_jurusan,'.$jurusan->id],
             'nama_jurusan' => ['required', 'string', 'max:255'],
             'deskripsi' => ['nullable', 'string'],
             'status' => ['required', 'boolean'],

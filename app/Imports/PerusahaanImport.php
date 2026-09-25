@@ -13,13 +13,13 @@ class PerusahaanImport implements ToModel, WithHeadingRow, WithValidation
     {
         return new Perusahaan([
             'nama_perusahaan' => $row['nama_perusahaan'],
-            'alamat'          => $row['alamat'] ?? '-',
-            'kota'            => $row['kota'] ?? null,
-            'no_telepon'      => $row['no_telepon'] ?? null,
-            'email'           => $row['email'] ?? null,
-            'website'         => $row['website'] ?? null,
-            'nama_pimpinan'   => $row['nama_pimpinan'] ?? null,
-            'status'          => strtolower($row['status'] ?? 'aktif'),
+            'alamat' => $row['alamat'] ?? '-',
+            'kota' => $row['kota'] ?? null,
+            'no_telepon' => $row['no_telepon'] ?? null,
+            'email' => $row['email'] ?? null,
+            'website' => $row['website'] ?? null,
+            'nama_pimpinan' => $row['nama_pimpinan'] ?? null,
+            'status' => strtolower($row['status'] ?? 'aktif'),
         ]);
     }
 
@@ -27,13 +27,13 @@ class PerusahaanImport implements ToModel, WithHeadingRow, WithValidation
     {
         return [
             'nama_perusahaan' => 'required|string|max:255',
-            'alamat'          => 'nullable|string',
-            'kota'            => 'nullable|string|max:255',
-            'no_telepon'      => 'nullable|string|max:30',
-            'email'           => 'nullable|email|max:255',
-            'website'         => 'nullable|url|max:255',
-            'nama_pimpinan'   => 'nullable|string|max:255',
-            'status'          => 'nullable|in:aktif,nonaktif,AKTIF,NONAKTIF,Aktif,Nonaktif',
+            'alamat' => 'nullable|string',
+            'kota' => 'nullable|string|max:255',
+            'no_telepon' => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:255',
+            'website' => 'nullable|url|max:255',
+            'nama_pimpinan' => 'nullable|string|max:255',
+            'status' => 'nullable|in:aktif,nonaktif,AKTIF,NONAKTIF,Aktif,Nonaktif',
         ];
     }
 }

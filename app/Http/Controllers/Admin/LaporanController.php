@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AbsensiPkl;
+use App\Models\Jurusan;
 use App\Models\Penempatan;
 use App\Models\PeriodePkl;
-use App\Models\Jurusan;
-use App\Models\Perusahaan;
-use App\Models\AbsensiPkl;
-use App\Models\PenilaianPkl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +20,7 @@ class LaporanController extends Controller
             'perusahaan',
             'guru',
             'periodePkl',
-            'penilaian'
+            'penilaian',
         ]);
 
         if (Auth::user()->role?->nama_role === 'guru') {
@@ -74,7 +72,7 @@ class LaporanController extends Controller
         if ($q !== '') {
             $query->whereHas('siswa', function ($sq) use ($q) {
                 $sq->where('nama', 'like', "%{$q}%")
-                   ->orWhere('nis', 'like', "%{$q}%");
+                    ->orWhere('nis', 'like', "%{$q}%");
             })->orWhereHas('perusahaan', function ($pq) use ($q) {
                 $pq->where('nama_perusahaan', 'like', "%{$q}%");
             });
@@ -89,6 +87,7 @@ class LaporanController extends Controller
             $p->alpa_count = $absensi->where('status', 'alpa')->count();
             $p->total_absen = $absensi->count();
             $p->persen_kehadiran = $p->total_absen > 0 ? round(($p->hadir_count / $p->total_absen) * 100, 1) : 0;
+
             return $p;
         });
 
@@ -119,7 +118,7 @@ class LaporanController extends Controller
         if ($q !== '') {
             $query->whereHas('siswa', function ($sq) use ($q) {
                 $sq->where('nama', 'like', "%{$q}%")
-                   ->orWhere('nis', 'like', "%{$q}%");
+                    ->orWhere('nis', 'like', "%{$q}%");
             });
         }
 

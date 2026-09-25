@@ -23,7 +23,7 @@ class PengumumanController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
-                  ->orWhere('konten', 'like', "%{$search}%");
+                    ->orWhere('konten', 'like', "%{$search}%");
             });
         }
 
@@ -58,9 +58,9 @@ class PengumumanController extends Controller
         $filePath = null;
         if ($request->hasFile('file_lampiran')) {
             $file = $request->file('file_lampiran');
-            $fileName = 'lampiran_' . time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $fileName = 'lampiran_'.time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $file->move(public_path('uploads/pengumuman'), $fileName);
-            $filePath = 'uploads/pengumuman/' . $fileName;
+            $filePath = 'uploads/pengumuman/'.$fileName;
         }
 
         Pengumuman::create([
@@ -100,9 +100,9 @@ class PengumumanController extends Controller
                 @unlink(public_path($filePath));
             }
             $file = $request->file('file_lampiran');
-            $fileName = 'lampiran_' . time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $fileName = 'lampiran_'.time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $file->move(public_path('uploads/pengumuman'), $fileName);
-            $filePath = 'uploads/pengumuman/' . $fileName;
+            $filePath = 'uploads/pengumuman/'.$fileName;
         }
 
         $pengumuman->update([

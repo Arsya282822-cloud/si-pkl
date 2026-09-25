@@ -17,7 +17,6 @@ use App\Models\Role;
 use App\Models\Siswa;
 use App\Models\User;
 use App\Services\ActivityLogger;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
 class DevToolController extends Controller
@@ -28,18 +27,18 @@ class DevToolController extends Controller
     public function dashboardRedirect()
     {
         $user = auth()->user();
-        if (!$user) {
+        if (! $user) {
             return redirect('login');
         }
 
         $role = $user->role?->nama_role ?? '';
 
         return match ($role) {
-            'admin'      => redirect()->route('admin.dashboard'),
-            'siswa'      => redirect()->route('siswa.dashboard'),
-            'guru'       => redirect()->route('guru.dashboard'),
+            'admin' => redirect()->route('admin.dashboard'),
+            'siswa' => redirect()->route('siswa.dashboard'),
+            'guru' => redirect()->route('guru.dashboard'),
             'instruktur' => redirect()->route('instruktur.dashboard'),
-            default      => view('dashboard'),
+            default => view('dashboard'),
         };
     }
 
@@ -48,7 +47,7 @@ class DevToolController extends Controller
      */
     public function setupDummy()
     {
-        if (app()->environment('production') && !config('app.debug')) {
+        if (app()->environment('production') && ! config('app.debug')) {
             return redirect()->route('admin.dashboard')->with('error', 'Fitur Setup Dummy dinonaktifkan pada mode Production.');
         }
 
@@ -67,8 +66,8 @@ class DevToolController extends Controller
         $perusahaanList = [];
         for ($i = 1; $i <= 3; $i++) {
             $perusahaanList[] = Perusahaan::firstOrCreate(
-                ['nama_perusahaan' => 'PT Teknologi Masa Depan ' . $i],
-                ['bidang_usaha' => 'IT Software House', 'alamat' => 'Jl. Sudirman No. 12' . $i, 'pembimbing_industri' => 'Bpk. Budi ' . $i]
+                ['nama_perusahaan' => 'PT Teknologi Masa Depan '.$i],
+                ['bidang_usaha' => 'IT Software House', 'alamat' => 'Jl. Sudirman No. 12'.$i, 'pembimbing_industri' => 'Bpk. Budi '.$i]
             );
         }
 
@@ -128,7 +127,7 @@ class DevToolController extends Controller
 
                 JurnalPkl::firstOrCreate(
                     ['penempatan_id' => $penempatan->id, 'tanggal' => $tanggal],
-                    ['kegiatan' => "Melakukan tugas harian ke-" . (10 - $j) . " di industri.", 'status_validasi' => $j > 2 ? 'disetujui' : 'menunggu']
+                    ['kegiatan' => 'Melakukan tugas harian ke-'.(10 - $j).' di industri.', 'status_validasi' => $j > 2 ? 'disetujui' : 'menunggu']
                 );
             }
 
@@ -167,7 +166,7 @@ class DevToolController extends Controller
      */
     public function wipeDummy()
     {
-        if (app()->environment('production') && !config('app.debug')) {
+        if (app()->environment('production') && ! config('app.debug')) {
             return redirect()->route('admin.dashboard')->with('error', 'Fitur Wipe Dummy dinonaktifkan pada mode Production.');
         }
 
@@ -205,7 +204,8 @@ class DevToolController extends Controller
             return redirect()->route('admin.dashboard')->with('success', 'Akun Dummy berhasil dibersihkan.');
         } catch (\Exception $e) {
             Schema::enableForeignKeyConstraints();
-            return redirect()->route('admin.dashboard')->with('error', 'Gagal: ' . $e->getMessage());
+
+            return redirect()->route('admin.dashboard')->with('error', 'Gagal: '.$e->getMessage());
         }
     }
 }

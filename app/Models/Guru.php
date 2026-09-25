@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Guru extends Model
 {
     protected $table = 'guru';
+
     protected $fillable = ['user_id', 'nip', 'nama', 'jenis_kelamin', 'no_hp', 'alamat'];
 
     protected static function booted()
     {
         static::saving(function ($guru) {
-            if (!empty($guru->nama)) {
+            if (! empty($guru->nama)) {
                 $guru->nama = mb_strtoupper(trim($guru->nama));
             }
         });

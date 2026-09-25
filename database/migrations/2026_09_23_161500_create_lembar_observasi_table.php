@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('lembar_observasi')) {
+        if (! Schema::hasTable('lembar_observasi')) {
             Schema::create('lembar_observasi', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('penempatan_id')->nullable()->constrained('penempatan')->onDelete('cascade');
                 $table->foreignId('guru_id')->nullable()->constrained('guru')->onDelete('set null');
                 $table->foreignId('perusahaan_id')->nullable()->constrained('perusahaan')->onDelete('set null');
                 $table->foreignId('siswa_id')->nullable()->constrained('siswa')->onDelete('set null');
-                
+
                 // I. Data Institusi
                 $table->string('nama_institusi')->nullable();
                 $table->text('alamat_institusi')->nullable();

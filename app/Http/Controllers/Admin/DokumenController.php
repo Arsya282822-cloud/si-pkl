@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Penempatan;
 use App\Models\Guru;
+use App\Models\Jurusan;
+use App\Models\Kelas;
+use App\Models\Penempatan;
 use App\Models\PeriodePkl;
+use App\Models\Perusahaan;
 use Illuminate\Http\Request;
 
 class DokumenController extends Controller
@@ -32,19 +35,19 @@ class DokumenController extends Controller
             })
             ->get();
 
-        $kelasList = \App\Models\Kelas::all();
-        $jurusanList = \App\Models\Jurusan::all();
+        $kelasList = Kelas::all();
+        $jurusanList = Jurusan::all();
         $periodeList = PeriodePkl::all();
-        $perusahaanList = \App\Models\Perusahaan::where('status', 'aktif')->orderBy('nama_perusahaan')->get();
+        $perusahaanList = Perusahaan::where('status', 'aktif')->orderBy('nama_perusahaan')->get();
 
         return view('admin.dokumen.index', compact(
-            'penempatanList', 
-            'guruList', 
-            'q', 
-            'tab', 
-            'kelasList', 
-            'jurusanList', 
-            'periodeList', 
+            'penempatanList',
+            'guruList',
+            'q',
+            'tab',
+            'kelasList',
+            'jurusanList',
+            'periodeList',
             'perusahaanList'
         ));
     }
@@ -52,6 +55,7 @@ class DokumenController extends Controller
     public function suratPengantar(Penempatan $penempatan)
     {
         $penempatan->load(['siswa.kelas', 'siswa.jurusan', 'perusahaan', 'guru', 'periodePkl']);
+
         return view('admin.dokumen.surat_pengantar', compact('penempatan'));
     }
 
@@ -67,14 +71,14 @@ class DokumenController extends Controller
             $query->where('perusahaan_id', $perusahaanId);
         }
         if ($kelasId) {
-            $query->whereHas('siswa', fn($q) => $q->where('kelas_id', $kelasId));
+            $query->whereHas('siswa', fn ($q) => $q->where('kelas_id', $kelasId));
         }
         if ($periodeId) {
             $query->where('periode_pkl_id', $periodeId);
         }
 
         $penempatanList = $query->get();
-        $perusahaan = $perusahaanId ? \App\Models\Perusahaan::find($perusahaanId) : null;
+        $perusahaan = $perusahaanId ? Perusahaan::find($perusahaanId) : null;
         $periode = $periodeId ? PeriodePkl::find($periodeId) : PeriodePkl::where('status', 'aktif')->first();
 
         return view('admin.dokumen.batch_surat_pengantar', compact('penempatanList', 'perusahaan', 'periode'));
@@ -98,12 +102,14 @@ class DokumenController extends Controller
     public function suratPenarikan(Penempatan $penempatan)
     {
         $penempatan->load(['siswa.kelas', 'siswa.jurusan', 'perusahaan', 'guru', 'periodePkl']);
+
         return view('admin.dokumen.surat_penarikan', compact('penempatan'));
     }
 
     public function sertifikat(Penempatan $penempatan)
     {
         $penempatan->load(['siswa.kelas', 'siswa.jurusan', 'perusahaan', 'guru', 'periodePkl', 'penilaian']);
+
         return view('admin.dokumen.sertifikat', compact('penempatan'));
     }
 
@@ -116,18 +122,18 @@ class DokumenController extends Controller
         $query = Penempatan::with(['siswa.kelas', 'siswa.jurusan', 'perusahaan', 'guru', 'periodePkl', 'penilaian']);
 
         if ($kelasId) {
-            $query->whereHas('siswa', fn($q) => $q->where('kelas_id', $kelasId));
+            $query->whereHas('siswa', fn ($q) => $q->where('kelas_id', $kelasId));
         }
         if ($jurusanId) {
-            $query->whereHas('siswa', fn($q) => $q->where('jurusan_id', $jurusanId));
+            $query->whereHas('siswa', fn ($q) => $q->where('jurusan_id', $jurusanId));
         }
         if ($periodeId) {
             $query->where('periode_pkl_id', $periodeId);
         }
 
         $penempatanList = $query->get();
-        $kelas = $kelasId ? \App\Models\Kelas::find($kelasId) : null;
-        $jurusan = $jurusanId ? \App\Models\Jurusan::find($jurusanId) : null;
+        $kelas = $kelasId ? Kelas::find($kelasId) : null;
+        $jurusan = $jurusanId ? Jurusan::find($jurusanId) : null;
         $periode = $periodeId ? PeriodePkl::find($periodeId) : PeriodePkl::where('status', 'aktif')->first();
 
         return view('admin.dokumen.batch_sertifikat', compact('penempatanList', 'kelas', 'jurusan', 'periode'));
@@ -136,7 +142,7 @@ class DokumenController extends Controller
     public function piagamDudi(Penempatan $penempatan)
     {
         $penempatan->load(['siswa.kelas', 'siswa.jurusan', 'perusahaan', 'periodePkl']);
+
         return view('admin.dokumen.piagam_dudi', compact('penempatan'));
     }
 }
-

@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Perusahaan;
-use Illuminate\Http\Request;
 use App\Imports\PerusahaanImport;
+use App\Models\PembimbingIndustri;
+use App\Models\Perusahaan;
+use App\Models\Role;
+use App\Models\User;
+use App\Services\ActivityLogger;
+use App\Services\InstrukturAccountService;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PerusahaanController extends Controller
@@ -13,11 +18,11 @@ class PerusahaanController extends Controller
     public function index(Request $request)
     {
         // Auto-sync short email accounts (dudi{id}@dudi.com) if legacy format or missing accounts exist
-        $hasLegacyOrMissing = \App\Models\PembimbingIndustri::where('email', 'like', 'instruktur.%@dudi.com')->exists()
-            || \App\Models\Perusahaan::doesntHave('pembimbingIndustri')->exists();
+        $hasLegacyOrMissing = PembimbingIndustri::where('email', 'like', 'instruktur.%@dudi.com')->exists()
+            || Perusahaan::doesntHave('pembimbingIndustri')->exists();
 
         if ($hasLegacyOrMissing) {
-            \App\Services\InstrukturAccountService::syncAllDudiAccounts('dudi1234');
+            InstrukturAccountService::syncAllDudiAccounts('dudi1234');
         }
 
         $q = trim((string) $request->input('q'));
@@ -101,14 +106,15 @@ class PerusahaanController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:2048'
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
         ]);
 
         try {
             Excel::import(new PerusahaanImport, $request->file('file'));
+
             return back()->with('success', 'Data Perusahaan berhasil diimport.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengimport data: '.$e->getMessage());
         }
     }
 
@@ -122,10 +128,10 @@ class PerusahaanController extends Controller
             'password' => ['nullable', 'string', 'min:6'],
         ]);
 
-        $roleInstruktur = \App\Models\Role::firstOrCreate(['nama_role' => 'instruktur']);
+        $roleInstruktur = Role::firstOrCreate(['nama_role' => 'instruktur']);
         $passwordText = $request->filled('password') ? $request->password : 'dudi1234';
 
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
         if ($user) {
             $user->update([
                 'name' => $request->nama,
@@ -134,7 +140,7 @@ class PerusahaanController extends Controller
                 'status' => 'aktif',
             ]);
         } else {
-            $user = \App\Models\User::create([
+            $user = User::create([
                 'name' => $request->nama,
                 'email' => $request->email,
                 'password' => bcrypt($passwordText),
@@ -143,7 +149,7 @@ class PerusahaanController extends Controller
             ]);
         }
 
-        \App\Models\PembimbingIndustri::updateOrCreate(
+        PembimbingIndustri::updateOrCreate(
             ['perusahaan_id' => $perusahaan->id, 'user_id' => $user->id],
             [
                 'nama' => $request->nama,
@@ -153,10 +159,10 @@ class PerusahaanController extends Controller
             ]
         );
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Kelola Akun Instruktur',
             'Buat Akun Instruktur DUDI',
-            'Admin membuat/memperbarui akun instruktur ' . $request->nama . ' untuk ' . $perusahaan->nama_perusahaan
+            'Admin membuat/memperbarui akun instruktur '.$request->nama.' untuk '.$perusahaan->nama_perusahaan
         );
 
         return back()->with('success', "Akun Instruktur DUDI berhasil dibuat/diperbarui. Email: {$request->email} | Password: {$passwordText}");
@@ -164,9 +170,9 @@ class PerusahaanController extends Controller
 
     public function syncAllInstruktur()
     {
-        $count = \App\Services\InstrukturAccountService::syncAllDudiAccounts('dudi1234');
+        $count = InstrukturAccountService::syncAllDudiAccounts('dudi1234');
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Kelola Akun Instruktur',
             'Generate Akun Semua Instruktur',
             "Admin meng-generate/mereset {$count} akun Instruktur DUDI dengan password default 'dudi1234'"

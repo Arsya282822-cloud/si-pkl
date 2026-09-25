@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AbsensiPkl;
 use App\Models\Guru;
 use App\Models\JurnalPkl;
+use App\Models\Jurusan;
 use App\Models\Penempatan;
-use App\Models\Perusahaan;
-use App\Models\Siswa;
 use App\Models\PeriodePkl;
+use App\Models\Perusahaan;
+use App\Models\Pks;
+use App\Models\Siswa;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -21,24 +26,24 @@ class DashboardController extends Controller
             'total_penempatan' => Penempatan::count(),
             'siswa_belum_ditempatkan' => Siswa::whereDoesntHave('penempatan')->count(),
             'jurnal_menunggu' => JurnalPkl::where('status_validasi', 'menunggu')->count(),
-            'total_pks' => \Illuminate\Support\Facades\Schema::hasTable('pks') ? \App\Models\Pks::count() : 0,
+            'total_pks' => Schema::hasTable('pks') ? Pks::count() : 0,
         ];
 
         $periodeAktif = PeriodePkl::where('status', 'aktif')->first();
 
         // 1. Sinkronisasi otomatis jurusan_id pada siswa berdasarkan kelas yang ditempati
-        if (\Illuminate\Support\Facades\Schema::hasTable('siswa') && \Illuminate\Support\Facades\Schema::hasTable('kelas')) {
-            \Illuminate\Support\Facades\DB::table('siswa')
+        if (Schema::hasTable('siswa') && Schema::hasTable('kelas')) {
+            DB::table('siswa')
                 ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
                 ->where(function ($q) {
                     $q->whereColumn('siswa.jurusan_id', '!=', 'kelas.jurusan_id')
-                      ->orWhereNull('siswa.jurusan_id');
+                        ->orWhereNull('siswa.jurusan_id');
                 })
-                ->update(['siswa.jurusan_id' => \Illuminate\Support\Facades\DB::raw('kelas.jurusan_id')]);
+                ->update(['siswa.jurusan_id' => DB::raw('kelas.jurusan_id')]);
         }
 
         // Chart 1: Persebaran Siswa per Jurusan
-        $jurusanStats = \App\Models\Jurusan::withCount('siswa')->orderBy('id')->get();
+        $jurusanStats = Jurusan::withCount('siswa')->orderBy('id')->get();
         $jurusanLabels = $jurusanStats->map(function ($j) {
             return $j->kode_jurusan ? "{$j->kode_jurusan} - {$j->nama_jurusan}" : $j->nama_jurusan;
         })->toArray();
@@ -63,9 +68,9 @@ class DashboardController extends Controller
             $dateStr = $d->format('Y-m-d');
             $presensiLabels[] = $d->translatedFormat('d M');
 
-            $presensiHadir[] = \App\Models\AbsensiPkl::where('tanggal', $dateStr)->where('status', 'hadir')->count();
-            $presensiIzin[] = \App\Models\AbsensiPkl::where('tanggal', $dateStr)->where('status', 'izin')->count();
-            $presensiSakit[] = \App\Models\AbsensiPkl::where('tanggal', $dateStr)->where('status', 'sakit')->count();
+            $presensiHadir[] = AbsensiPkl::where('tanggal', $dateStr)->where('status', 'hadir')->count();
+            $presensiIzin[] = AbsensiPkl::where('tanggal', $dateStr)->where('status', 'izin')->count();
+            $presensiSakit[] = AbsensiPkl::where('tanggal', $dateStr)->where('status', 'sakit')->count();
         }
 
         // Recent jurnal submissions
@@ -75,8 +80,8 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', compact(
-            'stats', 
-            'periodeAktif', 
+            'stats',
+            'periodeAktif',
             'recentJurnal',
             'jurusanStats',
             'jurusanLabels',

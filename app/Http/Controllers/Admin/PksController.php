@@ -15,8 +15,8 @@ class PksController extends Controller
         $pksList = Pks::query()
             ->when($q !== '', function ($query) use ($q) {
                 $query->where('nama_dudi', 'like', "%{$q}%")
-                      ->orWhere('nomor_pks', 'like', "%{$q}%")
-                      ->orWhere('judul_pks', 'like', "%{$q}%");
+                    ->orWhere('nomor_pks', 'like', "%{$q}%")
+                    ->orWhere('judul_pks', 'like', "%{$q}%");
             })
             ->latest('id')
             ->paginate(10)
@@ -89,6 +89,7 @@ class PksController extends Controller
     public function destroy(Pks $pk)
     {
         $pk->delete();
+
         return redirect()->route('admin.pks.index')->with('success', 'Data PKS berhasil dihapus.');
     }
 }

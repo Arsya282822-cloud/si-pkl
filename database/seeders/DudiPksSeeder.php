@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Perusahaan;
 use App\Models\Pks;
+use Illuminate\Database\Seeder;
 
 class DudiPksSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'hrd@garudacyber.co.id',
                 'website' => 'www.garudacyber.co.id',
                 'nama_pimpinan' => 'Ir. Budi Santoso, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Time Excelindo Riau',
@@ -33,7 +33,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'info@excelindo-riau.com',
                 'website' => 'www.excelindo-riau.com',
                 'nama_pimpinan' => 'Rian Hidayat, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Lancang Kuning Digital Media',
@@ -43,7 +43,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kontak@lancangkuningmedia.id',
                 'website' => 'www.lancangkuningmedia.id',
                 'nama_pimpinan' => 'Ahmad Fauzi, M.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Riau Media Teknologi',
@@ -53,7 +53,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'career@riaumediatek.co.id',
                 'website' => 'www.riaumediatek.co.id',
                 'nama_pimpinan' => 'Hendra Wijaya, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Pekanbaru Web Creative',
@@ -63,7 +63,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'halo@pkuwebcreative.com',
                 'website' => 'www.pkuwebcreative.com',
                 'nama_pimpinan' => 'Dedi Pratama, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Inovasi Solusi Digital',
@@ -73,7 +73,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'hr@inovasidigital.id',
                 'website' => 'www.inovasidigital.id',
                 'nama_pimpinan' => 'Wahyu Kurniawan, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Nusantara App Studio',
@@ -83,7 +83,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'dev@nusantaraapp.com',
                 'website' => 'www.nusantaraapp.com',
                 'nama_pimpinan' => 'Fajar Ramadhan, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Kreasi Digital Nusantara',
@@ -93,7 +93,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'info@kreasidigital.co.id',
                 'website' => 'www.kreasidigital.co.id',
                 'nama_pimpinan' => 'Linda Permata, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Cyber Riau Mandiri',
@@ -103,7 +103,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'admin@cyberriaumandiri.com',
                 'website' => 'www.cyberriaumandiri.com',
                 'nama_pimpinan' => 'Rizki Ananda, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Cipta Solusi Informatika',
@@ -113,7 +113,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kontak@ciptasolusi.co.id',
                 'website' => 'www.ciptasolusi.co.id',
                 'nama_pimpinan' => 'Agus Setiawan, M.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
 
             // ==========================================
@@ -127,7 +127,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'witel.riau@telkom.co.id',
                 'website' => 'www.telkom.co.id',
                 'nama_pimpinan' => 'Muhammad Ridwan, S.T., M.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Indonesia Comnets Plus (PLN Icon Plus) SBU Regional Riau',
@@ -137,7 +137,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'contact.riau@plniconplus.co.id',
                 'website' => 'www.plniconplus.co.id',
                 'nama_pimpinan' => 'Eko Prasetyo, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Mora Telematika Indonesia (Moratelindo) Pekanbaru',
@@ -147,7 +147,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'service.pku@moratelindo.co.id',
                 'website' => 'www.moratelindo.co.id',
                 'nama_pimpinan' => 'Bayu Aji, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Riau Net Solusindo',
@@ -157,7 +157,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'support@riaunetsolusindo.id',
                 'website' => 'www.riaunetsolusindo.id',
                 'nama_pimpinan' => 'Doni Saputra, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Hypernet Technologies Pekanbaru',
@@ -167,7 +167,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'sales.pku@hypernet.co.id',
                 'website' => 'www.hypernet.co.id',
                 'nama_pimpinan' => 'Surya Dharma, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Global Network Solution',
@@ -177,7 +177,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'info@globalnetworksolution.com',
                 'website' => 'www.globalnetworksolution.com',
                 'nama_pimpinan' => 'Ilham Akbar, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Media Antar Nusa (Nusanet) Pekanbaru',
@@ -187,7 +187,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'cs.pku@nusa.net.id',
                 'website' => 'www.nusa.net.id',
                 'nama_pimpinan' => 'Tri Wahyudi, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Sentra Komputer & Network',
@@ -197,7 +197,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'sentrakomputerpku@gmail.com',
                 'website' => 'www.sentrakomputerpku.com',
                 'nama_pimpinan' => 'Andi Maulana, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Cendana Teknika Utama Cabang Riau',
@@ -207,7 +207,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'info.pku@cendana2000.com',
                 'website' => 'www.cendana2000.com',
                 'nama_pimpinan' => 'Dimas Anggara, S.T.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'CV Mitra Jaringan Riau',
@@ -217,7 +217,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'mitrajaringanriau@gmail.com',
                 'website' => 'www.mitrajaringanriau.com',
                 'nama_pimpinan' => 'Anton Wijaya, S.Kom.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
 
             // ==========================================
@@ -231,7 +231,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kap.syamsir@gmail.com',
                 'website' => 'www.kapsyamsir.co.id',
                 'nama_pimpinan' => 'Drs. Syamsir, M.Ak., Ak., CA, CPA',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Bank Riau Kepri Syariah (Perseroda) Kantor Pusat',
@@ -241,7 +241,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'sdm@brksyariah.co.id',
                 'website' => 'www.brksyariah.co.id',
                 'nama_pimpinan' => 'Hj. Nurhasanah, S.E., M.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Kantor Konsultan Pajak (KKP) Zulfa Hendra & Rekan',
@@ -251,7 +251,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kkp.zulfahendra@gmail.com',
                 'website' => 'www.kkpzulfahendra.com',
                 'nama_pimpinan' => 'Zulfa Hendra, S.E., BKP, Ak.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT BPR Fianka Rezeki Mandiri',
@@ -261,7 +261,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'bprfianka@yahoo.co.id',
                 'website' => 'www.bprfianka.com',
                 'nama_pimpinan' => 'Bambang Irawan, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Koperasi Pegawai Negeri (KPN) Balai Kota Pekanbaru',
@@ -271,7 +271,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kpn.balaikotapku@gmail.com',
                 'website' => 'www.kpnbalaikotapku.or.id',
                 'nama_pimpinan' => 'Hj. Farida Hanum, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'KAP Erfan & Rakhmadi Cabang Pekanbaru',
@@ -281,7 +281,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kap.erfan.pku@gmail.com',
                 'website' => 'www.kaperfanrakhmadi.com',
                 'nama_pimpinan' => 'Rakhmadi, S.E., Ak., CA, CPA',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Pegadaian (Persero) Area Pekanbaru',
@@ -291,7 +291,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'area.pekanbaru@pegadaian.co.id',
                 'website' => 'www.pegadaian.co.id',
                 'nama_pimpinan' => 'Hendro Siswanto, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Koperasi Simpan Pinjam Syariah 212 Pekanbaru Mandiri',
@@ -301,7 +301,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'ksps212pku@gmail.com',
                 'website' => 'www.ksps212pku.com',
                 'nama_pimpinan' => 'H. Rasyid Ridho, S.E.I.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Kantor Jasa Akuntan (KJA) Prima Akun Solusi',
@@ -311,7 +311,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'primaakunjasa@gmail.com',
                 'website' => 'www.primaakunjasa.com',
                 'nama_pimpinan' => 'Maya Sari, S.E., M.Si., Ak.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT BPR Tuah Madani Riau',
@@ -321,7 +321,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'bprtuahmadani@gmail.com',
                 'website' => 'www.bprtuahmadani.com',
                 'nama_pimpinan' => 'T. Iskandar, S.E., M.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
 
             // ==========================================
@@ -335,7 +335,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'disdik@riau.go.id',
                 'website' => 'www.disdik.riau.go.id',
                 'nama_pimpinan' => 'Dr. H. Wan Syafruddin, M.Si.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Badan Pendapatan Daerah (Bapenda) Kota Pekanbaru',
@@ -345,7 +345,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'bapenda@pekanbaru.go.id',
                 'website' => 'www.bapenda.pekanbaru.go.id',
                 'nama_pimpinan' => 'Drs. H. Tengku Arifin, M.Si.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT PLN (Persero) Unit Induk Distribusi Riau & Kepri',
@@ -355,7 +355,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'humas.uidriau@pln.co.id',
                 'website' => 'www.pln.co.id',
                 'nama_pimpinan' => 'Agung Wicaksono, S.T., M.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Kantor Notaris & PPAT Fransiska, S.H., M.Kn.',
@@ -365,7 +365,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'notaris.fransiska.pku@gmail.com',
                 'website' => 'www.notarisfransiska.id',
                 'nama_pimpinan' => 'Fransiska, S.H., M.Kn.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Pos Indonesia (Persero) Kantor Pos Pekanbaru 28000',
@@ -375,7 +375,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kprk.pekanbaru@posindonesia.co.id',
                 'website' => 'www.posindonesia.co.id',
                 'nama_pimpinan' => 'Rusli Effendi, S.Sos.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'BPJS Ketenagakerjaan Kantor Cabang Pekanbaru Kota',
@@ -385,7 +385,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'kacab.pekanbarukota@bpjsketenagakerjaan.go.id',
                 'website' => 'www.bpjsketenagakerjaan.go.id',
                 'nama_pimpinan' => 'Anwar Fuadi, S.Sos., M.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Perkebunan Nusantara IV Regional Riau',
@@ -395,7 +395,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'sekretariat@ptpn4.co.id',
                 'website' => 'www.ptpn4.co.id',
                 'nama_pimpinan' => 'Ir. H. Dedi Iskandar, M.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Dinas Perpustakaan dan Kearsipan Kota Pekanbaru',
@@ -405,7 +405,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'dispusip@pekanbaru.go.id',
                 'website' => 'www.dispusip.pekanbaru.go.id',
                 'nama_pimpinan' => 'Hj. Sri Wahyuni, S.Pd., M.Pd.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Kantor Notaris & PPAT M. Ridwan, S.H., M.Kn.',
@@ -415,7 +415,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'notaris.mridwan@gmail.com',
                 'website' => 'www.notarismridwan.com',
                 'nama_pimpinan' => 'M. Ridwan, S.H., M.Kn.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Sarana Pembangunan Pekanbaru (BUMD)',
@@ -425,7 +425,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'sekretariat@spppekanbaru.co.id',
                 'website' => 'www.spppekanbaru.co.id',
                 'nama_pimpinan' => 'Faisal Riza, S.STP., M.Si.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
 
             // ==========================================
@@ -439,7 +439,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'hrd.dcpekanbaru@indomaret.co.id',
                 'website' => 'www.indomaret.co.id',
                 'nama_pimpinan' => 'Joko Susilo, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'PT Sumber Alfaria Trijaya Tbk (Alfamart Branch Pekanbaru)',
@@ -449,7 +449,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'recruitment.pku@alfamart.co.id',
                 'website' => 'www.alfamart.co.id',
                 'nama_pimpinan' => 'Gunawan Wibisono, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Mal SKA Pekanbaru (PT Citraciti Pacific)',
@@ -459,7 +459,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'management@malska.com',
                 'website' => 'www.malska.com',
                 'nama_pimpinan' => 'Ardianto Kurniawan, B.Com.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Living World Pekanbaru (PT Kawan Lama Sejahtera)',
@@ -469,7 +469,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'customer.pku@livingworld.co.id',
                 'website' => 'www.livingworld.co.id',
                 'nama_pimpinan' => 'Sony Kurnia, S.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Transmart Carrefour Pekanbaru',
@@ -479,7 +479,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'store.pku@transretail.co.id',
                 'website' => 'www.transmart.co.id',
                 'nama_pimpinan' => 'Hery Prasetya, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Matahari Department Store Mal Ciputra Seraya',
@@ -489,7 +489,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'store315@matahari.co.id',
                 'website' => 'www.matahari.com',
                 'nama_pimpinan' => 'Rina Marlina, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Hypermart Mal SKA Pekanbaru',
@@ -499,7 +499,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'hypermart.ska@mpc.co.id',
                 'website' => 'www.hypermart.co.id',
                 'nama_pimpinan' => 'Denny Setiawan, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Erafone Megastore Mall Living World Pekanbaru',
@@ -509,7 +509,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'erafone.livingworld@erajaya.com',
                 'website' => 'www.eraspace.com',
                 'nama_pimpinan' => 'Kelvin Tan, S.M.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'ACE Hardware Mal Pekanbaru',
@@ -519,7 +519,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'ace.malpku@kawanlamagroup.com',
                 'website' => 'www.acehardware.co.id',
                 'nama_pimpinan' => 'Teguh Santoso, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
             [
                 'nama_perusahaan' => 'Gramedia Mal Ciputra Seraya Pekanbaru',
@@ -529,7 +529,7 @@ class DudiPksSeeder extends Seeder
                 'email' => 'gramedia.ciputrapku@gramedia.id',
                 'website' => 'www.gramedia.com',
                 'nama_pimpinan' => 'Anita Rahayu, S.E.',
-                'status' => 'aktif'
+                'status' => 'aktif',
             ],
         ];
 
@@ -561,7 +561,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-567891',
                 'contact_person' => 'Rahmat Hidayat, S.Kom.',
                 'telepon_cp' => '0812-7890-1122',
-                'jabatan_cp' => 'General Manager & HR Head'
+                'jabatan_cp' => 'General Manager & HR Head',
             ],
             [
                 'vld' => '1',
@@ -578,7 +578,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-848124',
                 'contact_person' => 'Maya Anggraini, S.Kom.',
                 'telepon_cp' => '0813-6789-2233',
-                'jabatan_cp' => 'Lead Software Engineer'
+                'jabatan_cp' => 'Lead Software Engineer',
             ],
             [
                 'vld' => '1',
@@ -595,7 +595,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-789013',
                 'contact_person' => 'Ahmad Fauzi, M.Kom.',
                 'telepon_cp' => '0821-7890-3344',
-                'jabatan_cp' => 'Direktur Operasional'
+                'jabatan_cp' => 'Direktur Operasional',
             ],
 
             // TKJ - 3 PKS
@@ -614,7 +614,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-33124',
                 'contact_person' => 'Ir. Hendri Gunawan, S.T.',
                 'telepon_cp' => '0811-760-5566',
-                'jabatan_cp' => 'Manager Network Operation & HR'
+                'jabatan_cp' => 'Manager Network Operation & HR',
             ],
             [
                 'vld' => '1',
@@ -631,7 +631,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-856790',
                 'contact_person' => 'Bambang Sudibyo, S.T.',
                 'telepon_cp' => '0812-9988-7766',
-                'jabatan_cp' => 'Kepala Divisi Pemeliharaan Jaringan'
+                'jabatan_cp' => 'Kepala Divisi Pemeliharaan Jaringan',
             ],
             [
                 'vld' => '1',
@@ -648,7 +648,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-841998',
                 'contact_person' => 'Dian Anggraini, S.T.',
                 'telepon_cp' => '0813-8877-6655',
-                'jabatan_cp' => 'HR Operations Supervisor'
+                'jabatan_cp' => 'HR Operations Supervisor',
             ],
 
             // AK - 2 PKS
@@ -667,7 +667,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-855856',
                 'contact_person' => 'Siti Zubaidah, S.E., M.M.',
                 'telepon_cp' => '0812-7654-9988',
-                'jabatan_cp' => 'Pemimpin Bagian Human Capital & Training'
+                'jabatan_cp' => 'Pemimpin Bagian Human Capital & Training',
             ],
             [
                 'vld' => '1',
@@ -684,7 +684,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-32457',
                 'contact_person' => 'Drs. Syamsir, M.Ak., Ak.',
                 'telepon_cp' => '0811-753-2211',
-                'jabatan_cp' => 'Managing Partner / Pimpinan KAP'
+                'jabatan_cp' => 'Managing Partner / Pimpinan KAP',
             ],
 
             // MP - 2 PKS
@@ -703,7 +703,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-22551',
                 'contact_person' => 'H. M. Yusuf, S.Sos., M.Si.',
                 'telepon_cp' => '0813-7123-4567',
-                'jabatan_cp' => 'Kepala Subbagian Umum & Kepegawaian'
+                'jabatan_cp' => 'Kepala Subbagian Umum & Kepegawaian',
             ],
             [
                 'vld' => '1',
@@ -720,7 +720,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-853312',
                 'contact_person' => 'Fitri Handayani, S.E.',
                 'telepon_cp' => '0812-8899-0011',
-                'jabatan_cp' => 'Manager SDM & Hubungan Eksternal'
+                'jabatan_cp' => 'Manager SDM & Hubungan Eksternal',
             ],
 
             // BR - 2 PKS
@@ -739,7 +739,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-589556',
                 'contact_person' => 'Arief Wicaksono, S.E.',
                 'telepon_cp' => '0812-7000-8899',
-                'jabatan_cp' => 'Branch HR & Development Manager'
+                'jabatan_cp' => 'Branch HR & Development Manager',
             ],
             [
                 'vld' => '1',
@@ -756,7 +756,7 @@ class DudiPksSeeder extends Seeder
                 'fax' => '0761-53211',
                 'contact_person' => 'Novia Anggraini, S.Psi.',
                 'telepon_cp' => '0813-7555-1122',
-                'jabatan_cp' => 'People Development & Internship PIC'
+                'jabatan_cp' => 'People Development & Internship PIC',
             ],
         ];
 

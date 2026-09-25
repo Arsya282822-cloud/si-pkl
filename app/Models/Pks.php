@@ -23,7 +23,7 @@ class Pks extends Model
         'fax',
         'contact_person',
         'telepon_cp',
-        'jabatan_cp'
+        'jabatan_cp',
     ];
 
     protected $casts = [

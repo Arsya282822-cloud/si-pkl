@@ -35,7 +35,7 @@ class TujuanPembelajaranController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('tujuan_pembelajaran', 'like', "%{$search}%")
-                  ->orWhere('konsentrasi_keahlian', 'like', "%{$search}%");
+                    ->orWhere('konsentrasi_keahlian', 'like', "%{$search}%");
             });
         }
 
@@ -71,13 +71,13 @@ class TujuanPembelajaranController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'jurusan_id'           => 'nullable|exists:jurusan,id',
-            'kode_jurusan'         => 'required|string|max:20',
+            'jurusan_id' => 'nullable|exists:jurusan,id',
+            'kode_jurusan' => 'required|string|max:20',
             'konsentrasi_keahlian' => 'required|string|max:255',
             'capaian_pembelajaran' => 'required|string',
-            'nomor_urut'           => 'required|integer|min:1',
-            'tujuan_pembelajaran'  => 'required|string',
-            'tahun'                => 'nullable|string|max:10',
+            'nomor_urut' => 'required|integer|min:1',
+            'tujuan_pembelajaran' => 'required|string',
+            'tahun' => 'nullable|string|max:10',
         ]);
 
         $validated['tahun'] = $validated['tahun'] ?? '2026';
@@ -95,10 +95,10 @@ class TujuanPembelajaranController extends Controller
     {
         $validated = $request->validate([
             'capaian_pembelajaran' => 'required|string',
-            'nomor_urut'           => 'required|integer|min:1',
-            'tujuan_pembelajaran'  => 'required|string',
-            'tahun'                => 'nullable|string|max:10',
-            'status'               => 'nullable|in:aktif,nonaktif',
+            'nomor_urut' => 'required|integer|min:1',
+            'tujuan_pembelajaran' => 'required|string',
+            'tahun' => 'nullable|string|max:10',
+            'status' => 'nullable|in:aktif,nonaktif',
         ]);
 
         $tujuan_pembelajaran->update($validated);
@@ -136,16 +136,16 @@ class TujuanPembelajaranController extends Controller
             ->groupBy('konsentrasi_keahlian');
 
         $settings = [
-            'nama_sekolah'        => Setting::get('sekolah_nama_sekolah', 'SMK LABOR BINAAN FKIP UNRI PEKANBARU'),
-            'nama_yayasan'        => Setting::get('sekolah_nama_yayasan', 'YAYASAN UNIVERSITAS RIAU'),
-            'alamat_sekolah'      => Setting::get('sekolah_alamat', 'Jl. Thamrin No. 97 Kec. Sail Pekanbaru – 28132'),
-            'telepon_sekolah'     => Setting::get('sekolah_telepon', '0761 – 28760'),
-            'email_sekolah'       => Setting::get('sekolah_email', 'smklabor.unri@gmail.com'),
+            'nama_sekolah' => Setting::get('sekolah_nama_sekolah', 'SMK LABOR BINAAN FKIP UNRI PEKANBARU'),
+            'nama_yayasan' => Setting::get('sekolah_nama_yayasan', 'YAYASAN UNIVERSITAS RIAU'),
+            'alamat_sekolah' => Setting::get('sekolah_alamat', 'Jl. Thamrin No. 97 Kec. Sail Pekanbaru – 28132'),
+            'telepon_sekolah' => Setting::get('sekolah_telepon', '0761 – 28760'),
+            'email_sekolah' => Setting::get('sekolah_email', 'smklabor.unri@gmail.com'),
             'nama_kepala_sekolah' => Setting::get('pejabat_kepala_sekolah', 'JEFFRI HUNTER, M.Pd'),
-            'nip_kepala_sekolah'  => Setting::get('pejabat_nip_kepala_sekolah', '-'),
-            'ketua_pokja'         => Setting::get('pejabat_ketua_pokja', 'Mahendra, S.Pd., M.Si.'),
-            'nip_ketua_pokja'     => Setting::get('pejabat_nip_ketua_pokja', '198904122019031005'),
-            'kota_terbit'         => Setting::get('sekolah_kota_terbit', 'Pekanbaru'),
+            'nip_kepala_sekolah' => Setting::get('pejabat_nip_kepala_sekolah', '-'),
+            'ketua_pokja' => Setting::get('pejabat_ketua_pokja', 'Mahendra, S.Pd., M.Si.'),
+            'nip_ketua_pokja' => Setting::get('pejabat_nip_ketua_pokja', '198904122019031005'),
+            'kota_terbit' => Setting::get('sekolah_kota_terbit', 'Pekanbaru'),
         ];
 
         return view('admin.tujuan_pembelajaran.cetak', compact('itemsByJurusan', 'selectedJurusan', 'settings'));

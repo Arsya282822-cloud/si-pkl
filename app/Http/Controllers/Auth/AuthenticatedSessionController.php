@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,18 +33,18 @@ class AuthenticatedSessionController extends Controller
         $role = $user->role?->nama_role ?? '';
 
         // Catat Log Login
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'autentikasi',
             'User Login',
-            "Pengguna {$user->name} ({$user->email}) berhasil login ke sistem sebagai " . ucfirst($role)
+            "Pengguna {$user->name} ({$user->email}) berhasil login ke sistem sebagai ".ucfirst($role)
         );
 
         $redirectTo = match ($role) {
-            'admin'      => route('admin.dashboard'),
-            'siswa'      => route('siswa.dashboard'),
-            'guru'       => route('guru.dashboard'),
+            'admin' => route('admin.dashboard'),
+            'siswa' => route('siswa.dashboard'),
+            'guru' => route('guru.dashboard'),
             'instruktur' => route('instruktur.dashboard'),
-            default      => route('dashboard'),
+            default => route('dashboard'),
         };
 
         return redirect()->intended($redirectTo);
@@ -56,7 +57,7 @@ class AuthenticatedSessionController extends Controller
     {
         $user = Auth::user();
         if ($user) {
-            \App\Services\ActivityLogger::log(
+            ActivityLogger::log(
                 'autentikasi',
                 'User Logout',
                 "Pengguna {$user->name} ({$user->email}) telah logout dari sistem."

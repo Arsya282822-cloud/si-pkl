@@ -1,10 +1,10 @@
 <?php
 
+use App\Models\Guru;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Guru;
 
 return new class extends Migration
 {
@@ -18,14 +18,14 @@ return new class extends Migration
             if ($roleGuru) {
                 $query->where('role_id', $roleGuru->id);
             }
-            if (!empty($guruUserIds)) {
+            if (! empty($guruUserIds)) {
                 $query->orWhereIn('id', $guruUserIds);
             }
 
             $query->update([
                 'password' => Hash::make('guru1234'),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Ignore if tables not yet available
         }
     }

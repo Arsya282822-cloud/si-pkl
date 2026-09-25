@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Penempatan;
 use App\Models\PeriodePkl;
 use Illuminate\Http\Request;
 
@@ -33,16 +34,16 @@ class PeriodePklController extends Controller
         $totalPeriode = PeriodePkl::count();
         $totalAktif = PeriodePkl::where('status', 'aktif')->count();
         $totalSelesai = PeriodePkl::where('status', 'selesai')->count();
-        $totalSiswaPkl = \App\Models\Penempatan::count();
+        $totalSiswaPkl = Penempatan::count();
         $activePeriod = PeriodePkl::where('status', 'aktif')->withCount('penempatan')->first();
 
         return view('admin.periode.index', compact(
-            'periode', 
-            'q', 
-            'statusFilter', 
-            'totalPeriode', 
-            'totalAktif', 
-            'totalSelesai', 
+            'periode',
+            'q',
+            'statusFilter',
+            'totalPeriode',
+            'totalAktif',
+            'totalSelesai',
             'totalSiswaPkl',
             'activePeriod'
         ));

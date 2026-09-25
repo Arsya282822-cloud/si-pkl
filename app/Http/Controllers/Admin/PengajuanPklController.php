@@ -7,6 +7,7 @@ use App\Models\Guru;
 use App\Models\Penempatan;
 use App\Models\PengajuanPkl;
 use App\Models\Perusahaan;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,11 +29,11 @@ class PengajuanPklController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama_perusahaan', 'like', "%{$search}%")
-                  ->orWhere('kota', 'like', "%{$search}%")
-                  ->orWhereHas('siswa', function ($sq) use ($search) {
-                      $sq->where('nama', 'like', "%{$search}%")
-                         ->orWhere('nis', 'like', "%{$search}%");
-                  });
+                    ->orWhere('kota', 'like', "%{$search}%")
+                    ->orWhereHas('siswa', function ($sq) use ($search) {
+                        $sq->where('nama', 'like', "%{$search}%")
+                            ->orWhere('nis', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -106,7 +107,7 @@ class PengajuanPklController extends Controller
 
             DB::commit();
 
-            \App\Services\ActivityLogger::log(
+            ActivityLogger::log(
                 'pengajuan_pkl',
                 'Persetujuan Pengajuan PKL Mandiri',
                 "Pengajuan PKL siswa {$pengajuan->siswa->nama} di {$pengajuan->nama_perusahaan} disetujui oleh admin."
@@ -115,7 +116,8 @@ class PengajuanPklController extends Controller
             return redirect()->back()->with('success', 'Pengajuan tempat PKL berhasil disetujui! Data Penempatan Siswa dan Perusahaan otomatis dibuat.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal memproses persetujuan: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Gagal memproses persetujuan: '.$e->getMessage());
         }
     }
 
@@ -136,7 +138,7 @@ class PengajuanPklController extends Controller
             'diverifikasi_pada' => now(),
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'pengajuan_pkl',
             'Penolakan Pengajuan PKL Mandiri',
             "Pengajuan PKL siswa {$pengajuan->siswa->nama} di {$pengajuan->nama_perusahaan} ditolak (Alasan: {$request->catatan_verifikasi})"

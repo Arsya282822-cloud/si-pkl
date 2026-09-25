@@ -19,10 +19,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Di server local (localhost / 127.0.0.1), selalu gunakan HTTP biasa.
         // Hanya paksa HTTPS jika di server production atau jika URL terkonfigurasi dengan https://
-        $isLocalHost = in_array(request()->getHost(), ['localhost', '127.0.0.1', '::1', '']) || 
+        $isLocalHost = in_array(request()->getHost(), ['localhost', '127.0.0.1', '::1', '']) ||
                        $this->app->environment(['local', 'development', 'testing']);
 
-        if (!$isLocalHost) {
+        if (! $isLocalHost) {
             if (
                 request()->server('HTTP_X_FORWARDED_PROTO') === 'https' ||
                 request()->header('X-Forwarded-Proto') === 'https' ||

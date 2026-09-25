@@ -12,6 +12,7 @@ use App\Models\Penempatan;
 use App\Models\PenilaianPkl;
 use App\Models\PeriodePkl;
 use App\Models\Perusahaan;
+use App\Models\Pks;
 use App\Models\Role;
 use App\Models\Setting;
 use App\Models\Siswa;
@@ -29,9 +30,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Roles (Idempotent)
-        $roleAdmin      = Role::firstOrCreate(['nama_role' => 'admin']);
-        $roleGuru       = Role::firstOrCreate(['nama_role' => 'guru']);
-        $roleSiswa      = Role::firstOrCreate(['nama_role' => 'siswa']);
+        $roleAdmin = Role::firstOrCreate(['nama_role' => 'admin']);
+        $roleGuru = Role::firstOrCreate(['nama_role' => 'guru']);
+        $roleSiswa = Role::firstOrCreate(['nama_role' => 'siswa']);
         $roleInstruktur = Role::firstOrCreate(['nama_role' => 'instruktur']);
 
         // 2. Pengaturan Identitas & Pejabat Sekolah Resmi
@@ -66,10 +67,10 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@admin.com'],
             [
-                'name'     => 'Administrator Koordinator PKL',
+                'name' => 'Administrator Koordinator PKL',
                 'password' => bcrypt('password'),
-                'role_id'  => $roleAdmin->id,
-                'status'   => 'aktif',
+                'role_id' => $roleAdmin->id,
+                'status' => 'aktif',
             ]
         );
 
@@ -77,21 +78,21 @@ class DatabaseSeeder extends Seeder
         $userGuru = User::updateOrCreate(
             ['email' => 'guru@smklabor.sch.id'],
             [
-                'name'     => 'Mahendra, S.Pd., M.Si.',
+                'name' => 'Mahendra, S.Pd., M.Si.',
                 'password' => bcrypt('password'),
-                'role_id'  => $roleGuru->id,
-                'status'   => 'aktif',
+                'role_id' => $roleGuru->id,
+                'status' => 'aktif',
             ]
         );
 
         $guruUtama = Guru::firstOrCreate(
             ['nip' => '198904122019031005'],
             [
-                'user_id'       => $userGuru->id,
-                'nama'          => 'Mahendra, S.Pd., M.Si.',
+                'user_id' => $userGuru->id,
+                'nama' => 'Mahendra, S.Pd., M.Si.',
                 'jenis_kelamin' => 'L',
-                'no_hp'         => '6282387334892',
-                'alamat'        => 'Jl. Thamrin No. 97, Pekanbaru',
+                'no_hp' => '6282387334892',
+                'alamat' => 'Jl. Thamrin No. 97, Pekanbaru',
             ]
         );
 
@@ -114,12 +115,12 @@ class DatabaseSeeder extends Seeder
             $jurusanMap[$jm['kode_jurusan']] = $jur;
 
             $kls = Kelas::firstOrCreate(
-                ['nama_kelas' => 'XII ' . $jm['kode_jurusan'] . ' 1'],
+                ['nama_kelas' => 'XII '.$jm['kode_jurusan'].' 1'],
                 [
-                    'jurusan_id'    => $jur->id,
+                    'jurusan_id' => $jur->id,
                     'wali_kelas_id' => $guruUtama->id,
-                    'tingkat'       => 'XII',
-                    'status'        => true,
+                    'tingkat' => 'XII',
+                    'status' => true,
                 ]
             );
             $kelasMap[$jm['kode_jurusan']] = $kls;
@@ -129,10 +130,10 @@ class DatabaseSeeder extends Seeder
         $periodeAktif = PeriodePkl::firstOrCreate(
             ['nama_periode' => 'PKL Semester Ganjil TA 2026/2027'],
             [
-                'tahun_ajaran'    => '2026/2027',
-                'tanggal_mulai'   => '2026-07-15',
+                'tahun_ajaran' => '2026/2027',
+                'tanggal_mulai' => '2026-07-15',
                 'tanggal_selesai' => '2026-11-30',
-                'status'          => 'aktif',
+                'status' => 'aktif',
             ]
         );
 
@@ -140,49 +141,49 @@ class DatabaseSeeder extends Seeder
         $userInstruktur = User::updateOrCreate(
             ['email' => 'instruktur@dudi.com'],
             [
-                'name'     => 'Ir. Rahmat Hidayat (Instruktur DUDI)',
+                'name' => 'Ir. Rahmat Hidayat (Instruktur DUDI)',
                 'password' => bcrypt('password'),
-                'role_id'  => $roleInstruktur->id,
-                'status'   => 'aktif',
+                'role_id' => $roleInstruktur->id,
+                'status' => 'aktif',
             ]
         );
 
         $dudiList = [
             [
                 'nama_perusahaan' => 'PT Garuda Cyber Indonesia',
-                'alamat'          => 'Jl. HR. Soebrantas No. 188, Panam, Kota Pekanbaru, Riau',
-                'kota'            => 'Pekanbaru',
-                'no_telepon'      => '0761-567890',
-                'email'           => 'hrd@garudacyber.co.id',
-                'website'         => 'www.garudacyber.co.id',
-                'nama_pimpinan'   => 'Ir. Rahmat Hidayat',
+                'alamat' => 'Jl. HR. Soebrantas No. 188, Panam, Kota Pekanbaru, Riau',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-567890',
+                'email' => 'hrd@garudacyber.co.id',
+                'website' => 'www.garudacyber.co.id',
+                'nama_pimpinan' => 'Ir. Rahmat Hidayat',
             ],
             [
                 'nama_perusahaan' => 'UPT Teknologi Informasi dan Komunikasi (TIK) Universitas Riau',
-                'alamat'          => 'Kampus Bina Widya KM 12.5, Simpang Baru, Pekanbaru',
-                'kota'            => 'Pekanbaru',
-                'no_telepon'      => '0761-63266',
-                'email'           => 'tik@unri.ac.id',
-                'website'         => 'tik.unri.ac.id',
-                'nama_pimpinan'   => 'Dr. Eng. Fauzan Ardiansyah, S.T., M.T.',
+                'alamat' => 'Kampus Bina Widya KM 12.5, Simpang Baru, Pekanbaru',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-63266',
+                'email' => 'tik@unri.ac.id',
+                'website' => 'tik.unri.ac.id',
+                'nama_pimpinan' => 'Dr. Eng. Fauzan Ardiansyah, S.T., M.T.',
             ],
             [
                 'nama_perusahaan' => 'PT Bank Riau Kepri Syariah (Perseroda) Kantor Pusat',
-                'alamat'          => 'Menara Dang Merdu, Jl. Jend. Sudirman No. 462, Pekanbaru',
-                'kota'            => 'Pekanbaru',
-                'no_telepon'      => '0761-47070',
-                'email'           => 'corsec@brksyariah.co.id',
-                'website'         => 'www.brksyariah.co.id',
-                'nama_pimpinan'   => 'Hj. Siti Aminah, S.E., Ak.',
+                'alamat' => 'Menara Dang Merdu, Jl. Jend. Sudirman No. 462, Pekanbaru',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-47070',
+                'email' => 'corsec@brksyariah.co.id',
+                'website' => 'www.brksyariah.co.id',
+                'nama_pimpinan' => 'Hj. Siti Aminah, S.E., Ak.',
             ],
             [
                 'nama_perusahaan' => 'Dinas Komunikasi, Informatika dan Statistik Provinsi Riau',
-                'alamat'          => 'Jl. Diponegoro No. 24A, Kota Pekanbaru, Riau',
-                'kota'            => 'Pekanbaru',
-                'no_telepon'      => '0761-45505',
-                'email'           => 'diskominfotik@riau.go.id',
-                'website'         => 'diskominfotik.riau.go.id',
-                'nama_pimpinan'   => 'M. Rizki Pratama, S.Kom., M.Si.',
+                'alamat' => 'Jl. Diponegoro No. 24A, Kota Pekanbaru, Riau',
+                'kota' => 'Pekanbaru',
+                'no_telepon' => '0761-45505',
+                'email' => 'diskominfotik@riau.go.id',
+                'website' => 'diskominfotik.riau.go.id',
+                'nama_pimpinan' => 'M. Rizki Pratama, S.Kom., M.Si.',
             ],
         ];
 
@@ -191,31 +192,31 @@ class DatabaseSeeder extends Seeder
             $prs = Perusahaan::firstOrCreate(
                 ['nama_perusahaan' => $dudi['nama_perusahaan']],
                 [
-                    'alamat'        => $dudi['alamat'],
-                    'kota'          => $dudi['kota'],
-                    'no_telepon'    => $dudi['no_telepon'],
-                    'email'         => $dudi['email'],
-                    'website'       => $dudi['website'],
+                    'alamat' => $dudi['alamat'],
+                    'kota' => $dudi['kota'],
+                    'no_telepon' => $dudi['no_telepon'],
+                    'email' => $dudi['email'],
+                    'website' => $dudi['website'],
                     'nama_pimpinan' => $dudi['nama_pimpinan'],
-                    'status'        => 'aktif',
+                    'status' => 'aktif',
                 ]
             );
 
-            \App\Models\Pks::firstOrCreate(
+            Pks::firstOrCreate(
                 ['nama_dudi' => $dudi['nama_perusahaan']],
                 [
-                    'vld'                  => 'Valid',
-                    'jenis_kerjasama'      => 'Praktik Kerja Lapangan (PKL) & Sinkronisasi Kurikulum',
+                    'vld' => 'Valid',
+                    'jenis_kerjasama' => 'Praktik Kerja Lapangan (PKL) & Sinkronisasi Kurikulum',
                     'dunia_usaha_industri' => 'DUDI Mitra Resmi',
-                    'nomor_pks'            => '421.5/PKS-SMKLBFU/2026/00' . ($idx + 1),
-                    'judul_pks'            => 'Perjanjian Kerja Sama Pelaksanaan PKL Siswa SMK Labor Binaan FKIP UNRI',
-                    'tgl_mulai'            => '2026-01-10',
-                    'tgl_selesai'          => '2028-01-10',
-                    'nama_bidang_usaha'    => 'Teknologi, Perbankan & Layanan Publik',
-                    'telp_kantor'          => $dudi['no_telepon'],
-                    'contact_person'       => $dudi['nama_pimpinan'],
-                    'telepon_cp'           => $dudi['no_telepon'],
-                    'jabatan_cp'           => 'Pimpinan / Koordinator PKL',
+                    'nomor_pks' => '421.5/PKS-SMKLBFU/2026/00'.($idx + 1),
+                    'judul_pks' => 'Perjanjian Kerja Sama Pelaksanaan PKL Siswa SMK Labor Binaan FKIP UNRI',
+                    'tgl_mulai' => '2026-01-10',
+                    'tgl_selesai' => '2028-01-10',
+                    'nama_bidang_usaha' => 'Teknologi, Perbankan & Layanan Publik',
+                    'telp_kantor' => $dudi['no_telepon'],
+                    'contact_person' => $dudi['nama_pimpinan'],
+                    'telepon_cp' => $dudi['no_telepon'],
+                    'jabatan_cp' => 'Pimpinan / Koordinator PKL',
                 ]
             );
 
@@ -226,8 +227,8 @@ class DatabaseSeeder extends Seeder
                     [
                         'user_id' => $userInstruktur->id,
                         'jabatan' => 'Senior Lead Developer',
-                        'no_hp'   => '081275009988',
-                        'email'   => 'instruktur@dudi.com',
+                        'no_hp' => '081275009988',
+                        'email' => 'instruktur@dudi.com',
                     ]
                 );
             }
@@ -237,35 +238,35 @@ class DatabaseSeeder extends Seeder
         $userSiswa = User::updateOrCreate(
             ['email' => 'siswa@smklabor.sch.id'],
             [
-                'name'     => 'Muhammad Farel Alfarizi',
+                'name' => 'Muhammad Farel Alfarizi',
                 'password' => bcrypt('password'),
-                'role_id'  => $roleSiswa->id,
-                'status'   => 'aktif',
+                'role_id' => $roleSiswa->id,
+                'status' => 'aktif',
             ]
         );
 
         $siswaUtama = Siswa::firstOrCreate(
             ['nis' => '20241001'],
             [
-                'user_id'       => $userSiswa->id,
-                'nisn'          => '0081234567',
-                'nama'          => 'Muhammad Farel Alfarizi',
+                'user_id' => $userSiswa->id,
+                'nisn' => '0081234567',
+                'nama' => 'Muhammad Farel Alfarizi',
                 'jenis_kelamin' => 'L',
-                'kelas_id'      => $kelasMap['RPL']->id,
-                'jurusan_id'    => $jurusanMap['RPL']->id,
-                'no_hp'         => '082388990011',
-                'alamat'        => 'Jl. Hangtuah Ujung, Pekanbaru',
+                'kelas_id' => $kelasMap['RPL']->id,
+                'jurusan_id' => $jurusanMap['RPL']->id,
+                'no_hp' => '082388990011',
+                'alamat' => 'Jl. Hangtuah Ujung, Pekanbaru',
             ]
         );
 
         if ($perusahaanUtama) {
             $penempatan = Penempatan::firstOrCreate(
                 [
-                    'siswa_id'       => $siswaUtama->id,
+                    'siswa_id' => $siswaUtama->id,
                     'periode_pkl_id' => $periodeAktif->id,
                 ],
                 [
-                    'guru_id'       => $guruUtama->id,
+                    'guru_id' => $guruUtama->id,
                     'perusahaan_id' => $perusahaanUtama->id,
                 ]
             );
@@ -278,20 +279,20 @@ class DatabaseSeeder extends Seeder
             JurnalPkl::firstOrCreate(
                 ['penempatan_id' => $penempatan->id, 'tanggal' => now()->format('Y-m-d')],
                 [
-                    'kegiatan'        => 'Melakukan pengembangan modul sistem informasi dan pengujian fitur.',
+                    'kegiatan' => 'Melakukan pengembangan modul sistem informasi dan pengujian fitur.',
                     'status_validasi' => 'disetujui',
-                    'komentar_guru'   => 'Pertahankan progres dan dokumentasi kode dengan rapi.',
+                    'komentar_guru' => 'Pertahankan progres dan dokumentasi kode dengan rapi.',
                 ]
             );
 
             PenilaianPkl::firstOrCreate(
                 ['penempatan_id' => $penempatan->id],
                 [
-                    'nilai_sikap'        => 92,
-                    'nilai_pengetahuan'  => 89,
+                    'nilai_sikap' => 92,
+                    'nilai_pengetahuan' => 89,
                     'nilai_keterampilan' => 91,
-                    'nilai_akhir'        => 91,
-                    'catatan_guru'       => 'Siswa sangat kompeten, disiplin tinggi, dan mampu menyelesaikan proyek tepat waktu.',
+                    'nilai_akhir' => 91,
+                    'catatan_guru' => 'Siswa sangat kompeten, disiplin tinggi, dan mampu menyelesaikan proyek tepat waktu.',
                 ]
             );
         }

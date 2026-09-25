@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AbsensiPkl extends Model
 {
     protected $table = 'absensi_pkl';
+
     protected $guarded = [];
 
     public function penempatan()

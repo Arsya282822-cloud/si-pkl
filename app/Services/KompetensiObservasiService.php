@@ -11,7 +11,7 @@ class KompetensiObservasiService
      */
     public static function resolveKodeJurusan(?string $namaOrKode): string
     {
-        if (!$namaOrKode) {
+        if (! $namaOrKode) {
             return 'RPL';
         }
 
@@ -85,7 +85,7 @@ class KompetensiObservasiService
             ->pluck('tujuan_pembelajaran')
             ->toArray();
 
-        if (!empty($dbTps)) {
+        if (! empty($dbTps)) {
             return $dbTps;
         }
 
@@ -138,7 +138,7 @@ class KompetensiObservasiService
                     'Melakukan pengujian perangkat lunak (testing), penanganan bug, dan debugging',
                     'Menerapkan sistem kontrol versi (Git/GitHub) dan standar clean code',
                     'Melakukan deployment, konfigurasi web server, dan pemeliharaan sistem informasi',
-                ]
+                ],
             ],
             'TKJ' => [
                 'nama' => 'Teknik Komputer dan Jaringan (TKJ)',
@@ -149,7 +149,7 @@ class KompetensiObservasiService
                     'Mengkonfigurasi layanan server (DHCP, DNS, Web Server, File Server, SSH)',
                     'Mengatur manajemen bandwidth, firewall, dan keamanan jaringan',
                     'Melakukan instalasi dan troubleshooting wireless network (Access Point / Hotspot Gateway)',
-                ]
+                ],
             ],
             'AK' => [
                 'nama' => 'Akuntansi (AK)',
@@ -160,7 +160,7 @@ class KompetensiObservasiService
                     'Menyusun laporan keuangan periodik (Laba Rugi, Neraca, Perubahan Modal, Arus Kas)',
                     'Mengelola administrasi kas kecil (Petty Cash) dan rekonsiliasi bank',
                     'Melakukan perhitungan dan administrasi perpajakan sederhana (PPh / PPN)',
-                ]
+                ],
             ],
             'MP' => [
                 'nama' => 'Manajemen Perkantoran (MP)',
@@ -171,7 +171,7 @@ class KompetensiObservasiService
                     'Mengoperasikan aplikasi perkantoran (Word processing, Spreadsheet, Presentasi)',
                     'Mengatur agenda pimpinan, reservasi perjalanan dinas, dan notulensi rapat kerja',
                     'Mengelola kas kecil kantor dan inventarisasi sarana prasarana kerja',
-                ]
+                ],
             ],
             'BR' => [
                 'nama' => 'Bisnis Ritel (BR)',
@@ -182,7 +182,7 @@ class KompetensiObservasiService
                     'Menerapkan teknik copywriting promosi dan penanganan komunikasi pelanggan (Customer Service)',
                     'Melakukan display produk (Visual Merchandising) dan penataan stok barang di toko/ritel',
                     'Melakukan operasional transaksi kasir (POS), scan barcode, dan rekapitulasi penjualan harian',
-                ]
+                ],
             ],
         ];
     }

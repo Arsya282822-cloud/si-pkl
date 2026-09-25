@@ -5,22 +5,23 @@ namespace App\Http\Controllers\Siswa;
 use App\Http\Controllers\Controller;
 use App\Models\JurnalPkl;
 use App\Models\Penempatan;
+use App\Models\TujuanPembelajaran;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class JurnalController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        if (!$user->siswa) {
+        if (! $user->siswa) {
             return redirect()->route('siswa.dashboard')->with('error', 'Data siswa tidak ditemukan.');
         }
 
         $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
-        
-        if (!$penempatan) {
+
+        if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan, tidak dapat mengisi jurnal.');
         }
 
@@ -36,12 +37,12 @@ class JurnalController extends Controller
         $user = Auth::user();
         $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->with('siswa.jurusan')->latest()->first();
 
-        if (!$penempatan) {
+        if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan, tidak dapat mengisi jurnal.');
         }
 
         $kodeJurusan = $penempatan->siswa?->jurusan?->kode_jurusan;
-        $tujuanPembelajarans = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+        $tujuanPembelajarans = TujuanPembelajaran::where('status', 'aktif')
             ->when($kodeJurusan, function ($q) use ($kodeJurusan) {
                 $q->where('kode_jurusan', $kodeJurusan);
             })
@@ -64,16 +65,16 @@ class JurnalController extends Controller
         $user = Auth::user();
         $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
 
-        if (!$penempatan) {
+        if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan.');
         }
 
         $fotoPath = null;
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $fileName = 'jurnal_' . time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $fileName = 'jurnal_'.time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $file->move(public_path('uploads/jurnal'), $fileName);
-            $fotoPath = 'uploads/jurnal/' . $fileName;
+            $fotoPath = 'uploads/jurnal/'.$fileName;
         }
 
         JurnalPkl::create([
@@ -81,13 +82,13 @@ class JurnalController extends Controller
             'tanggal' => $request->tanggal,
             'kegiatan' => $request->kegiatan,
             'foto' => $fotoPath,
-            'status_validasi' => 'menunggu'
+            'status_validasi' => 'menunggu',
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Jurnal Siswa',
             'Tambah Jurnal PKL',
-            'Mengisi jurnal kegiatan tanggal ' . $request->tanggal
+            'Mengisi jurnal kegiatan tanggal '.$request->tanggal
         );
 
         return redirect()->route('siswa.jurnal.index')->with('success', 'Jurnal harian berhasil ditambahkan.');
@@ -109,7 +110,7 @@ class JurnalController extends Controller
         }
 
         $kodeJurusan = $penempatan->siswa?->jurusan?->kode_jurusan;
-        $tujuanPembelajarans = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+        $tujuanPembelajarans = TujuanPembelajaran::where('status', 'aktif')
             ->when($kodeJurusan, function ($q) use ($kodeJurusan) {
                 $q->where('kode_jurusan', $kodeJurusan);
             })
@@ -153,9 +154,9 @@ class JurnalController extends Controller
                 @unlink(public_path($jurnal->foto));
             }
             $file = $request->file('foto');
-            $fileName = 'jurnal_' . time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $fileName = 'jurnal_'.time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $file->move(public_path('uploads/jurnal'), $fileName);
-            $data['foto'] = 'uploads/jurnal/' . $fileName;
+            $data['foto'] = 'uploads/jurnal/'.$fileName;
         }
 
         $jurnal->update($data);

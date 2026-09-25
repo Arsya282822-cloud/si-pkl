@@ -4,15 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class ActivityLogController extends Controller
 {
     public function index(Request $request)
     {
         try {
-            if (!\Illuminate\Support\Facades\Schema::hasTable('activity_logs')) {
-                \Illuminate\Support\Facades\Schema::create('activity_logs', function (\Illuminate\Database\Schema\Blueprint $table) {
+            if (! Schema::hasTable('activity_logs')) {
+                Schema::create('activity_logs', function (Blueprint $table) {
                     $table->id();
                     $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
                     $table->string('user_name')->nullable();
@@ -43,8 +45,8 @@ class ActivityLogController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('user_name', 'like', "%{$search}%")
-                  ->orWhere('aktivitas', 'like', "%{$search}%")
-                  ->orWhere('deskripsi', 'like', "%{$search}%");
+                    ->orWhere('aktivitas', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%");
             });
         }
 
@@ -57,19 +59,22 @@ class ActivityLogController extends Controller
     public function destroy(ActivityLog $activityLog)
     {
         $activityLog->delete();
+
         return redirect()->route('admin.activity-log.index')->with('success', 'Log aktivitas berhasil dihapus.');
     }
 
     public function clear()
     {
         try {
-            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            Schema::disableForeignKeyConstraints();
             ActivityLog::query()->delete();
-            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            Schema::enableForeignKeyConstraints();
+
             return redirect()->route('admin.activity-log.index')->with('success', 'Seluruh riwayat log aktivitas berhasil dibersihkan.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-            return redirect()->route('admin.activity-log.index')->with('error', 'Gagal membersihkan log: ' . $e->getMessage());
+            Schema::enableForeignKeyConstraints();
+
+            return redirect()->route('admin.activity-log.index')->with('error', 'Gagal membersihkan log: '.$e->getMessage());
         }
     }
 }

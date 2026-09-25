@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Guru;
 
+use App\Exports\LembarObservasiExport;
 use App\Http\Controllers\Controller;
 use App\Models\LembarObservasi;
 use App\Models\Penempatan;
-use App\Models\Perusahaan;
+use App\Models\TujuanPembelajaran;
+use App\Services\ActivityLogger;
 use App\Services\KompetensiObservasiService;
-use App\Exports\LembarObservasiExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class LembarObservasiController extends Controller
 {
@@ -27,7 +29,7 @@ class LembarObservasiController extends Controller
 
         if ($request->filled('q')) {
             $q = $request->q;
-            $query->where(function($sub) use ($q) {
+            $query->where(function ($sub) use ($q) {
                 $sub->where('nama_murid', 'like', "%{$q}%")
                     ->orWhere('nama_institusi', 'like', "%{$q}%")
                     ->orWhere('konsentrasi_keahlian', 'like', "%{$q}%");
@@ -47,7 +49,7 @@ class LembarObservasiController extends Controller
 
         // List siswa bimbingan guru atau seluruh siswa untuk admin
         $penempatans = Penempatan::with(['siswa.kelas', 'siswa.jurusan', 'perusahaan.pembimbingIndustri', 'guru'])
-            ->when($role === 'guru' && $guru, function($q) use ($guru) {
+            ->when($role === 'guru' && $guru, function ($q) use ($guru) {
                 $q->where('guru_id', $guru->id);
             })
             ->get();
@@ -64,7 +66,7 @@ class LembarObservasiController extends Controller
         $selectedJurusan = $selectedPenempatan?->siswa?->jurusan?->nama_jurusan ?? 'RPL';
         $defaultKompetensi = KompetensiObservasiService::getKompetensiByJurusan($selectedJurusan);
         $defaultKompetensiBaru = KompetensiObservasiService::getKompetensiBaruByJurusan($selectedJurusan);
-        $allTpGrouped = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+        $allTpGrouped = TujuanPembelajaran::where('status', 'aktif')
             ->orderBy('kode_jurusan')
             ->orderBy('nomor_urut')
             ->get()
@@ -101,11 +103,11 @@ class LembarObservasiController extends Controller
         $softskills = [];
         if ($request->has('softskills')) {
             foreach ($request->softskills as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $softskills[] = [
@@ -123,11 +125,11 @@ class LembarObservasiController extends Controller
         $kompetensiTeknis = [];
         if ($request->has('kompetensi_teknis')) {
             foreach ($request->kompetensi_teknis as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $kompetensiTeknis[] = [
@@ -145,11 +147,11 @@ class LembarObservasiController extends Controller
         $kompetensiBaru = [];
         if ($request->has('kompetensi_baru')) {
             foreach ($request->kompetensi_baru as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $kompetensiBaru[] = [
@@ -167,11 +169,11 @@ class LembarObservasiController extends Controller
         $analisisUsaha = [];
         if ($request->has('analisis_usaha')) {
             foreach ($request->analisis_usaha as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $analisisUsaha[] = [
@@ -213,19 +215,19 @@ class LembarObservasiController extends Controller
             'catatan_umum' => $request->catatan_umum,
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Lembar Observasi',
             'Pengisian Lembar Observasi Online',
-            'Pengisian lembar observasi PKL untuk ' . $request->nama_murid . ' di ' . $request->nama_institusi
+            'Pengisian lembar observasi PKL untuk '.$request->nama_murid.' di '.$request->nama_institusi
         );
 
         $prefix = Auth::user()->role?->nama_role === 'admin' ? 'admin' : 'guru';
 
         if ($request->action === 'simpan_cetak') {
-            return redirect()->route($prefix . '.observasi.cetak', $observasi->id);
+            return redirect()->route($prefix.'.observasi.cetak', $observasi->id);
         }
 
-        return redirect()->route($prefix . '.observasi.index')->with('success', 'Lembar Observasi PKL berhasil disimpan!');
+        return redirect()->route($prefix.'.observasi.index')->with('success', 'Lembar Observasi PKL berhasil disimpan!');
     }
 
     public function edit(LembarObservasi $observasi)
@@ -235,7 +237,7 @@ class LembarObservasiController extends Controller
         $guru = $user->guru;
 
         $penempatans = Penempatan::with(['siswa.kelas', 'siswa.jurusan', 'perusahaan.pembimbingIndustri', 'guru'])
-            ->when($role === 'guru' && $guru, function($q) use ($guru) {
+            ->when($role === 'guru' && $guru, function ($q) use ($guru) {
                 $q->where('guru_id', $guru->id);
             })
             ->get();
@@ -244,7 +246,7 @@ class LembarObservasiController extends Controller
         $defaultSoftskills = KompetensiObservasiService::getSoftSkills();
         $defaultAnalisis = KompetensiObservasiService::getAnalisisUsaha();
 
-        $allTpGrouped = \App\Models\TujuanPembelajaran::where('status', 'aktif')
+        $allTpGrouped = TujuanPembelajaran::where('status', 'aktif')
             ->orderBy('kode_jurusan')
             ->orderBy('nomor_urut')
             ->get()
@@ -273,11 +275,11 @@ class LembarObservasiController extends Controller
         $softskills = [];
         if ($request->has('softskills')) {
             foreach ($request->softskills as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $softskills[] = [
@@ -295,11 +297,11 @@ class LembarObservasiController extends Controller
         $kompetensiTeknis = [];
         if ($request->has('kompetensi_teknis')) {
             foreach ($request->kompetensi_teknis as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $kompetensiTeknis[] = [
@@ -317,11 +319,11 @@ class LembarObservasiController extends Controller
         $kompetensiBaru = [];
         if ($request->has('kompetensi_baru')) {
             foreach ($request->kompetensi_baru as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $kompetensiBaru[] = [
@@ -339,11 +341,11 @@ class LembarObservasiController extends Controller
         $analisisUsaha = [];
         if ($request->has('analisis_usaha')) {
             foreach ($request->analisis_usaha as $item) {
-                if (!empty($item['tujuan'])) {
-                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float)$item['obs1'] : null;
-                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float)$item['obs2'] : null;
-                    $akhir = is_numeric($item['akhir'] ?? '') ? (float)$item['akhir'] : null;
-                    $vals = array_filter([$obs1, $obs2, $akhir], fn($v) => !is_null($v));
+                if (! empty($item['tujuan'])) {
+                    $obs1 = is_numeric($item['obs1'] ?? '') ? (float) $item['obs1'] : null;
+                    $obs2 = is_numeric($item['obs2'] ?? '') ? (float) $item['obs2'] : null;
+                    $akhir = is_numeric($item['akhir'] ?? '') ? (float) $item['akhir'] : null;
+                    $vals = array_filter([$obs1, $obs2, $akhir], fn ($v) => ! is_null($v));
                     $rerata = count($vals) > 0 ? round(array_sum($vals) / count($vals), 1) : null;
 
                     $analisisUsaha[] = [
@@ -384,15 +386,16 @@ class LembarObservasiController extends Controller
         $prefix = Auth::user()->role?->nama_role === 'admin' ? 'admin' : 'guru';
 
         if ($request->action === 'simpan_cetak') {
-            return redirect()->route($prefix . '.observasi.cetak', $observasi->id);
+            return redirect()->route($prefix.'.observasi.cetak', $observasi->id);
         }
 
-        return redirect()->route($prefix . '.observasi.index')->with('success', 'Perubahan Lembar Observasi berhasil disimpan!');
+        return redirect()->route($prefix.'.observasi.index')->with('success', 'Perubahan Lembar Observasi berhasil disimpan!');
     }
 
     public function cetak(LembarObservasi $observasi)
     {
         $observasi->load(['penempatan.siswa', 'penempatan.perusahaan', 'guru']);
+
         return view('guru.observasi.cetak', compact('observasi'));
     }
 
@@ -400,7 +403,8 @@ class LembarObservasiController extends Controller
     {
         $prefix = Auth::user()->role?->nama_role === 'admin' ? 'admin' : 'guru';
         $observasi->delete();
-        return redirect()->route($prefix . '.observasi.index')->with('success', 'Lembar Observasi berhasil dihapus.');
+
+        return redirect()->route($prefix.'.observasi.index')->with('success', 'Lembar Observasi berhasil dihapus.');
     }
 
     public function exportExcel(LembarObservasi $observasi)
@@ -420,7 +424,8 @@ class LembarObservasiController extends Controller
         ];
 
         $export = new LembarObservasiExport($data);
-        $namaFile = 'lembar_observasi_' . \Illuminate\Support\Str::slug($observasi->nama_murid ?: 'siswa') . '.xlsx';
+        $namaFile = 'lembar_observasi_'.Str::slug($observasi->nama_murid ?: 'siswa').'.xlsx';
+
         return $export->download($namaFile);
     }
 }

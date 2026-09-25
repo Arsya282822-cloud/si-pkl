@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
-use App\Models\Penempatan;
 use App\Models\AbsensiPkl;
+use App\Models\Penempatan;
 use Illuminate\Support\Facades\Auth;
 
 class PantauanMapController extends Controller
@@ -14,7 +14,7 @@ class PantauanMapController extends Controller
         $user = Auth::user();
         $guru = $user->guru;
 
-        if (!$guru) {
+        if (! $guru) {
             return redirect()->route('guru.dashboard')->with('error', 'Data guru tidak ditemukan.');
         }
 

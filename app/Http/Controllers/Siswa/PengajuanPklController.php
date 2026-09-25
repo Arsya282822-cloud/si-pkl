@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Penempatan;
 use App\Models\PengajuanPkl;
 use App\Models\PeriodePkl;
-use App\Models\Penempatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +14,7 @@ class PengajuanPklController extends Controller
     public function index()
     {
         $siswa = Auth::user()->siswa;
-        if (!$siswa) {
+        if (! $siswa) {
             return redirect()->route('siswa.dashboard')->with('error', 'Profil siswa tidak ditemukan.');
         }
 
@@ -33,14 +33,14 @@ class PengajuanPklController extends Controller
     public function create()
     {
         $siswa = Auth::user()->siswa;
-        if (!$siswa) {
+        if (! $siswa) {
             return redirect()->route('siswa.dashboard')->with('error', 'Profil siswa tidak ditemukan.');
         }
 
         // Cek jika sudah ditempatkan
         $penempatan = Penempatan::where('siswa_id', $siswa->id)->first();
         if ($penempatan) {
-            return redirect()->route('siswa.pengajuan.index')->with('info', 'Anda telah ditempatkan di ' . ($penempatan->perusahaan->nama_perusahaan ?? 'Perusahaan') . '. Tidak perlu mengajukan tempat baru.');
+            return redirect()->route('siswa.pengajuan.index')->with('info', 'Anda telah ditempatkan di '.($penempatan->perusahaan->nama_perusahaan ?? 'Perusahaan').'. Tidak perlu mengajukan tempat baru.');
         }
 
         // Cek jika ada pengajuan pending
@@ -57,7 +57,7 @@ class PengajuanPklController extends Controller
     public function store(Request $request)
     {
         $siswa = Auth::user()->siswa;
-        if (!$siswa) {
+        if (! $siswa) {
             return redirect()->route('siswa.dashboard')->with('error', 'Profil siswa tidak ditemukan.');
         }
 
@@ -78,9 +78,9 @@ class PengajuanPklController extends Controller
         $filePath = null;
         if ($request->hasFile('file_surat_balasan')) {
             $file = $request->file('file_surat_balasan');
-            $fileName = 'surat_balasan_' . $siswa->nis . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $fileName = 'surat_balasan_'.$siswa->nis.'_'.time().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('uploads/pengajuan_pkl'), $fileName);
-            $filePath = 'uploads/pengajuan_pkl/' . $fileName;
+            $filePath = 'uploads/pengajuan_pkl/'.$fileName;
         }
 
         PengajuanPkl::create([

@@ -10,6 +10,7 @@ class JurnalPkl extends Model
     use HasFactory;
 
     protected $table = 'jurnal_pkl';
+
     protected $guarded = [];
 
     public function penempatan()

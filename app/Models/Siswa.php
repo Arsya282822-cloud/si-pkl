@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Siswa extends Model
 {
     protected $table = 'siswa';
+
     protected $fillable = ['user_id', 'kelas_id', 'jurusan_id', 'nis', 'nisn', 'nama', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'no_hp'];
 
     protected $casts = [
@@ -16,10 +17,10 @@ class Siswa extends Model
     protected static function booted()
     {
         static::saving(function ($siswa) {
-            if (!empty($siswa->nama)) {
+            if (! empty($siswa->nama)) {
                 $siswa->nama = mb_strtoupper(trim($siswa->nama));
             }
-            if ($siswa->kelas_id && (!$siswa->jurusan_id || $siswa->isDirty('kelas_id'))) {
+            if ($siswa->kelas_id && (! $siswa->jurusan_id || $siswa->isDirty('kelas_id'))) {
                 $kelas = Kelas::find($siswa->kelas_id);
                 if ($kelas && $kelas->jurusan_id) {
                     $siswa->jurusan_id = $kelas->jurusan_id;

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Instruktur;
 
 use App\Http\Controllers\Controller;
-use App\Models\Penempatan;
 use App\Models\JurnalPkl;
+use App\Models\Penempatan;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +17,7 @@ class JurnalController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan) {
+        if (! $perusahaan) {
             return redirect()->route('instruktur.dashboard')->with('error', 'Akun belum terhubung ke perusahaan.');
         }
 
@@ -36,9 +37,9 @@ class JurnalController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('kegiatan', 'like', "%{$search}%")
-                  ->orWhereHas('penempatan.siswa', function ($sub) use ($search) {
-                      $sub->where('nama', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('penempatan.siswa', function ($sub) use ($search) {
+                        $sub->where('nama', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -59,7 +60,7 @@ class JurnalController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan || $jurnal->penempatan?->perusahaan_id !== $perusahaan->id) {
+        if (! $perusahaan || $jurnal->penempatan?->perusahaan_id !== $perusahaan->id) {
             abort(403, 'Akses ditolak: Jurnal ini bukan dari siswa di perusahaan Anda.');
         }
 
@@ -74,7 +75,7 @@ class JurnalController extends Controller
         $pembimbing = $user->pembimbingIndustri;
         $perusahaan = $pembimbing?->perusahaan;
 
-        if (!$perusahaan || $jurnal->penempatan?->perusahaan_id !== $perusahaan->id) {
+        if (! $perusahaan || $jurnal->penempatan?->perusahaan_id !== $perusahaan->id) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -87,9 +88,9 @@ class JurnalController extends Controller
         $catatan = $request->catatan_guru;
         if ($catatan) {
             if ($request->boolean('kirim_laporan_guru')) {
-                $catatan = '[LAPORAN INSTRUKTUR DUDI]: ' . $catatan;
+                $catatan = '[LAPORAN INSTRUKTUR DUDI]: '.$catatan;
             } else {
-                $catatan = '[Catatan Instruktur]: ' . $catatan;
+                $catatan = '[Catatan Instruktur]: '.$catatan;
             }
         }
 
@@ -98,10 +99,10 @@ class JurnalController extends Controller
             'komentar_guru' => $catatan ?: $jurnal->komentar_guru,
         ]);
 
-        \App\Services\ActivityLogger::log(
+        ActivityLogger::log(
             'Validasi Jurnal DUDI',
             $request->boolean('kirim_laporan_guru') ? 'Laporan Khusus Instruktur ke Guru' : 'Validasi Jurnal oleh Instruktur',
-            'Instruktur ' . ($pembimbing?->nama ?? 'DUDI') . ' memvalidasi jurnal ' . ($jurnal->penempatan?->siswa?->nama ?? 'siswa') . ' status: ' . $request->status_validasi . ($request->boolean('kirim_laporan_guru') ? ' (Dengan Laporan ke Guru)' : '')
+            'Instruktur '.($pembimbing?->nama ?? 'DUDI').' memvalidasi jurnal '.($jurnal->penempatan?->siswa?->nama ?? 'siswa').' status: '.$request->status_validasi.($request->boolean('kirim_laporan_guru') ? ' (Dengan Laporan ke Guru)' : '')
         );
 
         return redirect()->route('instruktur.jurnal.index')->with('success', 'Jurnal harian berhasil divalidasi oleh Instruktur DUDI!');

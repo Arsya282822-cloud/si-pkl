@@ -9,17 +9,19 @@ class WhatsAppNotification
      */
     public static function formatPhoneNumber(?string $phone): string
     {
-        if (!$phone) return '';
-        
+        if (! $phone) {
+            return '';
+        }
+
         // Hapus karakter non-digit
         $cleaned = preg_replace('/[^0-9]/', '', $phone);
-        
+
         if (str_starts_with($cleaned, '0')) {
-            $cleaned = '62' . substr($cleaned, 1);
+            $cleaned = '62'.substr($cleaned, 1);
         } elseif (str_starts_with($cleaned, '8')) {
-            $cleaned = '62' . $cleaned;
+            $cleaned = '62'.$cleaned;
         }
-        
+
         return $cleaned;
     }
 
@@ -29,13 +31,13 @@ class WhatsAppNotification
     public static function getJurnalReminderUrl(string $phone, string $guruName, int $countPending): string
     {
         $target = self::formatPhoneNumber($phone);
-        $text = "Halo Bapak/Ibu *{$guruName}*,\n\n" .
-                "Pemberitahuan dari Sistem *SI-PKL SMK Labor FKIP UNRI*:\n" .
-                "Terdapat *{$countPending} Jurnal Harian Siswa* yang saat ini menunggu validasi/persetujuan Anda.\n\n" .
-                "Silakan login ke portal SI-PKL untuk memeriksa: " . url('/guru/validasi') . "\n\n" .
-                "Terima kasih atas bimbingan dan kerjasamanya.";
+        $text = "Halo Bapak/Ibu *{$guruName}*,\n\n".
+                "Pemberitahuan dari Sistem *SI-PKL SMK Labor FKIP UNRI*:\n".
+                "Terdapat *{$countPending} Jurnal Harian Siswa* yang saat ini menunggu validasi/persetujuan Anda.\n\n".
+                'Silakan login ke portal SI-PKL untuk memeriksa: '.url('/guru/validasi')."\n\n".
+                'Terima kasih atas bimbingan dan kerjasamanya.';
 
-        return "https://wa.me/{$target}?text=" . rawurlencode($text);
+        return "https://wa.me/{$target}?text=".rawurlencode($text);
     }
 
     /**
@@ -45,18 +47,18 @@ class WhatsAppNotification
     {
         $target = self::formatPhoneNumber($phone);
         $statusText = $status === 'disetujui' ? 'DISETUJUI' : 'DITOLAK';
-        
-        $text = "Halo *{$siswaName}*,\n\n" .
+
+        $text = "Halo *{$siswaName}*,\n\n".
                 "Pengajuan tempat PKL mandiri Anda di *{$perusahaan}* telah diverifikasi oleh Koordinator PKL dengan status: *{$statusText}*.\n";
-        
+
         if ($catatan) {
             $text .= "\n*Catatan Verifikator:* {$catatan}\n";
         }
-        
-        $text .= "\nSilakan cek detail pengajuan Anda di portal SI-PKL: " . url('/siswa/pengajuan') . "\n\n" .
+
+        $text .= "\nSilakan cek detail pengajuan Anda di portal SI-PKL: ".url('/siswa/pengajuan')."\n\n".
                  "Salam,\n*Koordinator PKL SMK Labor FKIP UNRI*";
 
-        return "https://wa.me/{$target}?text=" . rawurlencode($text);
+        return "https://wa.me/{$target}?text=".rawurlencode($text);
     }
 
     /**
@@ -65,11 +67,11 @@ class WhatsAppNotification
     public static function getBroadcastUrl(?string $phone, string $judul, string $konten): string
     {
         $target = $phone ? self::formatPhoneNumber($phone) : '';
-        $text = "*PENGUMUMAN KOORDINATOR PKL SMK LABOR FKIP UNRI*\n\n" .
-                "*{$judul}*\n\n" .
-                "{$konten}\n\n" .
-                "Info selengkapnya: " . url('/');
+        $text = "*PENGUMUMAN KOORDINATOR PKL SMK LABOR FKIP UNRI*\n\n".
+                "*{$judul}*\n\n".
+                "{$konten}\n\n".
+                'Info selengkapnya: '.url('/');
 
-        return "https://wa.me/{$target}?text=" . rawurlencode($text);
+        return "https://wa.me/{$target}?text=".rawurlencode($text);
     }
 }

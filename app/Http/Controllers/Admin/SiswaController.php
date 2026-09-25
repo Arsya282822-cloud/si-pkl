@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\SiswaImport;
 use App\Models\Jurusan;
 use App\Models\Kelas;
 use App\Models\Role;
@@ -11,7 +12,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Imports\SiswaImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
@@ -20,10 +20,12 @@ class SiswaController extends Controller
     {
         $q = trim((string) $request->input('q'));
         $jurusan_id = $request->input('jurusan_id');
-        
+
         $per_page_input = $request->input('per_page', 10);
         $per_page = $per_page_input === 'all' ? Siswa::count() : (int) $per_page_input;
-        if ($per_page <= 0) $per_page = 10;
+        if ($per_page <= 0) {
+            $per_page = 10;
+        }
 
         $siswa = Siswa::with(['user', 'kelas', 'jurusan'])
             ->when($q !== '', function ($query) use ($q) {
@@ -52,32 +54,33 @@ class SiswaController extends Controller
     public function bulkUpdateKelas(Request $request)
     {
         $request->validate([
-            'kelas_id'   => 'required|exists:kelas,id',
-            'siswa_ids'  => 'required|array|min:1',
-            'siswa_ids.*'=> 'exists:siswa,id',
+            'kelas_id' => 'required|exists:kelas,id',
+            'siswa_ids' => 'required|array|min:1',
+            'siswa_ids.*' => 'exists:siswa,id',
         ]);
 
         $kelas = Kelas::findOrFail($request->kelas_id);
 
         Siswa::whereIn('id', $request->siswa_ids)->update([
-            'kelas_id'   => $kelas->id,
+            'kelas_id' => $kelas->id,
             'jurusan_id' => $kelas->jurusan_id,
         ]);
 
-        return back()->with('success', count($request->siswa_ids) . ' data siswa berhasil dipindahkan ke kelas ' . $kelas->nama_kelas . '.');
+        return back()->with('success', count($request->siswa_ids).' data siswa berhasil dipindahkan ke kelas '.$kelas->nama_kelas.'.');
     }
 
     public function import(Request $request)
     {
         $request->validate([
-            'file_excel' => 'required|mimes:xlsx,xls,csv|max:10240'
+            'file_excel' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
         try {
             Excel::import(new SiswaImport, $request->file('file_excel'));
+
             return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil diimport beserta akun login-nya.');
         } catch (\Exception $e) {
-            return redirect()->route('admin.siswa.index')->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+            return redirect()->route('admin.siswa.index')->with('error', 'Terjadi kesalahan saat import: '.$e->getMessage());
         }
     }
 
@@ -157,8 +160,8 @@ class SiswaController extends Controller
         $siswa->load('user');
 
         $validated = $request->validate([
-            'nis' => ['required', 'string', 'max:50', 'unique:siswa,nis,' . $siswa->id],
-            'nisn' => ['nullable', 'string', 'max:50', 'unique:siswa,nisn,' . $siswa->id],
+            'nis' => ['required', 'string', 'max:50', 'unique:siswa,nis,'.$siswa->id],
+            'nisn' => ['nullable', 'string', 'max:50', 'unique:siswa,nisn,'.$siswa->id],
             'nama' => ['required', 'string', 'max:255'],
             'jenis_kelamin' => ['nullable', 'in:L,P'],
             'tempat_lahir' => ['nullable', 'string', 'max:255'],
@@ -167,7 +170,7 @@ class SiswaController extends Controller
             'no_hp' => ['nullable', 'string', 'max:20'],
             'kelas_id' => ['required', 'exists:kelas,id'],
             'jurusan_id' => ['required', 'exists:jurusan,id'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $siswa->user_id],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$siswa->user_id],
             'password' => ['nullable', 'string', 'min:8'],
             'status' => ['required', 'in:aktif,nonaktif'],
         ]);
@@ -194,7 +197,7 @@ class SiswaController extends Controller
                 'status' => $validated['status'],
             ];
 
-            if (!empty($validated['password'])) {
+            if (! empty($validated['password'])) {
                 $userData['password'] = Hash::make($validated['password']);
             }
 
