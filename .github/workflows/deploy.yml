@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Deploy to Web Application Directory
         env:
-          DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH || '/var/www/si-pkl' }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH || '/var/www/pkl' }}
           COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
         run: |
           echo "🚀 Navigating to application directory: $DEPLOY_PATH"
