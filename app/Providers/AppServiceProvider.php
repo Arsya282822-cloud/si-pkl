@@ -17,15 +17,20 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
-        // Enforce HTTPS Scheme jika diakses via HTTPS, Reverse Proxy, Cloudflare, Ngrok, atau Server Production
-        if (
-            request()->server('HTTP_X_FORWARDED_PROTO') === 'https' ||
-            request()->header('X-Forwarded-Proto') === 'https' ||
-            request()->isSecure() ||
-            str_contains(config('app.url'), 'https://') ||
-            $this->app->environment('production')
-        ) {
-            URL::forceScheme('https');
+        // Di server local (localhost / 127.0.0.1), selalu gunakan HTTP biasa.
+        // Hanya paksa HTTPS jika di server production atau jika URL terkonfigurasi dengan https://
+        $isLocalHost = in_array(request()->getHost(), ['localhost', '127.0.0.1', '::1', '']) || 
+                       $this->app->environment(['local', 'development', 'testing']);
+
+        if (!$isLocalHost) {
+            if (
+                request()->server('HTTP_X_FORWARDED_PROTO') === 'https' ||
+                request()->header('X-Forwarded-Proto') === 'https' ||
+                str_starts_with(config('app.url'), 'https://') ||
+                $this->app->environment('production')
+            ) {
+                URL::forceScheme('https');
+            }
         }
     }
 }
