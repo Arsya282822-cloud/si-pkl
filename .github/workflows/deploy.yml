@@ -25,6 +25,8 @@ jobs:
         run: php artisan down || true
 
       - name: Install / Update Composer Dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
         run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Build Frontend Vite Assets
