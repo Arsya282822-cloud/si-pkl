@@ -14,44 +14,57 @@ jobs:
   # SELF-HOSTED RUNNER DEPLOYMENT
   # =============================================================
   deploy:
-    name: Deploy on Self-Hosted Server
+    name: Deploy to Production App Directory
     runs-on: self-hosted
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Put Application in Maintenance Mode (Minimal Downtime)
-        run: php artisan down || true
-
-      - name: Install / Update Composer Dependencies
+      - name: Deploy to Web Application Directory
         env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH || '/var/www/si-pkl' }}
           COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
-        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-
-      - name: Build Frontend Vite Assets
         run: |
+          echo "🚀 Navigating to application directory: $DEPLOY_PATH"
+          if [ ! -d "$DEPLOY_PATH" ]; then
+            echo "❌ Error: Directory $DEPLOY_PATH not found! Silakan set DEPLOY_PATH di GitHub Settings -> Variables/Secrets jika lokasi folder berbeda."
+            exit 1
+          fi
+
+          cd "$DEPLOY_PATH"
+
+          echo "🔒 Avoiding git safe.directory issue..."
+          git config --global --add safe.directory "$DEPLOY_PATH" || true
+
+          echo "🛑 Putting application into maintenance mode..."
+          php artisan down || true
+
+          echo "📥 Pulling latest changes from GitHub..."
+          git fetch origin main
+          git reset --hard origin/main
+
+          echo "📦 Installing/updating Composer dependencies..."
+          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+          echo "⚡ Building frontend assets (Vite)..."
           npm ci || npm install
           npm run build
 
-      - name: Run Database Migrations & Seeders
-        run: |
+          echo "🗄️ Running database migrations & seeders..."
           php artisan migrate --force
           php artisan db:seed --class=TujuanPembelajaranSeeder --force
 
-      - name: Ensure Storage Symlink Exists
-        run: php artisan storage:link || true
+          echo "🔗 Linking storage..."
+          php artisan storage:link || true
 
-      - name: Optimize & Clear Cache
-        run: |
+          echo "🧹 Clearing and optimizing Laravel cache..."
           php artisan optimize:clear
           php artisan config:cache
           php artisan route:cache
           php artisan view:cache
 
-      - name: Set Correct Storage & Cache Permissions
-        run: |
+          echo "🔑 Setting folder permissions..."
           chmod -R 775 storage bootstrap/cache || true
 
-      - name: Bring Application Online
-        run: php artisan up
+          echo "🟢 Bringing application back online..."
+          php artisan up
+
+          echo "✅ Deployment completed successfully!"
