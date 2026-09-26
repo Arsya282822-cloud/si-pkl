@@ -12,16 +12,30 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('perusahaan', function (Blueprint $table) {
-            $table->string('latitude', 50)->nullable()->after('alamat');
-            $table->string('longitude', 50)->nullable()->after('latitude');
-            $table->unsignedInteger('radius_meter')->default(150)->after('longitude');
+            if (! Schema::hasColumn('perusahaan', 'latitude')) {
+                $table->string('latitude', 50)->nullable()->after('alamat');
+            }
+            if (! Schema::hasColumn('perusahaan', 'longitude')) {
+                $table->string('longitude', 50)->nullable()->after('latitude');
+            }
+            if (! Schema::hasColumn('perusahaan', 'radius_meter')) {
+                $table->unsignedInteger('radius_meter')->default(150)->after('longitude');
+            }
         });
 
         Schema::table('absensi_pkl', function (Blueprint $table) {
-            $table->unsignedInteger('jarak_masuk_meter')->nullable()->after('lokasi_masuk');
-            $table->string('status_lokasi_masuk', 30)->nullable()->after('jarak_masuk_meter'); // dalam_radius, luar_radius, tanpa_gps
-            $table->unsignedInteger('jarak_keluar_meter')->nullable()->after('lokasi_keluar');
-            $table->string('status_lokasi_keluar', 30)->nullable()->after('jarak_keluar_meter');
+            if (! Schema::hasColumn('absensi_pkl', 'jarak_masuk_meter')) {
+                $table->unsignedInteger('jarak_masuk_meter')->nullable()->after('lokasi_masuk');
+            }
+            if (! Schema::hasColumn('absensi_pkl', 'status_lokasi_masuk')) {
+                $table->string('status_lokasi_masuk', 30)->nullable()->after('jarak_masuk_meter'); // dalam_radius, luar_radius, tanpa_gps
+            }
+            if (! Schema::hasColumn('absensi_pkl', 'jarak_keluar_meter')) {
+                $table->unsignedInteger('jarak_keluar_meter')->nullable()->after('lokasi_keluar');
+            }
+            if (! Schema::hasColumn('absensi_pkl', 'status_lokasi_keluar')) {
+                $table->string('status_lokasi_keluar', 30)->nullable()->after('jarak_keluar_meter');
+            }
         });
     }
 

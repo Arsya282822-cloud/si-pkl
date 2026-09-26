@@ -70,14 +70,17 @@
         }
 
         .logo-box {
-            border-radius: 16px;
-            width: 72px;
-            height: 72px;
+            border-radius: 50%;
+            width: 135px;
+            height: 135px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 8px 24px rgba(2, 132, 199, 0.2);
+            box-shadow: 0 12px 36px rgba(2, 132, 199, 0.32);
             overflow: hidden;
+            border: 3.5px solid #e0f2fe;
+            background: #ffffff;
+            padding: 3px;
         }
 
         .logo-box img {

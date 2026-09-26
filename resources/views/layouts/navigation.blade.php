@@ -185,7 +185,7 @@
             <li><a href="{{ route('admin.export.penempatan') }}" class="sub-nav-link">Export Penempatan</a></li>
             <li><a href="{{ route('admin.export.absensi') }}" class="sub-nav-link">Export Presensi</a></li>
             <li><a href="{{ route('admin.export.nilai') }}" class="sub-nav-link">Export Rekap Nilai</a></li>
-            <li><a href="{{ route('admin.backup.database') }}" class="sub-nav-link">Backup SQLite DB</a></li>
+            <li><a href="{{ route('admin.backup.database') }}" class="sub-nav-link">Backup Database</a></li>
         </ul>
     </details>
 

@@ -598,10 +598,10 @@
         <!-- Professional Sidebar -->
         <aside class="pro-sidebar" id="sidebar">
             <a href="{{ url('/') }}" class="sidebar-brand" title="SI-PKL SMK Labor Binaan FKIP UNRI">
-                <img src="{{ asset('images/logo-sipkl.jpg') }}" alt="Logo SI-PKL" style="width: 38px; height: 38px; min-width: 38px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
-                <div class="sidebar-brand-text" style="line-height: 1.2; white-space: nowrap; overflow: hidden;">
-                    <span style="font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; color: #ffffff; display: block;">SI-PKL</span>
-                    <small style="font-size: 0.68rem; color: #8c98b2; display: block;">SMK Labor Binaan FKIP UNRI</small>
+                <img src="{{ asset('images/logo-sipkl.jpg') }}" alt="Logo SI-PKL" style="width: 58px; height: 58px; min-width: 58px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 14px rgba(0,242,254,0.4); border: 2.5px solid rgba(0,242,254,0.6);">
+                <div class="sidebar-brand-text" style="line-height: 1.25; white-space: nowrap; overflow: hidden;">
+                    <span style="font-weight: 800; font-size: 1.125rem; letter-spacing: 0.5px; color: #ffffff; display: block;">SI-PKL</span>
+                    <small style="font-size: 0.75rem; color: #94a3b8; display: block; font-weight: 500;">SMK Labor Binaan FKIP UNRI</small>
                 </div>
             </a>
             

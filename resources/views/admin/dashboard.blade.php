@@ -15,10 +15,6 @@
             </p>
         </div>
         <div class="d-flex align-items-center gap-2 flex-wrap">
-            <a href="{{ route('admin.backup.database') }}" class="btn btn-outline-secondary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1.5" style="border-radius: 10px; font-size: 0.85rem;" title="Download Cadangan Database">
-                <i class="ph ph-database" style="font-size: 18px;"></i>
-                <span>Backup DB</span>
-            </a>
             <a href="{{ route('admin.dokumen.index') }}" class="btn btn-primary px-3.5 py-2 fw-semibold d-inline-flex align-items-center gap-2" style="border-radius: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">
                 <i class="ph ph-printer" style="font-size: 20px;"></i>
                 <span>Pusat Cetak Dokumen</span>
@@ -342,6 +338,13 @@
 <!-- Chart.js Scripts -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Configure Chart.js global typography to match app font (Plus Jakarta Sans)
+    if (typeof Chart !== 'undefined') {
+        Chart.defaults.font.family = "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#475569';
+    }
+
     // 1. Chart Persebaran Siswa per Jurusan
     const ctxJurusan = document.getElementById('jurusanChart');
     if (ctxJurusan) {
@@ -372,15 +375,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         position: 'bottom',
                         labels: {
                             boxWidth: 10,
+                            padding: 14,
                             usePointStyle: true,
-                            font: { size: 11, family: 'Inter' }
+                            font: { 
+                                size: 12, 
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                weight: '500'
+                            },
+                            color: '#334155'
                         }
                     },
                     tooltip: {
                         padding: 10,
                         backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                        titleFont: { size: 12, weight: 'bold' },
-                        bodyFont: { size: 12 },
+                        titleFont: { size: 12, weight: 'bold', family: "'Plus Jakarta Sans', sans-serif" },
+                        bodyFont: { size: 12, family: "'Plus Jakarta Sans', sans-serif" },
                         callbacks: {
                             label: function(context) {
                                 let label = context.label || '';
@@ -416,17 +425,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false }
+                    legend: { display: false },
+                    tooltip: {
+                        titleFont: { size: 12, weight: 'bold', family: "'Plus Jakarta Sans', sans-serif" },
+                        bodyFont: { size: 12, family: "'Plus Jakarta Sans', sans-serif" }
+                    }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { stepSize: 1, font: { size: 11 } },
+                        ticks: { stepSize: 1, font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" }, color: '#64748b' },
                         grid: { color: '#f1f5f9' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { font: { size: 11 } }
+                        ticks: { font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" }, color: '#64748b' }
                     }
                 }
             }
@@ -492,26 +505,32 @@ document.addEventListener('DOMContentLoaded', function() {
                         align: 'end',
                         labels: {
                             boxWidth: 10,
+                            padding: 12,
                             usePointStyle: true,
-                            font: { size: 11, family: 'Inter' }
+                            font: { 
+                                size: 11, 
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                weight: '600'
+                            },
+                            color: '#334155'
                         }
                     },
                     tooltip: {
                         padding: 10,
                         backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                        titleFont: { size: 12, weight: 'bold' },
-                        bodyFont: { size: 12 }
+                        titleFont: { size: 12, weight: 'bold', family: "'Plus Jakarta Sans', sans-serif" },
+                        bodyFont: { size: 12, family: "'Plus Jakarta Sans', sans-serif" }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { stepSize: 1, font: { size: 11 } },
+                        ticks: { stepSize: 1, font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" }, color: '#64748b' },
                         grid: { color: '#f1f5f9' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { font: { size: 11 } }
+                        ticks: { font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" }, color: '#64748b' }
                     }
                 }
             }
@@ -519,5 +538,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-
 @endsection

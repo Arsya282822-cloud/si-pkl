@@ -189,12 +189,12 @@
         }
 
         .hero-logo-box {
-            width: 120px;
-            height: 120px;
-            border-radius: 28px;
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
             background: #ffffff;
-            padding: 8px;
-            box-shadow: 0 12px 32px -4px rgba(2, 132, 199, 0.25), 0 0 0 1px rgba(224, 242, 254, 0.9);
+            padding: 7px;
+            box-shadow: 0 18px 40px -4px rgba(2, 132, 199, 0.38), 0 0 0 4px rgba(186, 230, 253, 0.95);
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -203,14 +203,14 @@
         }
 
         .hero-logo-box:hover {
-            transform: scale(1.03);
+            transform: scale(1.05);
         }
 
         .hero-logo-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 20px;
+            border-radius: 50%;
         }
 
         /* Hero Pill Badge */
@@ -411,7 +411,7 @@
         @media (max-width: 768px) {
             .navbar { padding: 14px 20px; }
             .hero { padding: 40px 18px 36px; }
-            .hero-logo-box { width: 100px; height: 100px; border-radius: 22px; }
+            .hero-logo-box { width: 125px; height: 125px; border-radius: 50%; }
             .hero-actions { width: 100%; flex-direction: column; }
             .hero-actions .btn { width: 100%; justify-content: center; }
             .majors-grid { grid-template-columns: repeat(2, 1fr); }
@@ -429,12 +429,10 @@
     <!-- Top Navigation Bar -->
     <nav class="navbar">
         <a href="{{ url('/') }}" class="brand-logo">
-            <div class="brand-icon">
-                <i class="ph-bold ph-graduation-cap"></i>
-            </div>
+            <img src="{{ asset('images/logo-sipkl.jpg') }}" alt="Logo SI-PKL" style="width: 58px; height: 58px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35); border: 2.5px solid #e0f2fe;">
             <div>
-                <div class="brand-title">SI-PKL</div>
-                <div class="brand-subtitle">SMK LABOR PEKANBARU</div>
+                <div class="brand-title" style="font-size: 1.15rem;">SI-PKL</div>
+                <div class="brand-subtitle">SMK LABOR BINAAN FKIP UNRI</div>
             </div>
         </a>
         
