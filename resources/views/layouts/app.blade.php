@@ -155,15 +155,16 @@
         }
 
         .sidebar-brand {
-            padding: 18px 20px;
+            padding: 16px 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             background: linear-gradient(135deg, rgba(24, 34, 52, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             color: #ffffff;
             text-decoration: none;
             transition: all 0.3s ease;
+            min-width: 0;
         }
 
         .sidebar-brand img {
@@ -598,10 +599,10 @@
         <!-- Professional Sidebar -->
         <aside class="pro-sidebar" id="sidebar">
             <a href="{{ url('/') }}" class="sidebar-brand" title="SI-PKL SMK Labor Binaan FKIP UNRI">
-                <img src="{{ asset('images/logo-sipkl.jpg') }}" alt="Logo SI-PKL" style="width: 58px; height: 58px; min-width: 58px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 14px rgba(0,242,254,0.4); border: 2.5px solid rgba(0,242,254,0.6);">
-                <div class="sidebar-brand-text" style="line-height: 1.25; white-space: nowrap; overflow: hidden;">
-                    <span style="font-weight: 800; font-size: 1.125rem; letter-spacing: 0.5px; color: #ffffff; display: block;">SI-PKL</span>
-                    <small style="font-size: 0.75rem; color: #94a3b8; display: block; font-weight: 500;">SMK Labor Binaan FKIP UNRI</small>
+                <img src="{{ asset('images/logo-sipkl.jpg') }}" alt="Logo SI-PKL" style="width: 46px; height: 46px; min-width: 46px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 14px rgba(0,242,254,0.35); border: 2px solid rgba(0,242,254,0.5);">
+                <div class="sidebar-brand-text" style="line-height: 1.25; min-width: 0; flex: 1;">
+                    <span style="font-weight: 800; font-size: 1.05rem; letter-spacing: 0.5px; color: #ffffff; display: block;">SI-PKL</span>
+                    <small style="font-size: 0.675rem; color: #94a3b8; display: block; font-weight: 600; white-space: nowrap; letter-spacing: -0.25px;">SMK Labor Binaan FKIP UNRI</small>
                 </div>
             </a>
             
