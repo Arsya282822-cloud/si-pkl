@@ -20,14 +20,26 @@
                 </div>
             </div>
 
+            @if(isset($isCatchup) && $isCatchup)
+                <div class="alert alert-warning border border-warning-subtle mb-4 rounded-3 d-flex align-items-center gap-2 text-dark">
+                    <i class="ph ph-lock-key-open text-warning fs-4"></i>
+                    <div>
+                        <strong>Pelunasan Jurnal Tertinggal:</strong> Anda sedang mengisi jurnal kegiatan untuk kehadiran tanggal <strong>{{ \Carbon\Carbon::parse($targetTanggal)->translatedFormat('l, d F Y') }}</strong>. Setelah disimpan, sistem akan otomatis membuka kunci presensi hari ini.
+                    </div>
+                </div>
+            @endif
+
             <form action="{{ route('siswa.jurnal.store') }}" method="POST" enctype="multipart/form-data" id="formJurnal">
                 @csrf
                 
                 <div class="row mb-3">
                     <div class="col-md-5">
                         <label class="form-label fw-semibold small">Tanggal Kegiatan <span class="text-danger">*</span></label>
-                        <input type="date" name="tanggal" class="form-control form-control-sm rounded-3 @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required>
+                        <input type="date" name="tanggal" class="form-control form-control-sm rounded-3 @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', $targetTanggal ?? date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" {{ isset($isCatchup) && $isCatchup ? 'readonly style=background-color:#f8fafc;' : '' }} required>
                         @error('tanggal') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @if(isset($isCatchup) && $isCatchup)
+                            <small class="text-muted" style="font-size: 0.72rem;"><i class="ph ph-lock-simple"></i> Tanggal terkunci pada kehadiran tertinggal yang sedang dilunasi.</small>
+                        @endif
                     </div>
                 </div>
 

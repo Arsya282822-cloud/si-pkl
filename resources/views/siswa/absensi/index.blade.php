@@ -26,7 +26,28 @@
     <div class="col-lg-7">
         <div class="pro-card h-100 p-4" style="border-radius: 16px;">
             <div class="text-center py-2">
-                @if(!$hari_ini)
+                @if($lockedByJournal && !$hari_ini)
+                    <div class="p-3 py-4 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded-4 text-center">
+                        <div class="rounded-circle bg-danger text-white p-3 d-inline-flex mb-2 shadow-sm">
+                            <i class="ph ph-lock-key" style="font-size: 36px;"></i>
+                        </div>
+                        <h5 class="fw-bold text-danger mb-1">Presensi Hari Ini Terkunci!</h5>
+                        <p class="text-dark small mb-2" style="max-width: 550px; margin: 0 auto;">
+                            Sesuai aturan kedisiplinan PKL, Anda wajib mengisi jurnal harian untuk kehadiran tanggal:<br>
+                            <span class="badge bg-danger text-white px-3 py-1.5 fs-6 mt-1">
+                                <i class="ph ph-calendar-blank me-1"></i> {{ \Carbon\Carbon::parse($lockedByJournal->tanggal)->translatedFormat('l, d F Y') }}
+                            </span>
+                        </p>
+                        <p class="text-muted small mb-3">
+                            Silakan lengkapi jurnal kegiatan tanggal tersebut. Setelah disimpan, <strong>kunci presensi hari ini akan otomatis terbuka kembali</strong>.
+                        </p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ route('siswa.jurnal.create', ['tanggal' => $lockedByJournal->tanggal]) }}" class="btn btn-danger px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" style="border-radius: 10px; font-weight: 600;">
+                                <i class="ph ph-note-pencil" style="font-size: 20px;"></i> Lengkapi Jurnal Tanggal {{ \Carbon\Carbon::parse($lockedByJournal->tanggal)->format('d/m/Y') }} Sekarang
+                            </a>
+                        </div>
+                    </div>
+                @elseif(!$hari_ini)
                     <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-3 d-inline-flex mb-3">
                         <i class="ph ph-fingerprint" style="font-size: 42px;"></i>
                     </div>

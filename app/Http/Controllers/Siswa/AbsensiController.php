@@ -4,14 +4,43 @@ namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
 use App\Models\AbsensiPkl;
+use App\Models\JurnalPkl;
 use App\Models\Penempatan;
 use App\Services\ActivityLogger;
 use App\Services\GeoLocationService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AbsensiController extends Controller
 {
+    /**
+     * Cari riwayat presensi hadir sebelum hari ini yang belum memiliki jurnal harian.
+     */
+    public static function getUnfilledPastAttendance(int $penempatanId): ?AbsensiPkl
+    {
+        $today = now()->format('Y-m-d');
+
+        // Ambil riwayat kehadiran 'hadir' sebelum hari ini, urut dari yang paling baru
+        $pastPresences = AbsensiPkl::where('penempatan_id', $penempatanId)
+            ->where('status', 'hadir')
+            ->where('tanggal', '<', $today)
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        foreach ($pastPresences as $presence) {
+            $hasJournal = JurnalPkl::where('penempatan_id', $penempatanId)
+                ->where('tanggal', $presence->tanggal)
+                ->exists();
+
+            if (! $hasJournal) {
+                return $presence;
+            }
+        }
+
+        return null;
+    }
+
     public function index()
     {
         $user = Auth::user();
@@ -33,6 +62,9 @@ class AbsensiController extends Controller
             ->where('tanggal', now()->format('Y-m-d'))
             ->first();
 
+        // Cek apakah presensi terkunci karena ada jurnal kemarin yang belum diisi
+        $lockedByJournal = self::getUnfilledPastAttendance($penempatan->id);
+
         // Hitung rekap
         $rekap = [
             'hadir' => AbsensiPkl::where('penempatan_id', $penempatan->id)->where('status', 'hadir')->count(),
@@ -41,7 +73,7 @@ class AbsensiController extends Controller
             'alpha' => AbsensiPkl::where('penempatan_id', $penempatan->id)->where('status', 'alpha')->count(),
         ];
 
-        return view('siswa.absensi.index', compact('absensi', 'penempatan', 'rekap', 'hari_ini'));
+        return view('siswa.absensi.index', compact('absensi', 'penempatan', 'rekap', 'hari_ini', 'lockedByJournal'));
     }
 
     public function create()
@@ -104,6 +136,14 @@ class AbsensiController extends Controller
             );
 
             return redirect()->route('siswa.absensi.index')->with('success', 'Pengajuan '.ucfirst($request->status).' berhasil dikirim.');
+        }
+
+        // Cek apakah presensi terkunci karena ada jurnal hari sebelumnya yang belum diisi
+        $unfilled = self::getUnfilledPastAttendance($penempatan->id);
+        if ($unfilled) {
+            $tglFormatted = Carbon::parse($unfilled->tanggal)->translatedFormat('l, d F Y');
+
+            return redirect()->route('siswa.absensi.index')->with('error', "Presensi hari ini terkunci! Anda belum mengisi jurnal kegiatan pada tanggal {$tglFormatted}. Silakan lengkapi jurnal hari tersebut terlebih dahulu.");
         }
 
         // Jika tombol Absen Masuk diklik (Hadir Real-time)

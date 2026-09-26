@@ -7,6 +7,7 @@ use App\Models\JurnalPkl;
 use App\Models\Penempatan;
 use App\Models\TujuanPembelajaran;
 use App\Services\ActivityLogger;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,16 +30,43 @@ class JurnalController extends Controller
             ->orderBy('tanggal', 'desc')
             ->paginate(10);
 
-        return view('siswa.jurnal.index', compact('jurnal', 'penempatan'));
+        // Cek apakah ada kewajiban jurnal kemarin yang belum diisi
+        $unfilledPast = AbsensiController::getUnfilledPastAttendance($penempatan->id);
+
+        return view('siswa.jurnal.index', compact('jurnal', 'penempatan', 'unfilledPast'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $user = Auth::user();
-        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->with('siswa.jurusan')->latest()->first();
+        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->with('siswa.jurusan', 'perusahaan')->latest()->first();
 
         if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan, tidak dapat mengisi jurnal.');
+        }
+
+        // Cek jika siswa memiliki jurnal tertinggal yang mengunci absensi
+        $unfilledPast = AbsensiController::getUnfilledPastAttendance($penempatan->id);
+
+        $targetTanggal = now()->format('Y-m-d');
+        $isCatchup = false;
+
+        if ($unfilledPast) {
+            // Prioritaskan tanggal tertinggal agar kunci presensi terbuka
+            $targetTanggal = $unfilledPast->tanggal;
+            $isCatchup = true;
+        } elseif ($request->filled('tanggal') && $request->tanggal <= now()->format('Y-m-d')) {
+            $targetTanggal = $request->tanggal;
+        }
+
+        // Cek jika sudah pernah mengisi jurnal untuk targetTanggal tersebut
+        $existingJournal = JurnalPkl::where('penempatan_id', $penempatan->id)
+            ->where('tanggal', $targetTanggal)
+            ->first();
+
+        if ($existingJournal) {
+            return redirect()->route('siswa.jurnal.index')
+                ->with('error', 'Jurnal kegiatan untuk tanggal '.Carbon::parse($targetTanggal)->translatedFormat('d F Y').' sudah pernah dibuat.');
         }
 
         $kodeJurusan = $penempatan->siswa?->jurusan?->kode_jurusan;
@@ -51,15 +79,19 @@ class JurnalController extends Controller
             ->get()
             ->groupBy('capaian_pembelajaran');
 
-        return view('siswa.jurnal.create', compact('penempatan', 'tujuanPembelajarans'));
+        return view('siswa.jurnal.create', compact('penempatan', 'tujuanPembelajarans', 'targetTanggal', 'isCatchup'));
     }
 
     public function store(Request $request)
     {
+        $today = now()->format('Y-m-d');
+
         $request->validate([
-            'tanggal' => 'required|date',
+            'tanggal' => "required|date|before_or_equal:{$today}",
             'kegiatan' => 'required|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'tanggal.before_or_equal' => 'Tanggal kegiatan tidak boleh memilih tanggal di masa depan.',
         ]);
 
         $user = Auth::user();
@@ -67,6 +99,15 @@ class JurnalController extends Controller
 
         if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan.');
+        }
+
+        // Cek duplikasi jurnal di tanggal yang sama
+        $alreadyExists = JurnalPkl::where('penempatan_id', $penempatan->id)
+            ->where('tanggal', $request->tanggal)
+            ->exists();
+
+        if ($alreadyExists) {
+            return redirect()->route('siswa.jurnal.index')->with('error', 'Jurnal untuk tanggal '.Carbon::parse($request->tanggal)->translatedFormat('d F Y').' sudah pernah dibuat.');
         }
 
         $fotoPath = null;
@@ -91,7 +132,12 @@ class JurnalController extends Controller
             'Mengisi jurnal kegiatan tanggal '.$request->tanggal
         );
 
-        return redirect()->route('siswa.jurnal.index')->with('success', 'Jurnal harian berhasil ditambahkan.');
+        $successMsg = 'Jurnal kegiatan harian berhasil disimpan.';
+        if ($request->tanggal < $today) {
+            $successMsg = 'Jurnal tertinggal berhasil disimpan! Kunci presensi hari ini telah terbuka kembali. Silakan lakukan Presensi Masuk.';
+        }
+
+        return redirect()->route('siswa.jurnal.index')->with('success', $successMsg);
     }
 
     public function edit(JurnalPkl $jurnal)
@@ -137,8 +183,9 @@ class JurnalController extends Controller
             return redirect()->route('siswa.jurnal.index')->with('error', 'Jurnal yang sudah diproses tidak dapat diedit.');
         }
 
+        $today = now()->format('Y-m-d');
         $request->validate([
-            'tanggal' => 'required|date',
+            'tanggal' => "required|date|before_or_equal:{$today}",
             'kegiatan' => 'required|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:3072',
         ]);
