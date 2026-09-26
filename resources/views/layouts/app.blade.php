@@ -785,9 +785,9 @@
             });
         });
 
-        // Auto dismiss toast alerts after 5 seconds
+        // Auto dismiss toast alerts after 5 seconds (only for alerts explicitly tagged with .auto-dismiss)
         setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(alert => {
+            document.querySelectorAll('.alert.auto-dismiss, .alert-dismissible.auto-dismiss').forEach(alert => {
                 if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
                     const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
                     if (bsAlert) bsAlert.close();

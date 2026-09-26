@@ -58,7 +58,7 @@
                     </p>
 
                     {{-- LIVE DISTANCE INDICATOR BADGE --}}
-                    <div id="distance-indicator" class="alert alert-secondary py-2 px-3 d-inline-flex align-items-center gap-2 mb-4" style="border-radius: 10px; font-size: 0.85rem;">
+                    <div id="distance-indicator" class="p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border" style="font-size: 0.85rem; background: #f8fafc;">
                         <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
                         <span>Mendeteksi jarak Anda ke kantor...</span>
                     </div>
@@ -83,7 +83,7 @@
                     <h5 class="fw-bold text-dark mb-2">Presensi Pulang / Selesai Magang</h5>
                     <p class="text-muted small mb-3">Klik tombol di bawah saat jam kerja Anda di industri telah selesai.</p>
 
-                    <div id="distance-indicator" class="alert alert-secondary py-2 px-3 d-inline-flex align-items-center gap-2 mb-4" style="border-radius: 10px; font-size: 0.85rem;">
+                    <div id="distance-indicator" class="p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border" style="font-size: 0.85rem; background: #f8fafc;">
                         <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
                         <span>Mendeteksi jarak Anda ke kantor...</span>
                     </div>
@@ -366,17 +366,17 @@
 
                 if (indicator) {
                     if (dist <= allowedRadius) {
-                        indicator.className = 'alert alert-success py-2 px-3 d-inline-flex align-items-center gap-2 mb-4';
-                        indicator.innerHTML = `<i class="ph ph-check-circle text-success fs-5"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Dalam Radius Kantor ✅)</span>`;
+                        indicator.className = 'p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border border-success-subtle bg-success bg-opacity-10 text-success fw-medium';
+                        indicator.innerHTML = `<i class="ph ph-check-circle fs-5"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Dalam Radius Kantor ✅)</span>`;
                     } else {
-                        indicator.className = 'alert alert-warning py-2 px-3 d-inline-flex align-items-center gap-2 mb-4';
-                        indicator.innerHTML = `<i class="ph ph-warning text-warning fs-5"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Di Luar Radius Kantor ${allowedRadius}m ⚠️)</span>`;
+                        indicator.className = 'p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border border-warning-subtle bg-warning bg-opacity-10 text-warning-emphasis fw-medium';
+                        indicator.innerHTML = `<i class="ph ph-warning fs-5 text-warning"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Di Luar Radius Kantor ${allowedRadius}m ⚠️)</span>`;
                     }
                 }
             }, function() {
                 const indicator = document.getElementById('distance-indicator');
                 if (indicator) {
-                    indicator.className = 'alert alert-light py-2 px-3 d-inline-flex align-items-center gap-2 mb-4 border';
+                    indicator.className = 'p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border bg-light text-muted';
                     indicator.innerHTML = `<i class="ph ph-map-pin text-muted fs-5"></i> <span>Izin GPS belum aktif. Klik tombol presensi untuk menyalakan.</span>`;
                 }
             }, { enableHighAccuracy: true, timeout: 10000 });
@@ -394,6 +394,25 @@
                 function(position) {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
+                    const dist = calculateDistanceClient(lat, lon, companyLat, companyLng);
+
+                    if (dist > allowedRadius) {
+                        const confirmOutside = confirm(
+                            `⚠️ PERHATIAN: LOKASI ANDA DI LUAR RADIUS KANTOR!\n\n` +
+                            `• Jarak Anda saat ini: ${dist} Meter\n` +
+                            `• Batas Maksimal Toleransi Radius: ${allowedRadius} Meter\n` +
+                            `• Lokasi Kantor: ${companyName}\n\n` +
+                            `Presensi Anda akan dicatat dengan status 'Luar Radius' dan tercatat pada rekap kehadiran.\n\n` +
+                            `Apakah Anda ingin TETAP MELANJUTKAN presensi?`
+                        );
+
+                        if (!confirmOutside) {
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                            return;
+                        }
+                    }
+
                     document.getElementById(inputId).value = lat + ',' + lon;
                     document.getElementById(formId).submit();
                 },
