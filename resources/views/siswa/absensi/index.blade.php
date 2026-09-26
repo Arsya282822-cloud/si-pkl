@@ -446,6 +446,14 @@
             attribution: '&copy; OpenStreetMap'
         }).addTo(radarMap);
 
+        setTimeout(function() {
+            if (radarMap) radarMap.invalidateSize();
+        }, 200);
+
+        window.addEventListener('resize', function() {
+            if (radarMap) radarMap.invalidateSize();
+        });
+
         // Marker Kantor DUDI
         L.marker([companyLat, companyLng]).addTo(radarMap)
             .bindPopup(`<b>${companyName}</b><br>Radius: ${allowedRadius} Meter`)
@@ -479,6 +487,10 @@
                 // Fit Bounds to show both company and user
                 const bounds = L.latLngBounds([[companyLat, companyLng], [currentLat, currentLng]]);
                 radarMap.fitBounds(bounds, { padding: [30, 30] });
+
+                setTimeout(function() {
+                    if (radarMap) radarMap.invalidateSize();
+                }, 100);
 
                 // Calculate Distance
                 currentDistance = calculateDistanceClient(currentLat, currentLng, companyLat, companyLng);

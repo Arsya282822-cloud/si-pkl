@@ -31,8 +31,20 @@
     <link rel="apple-touch-icon" href="{{ asset('images/logo-sipkl.jpg') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 
     <style>
+        /* Fix Leaflet map tile rendering in Bootstrap */
+        .leaflet-container {
+            font-family: inherit;
+        }
+        .leaflet-container img,
+        .leaflet-tile-container img,
+        .leaflet-tile {
+            max-width: none !important;
+            max-height: none !important;
+        }
+
         /* Premium Vibrant Dark Navy & Neon Cyan Theme */
         :root {
             --bg-body: #f8fafc;
