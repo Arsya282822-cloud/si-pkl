@@ -53,6 +53,9 @@ class PerusahaanController extends Controller
         $validated = $request->validate([
             'nama_perusahaan' => ['required', 'string', 'max:255'],
             'alamat' => ['required', 'string'],
+            'latitude' => ['nullable', 'string', 'max:50'],
+            'longitude' => ['nullable', 'string', 'max:50'],
+            'radius_meter' => ['nullable', 'integer', 'min:10', 'max:10000'],
             'kota' => ['nullable', 'string', 'max:255'],
             'no_telepon' => ['nullable', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -60,6 +63,10 @@ class PerusahaanController extends Controller
             'nama_pimpinan' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:aktif,nonaktif'],
         ]);
+
+        if (! isset($validated['radius_meter']) || ! $validated['radius_meter']) {
+            $validated['radius_meter'] = 150;
+        }
 
         Perusahaan::create($validated);
 
@@ -77,6 +84,9 @@ class PerusahaanController extends Controller
         $validated = $request->validate([
             'nama_perusahaan' => ['required', 'string', 'max:255'],
             'alamat' => ['required', 'string'],
+            'latitude' => ['nullable', 'string', 'max:50'],
+            'longitude' => ['nullable', 'string', 'max:50'],
+            'radius_meter' => ['nullable', 'integer', 'min:10', 'max:10000'],
             'kota' => ['nullable', 'string', 'max:255'],
             'no_telepon' => ['nullable', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -84,6 +94,10 @@ class PerusahaanController extends Controller
             'nama_pimpinan' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:aktif,nonaktif'],
         ]);
+
+        if (! isset($validated['radius_meter']) || ! $validated['radius_meter']) {
+            $validated['radius_meter'] = 150;
+        }
 
         $perusahaan->update($validated);
 

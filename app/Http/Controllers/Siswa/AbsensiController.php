@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AbsensiPkl;
 use App\Models\Penempatan;
 use App\Services\ActivityLogger;
+use App\Services\GeoLocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,10 @@ class AbsensiController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
+        $penempatan = Penempatan::with(['perusahaan', 'guru'])
+            ->where('siswa_id', $user->siswa->id)
+            ->latest()
+            ->first();
 
         if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan.');
@@ -43,7 +47,7 @@ class AbsensiController extends Controller
     public function create()
     {
         $user = Auth::user();
-        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
+        $penempatan = Penempatan::with('perusahaan')->where('siswa_id', $user->siswa->id)->latest()->first();
 
         if (! $penempatan) {
             return redirect()->route('siswa.dashboard')->with('error', 'Anda belum ditempatkan.');
@@ -64,9 +68,13 @@ class AbsensiController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
+        $penempatan = Penempatan::with('perusahaan')->where('siswa_id', $user->siswa->id)->latest()->first();
 
-        // Cek jika sudah absen
+        if (! $penempatan) {
+            return redirect()->route('siswa.dashboard')->with('error', 'Anda belum memiliki penempatan.');
+        }
+
+        // Cek jika sudah absen hari ini
         $today = AbsensiPkl::where('penempatan_id', $penempatan->id)
             ->where('tanggal', now()->format('Y-m-d'))
             ->first();
@@ -100,21 +108,46 @@ class AbsensiController extends Controller
 
         // Jika tombol Absen Masuk diklik (Hadir Real-time)
         $waktuMasuk = now();
+        $lokasiString = $request->input('lokasi');
+        $coords = GeoLocationService::parseCoordinates($lokasiString);
+
+        $jarakMeter = null;
+        $statusLokasi = 'tanpa_gps';
+
+        if ($coords && $penempatan->perusahaan && $penempatan->perusahaan->latitude && $penempatan->perusahaan->longitude) {
+            $companyLat = (float) $penempatan->perusahaan->latitude;
+            $companyLng = (float) $penempatan->perusahaan->longitude;
+            $jarakMeter = GeoLocationService::calculateDistance($coords[0], $coords[1], $companyLat, $companyLng);
+            $maxRadius = $penempatan->perusahaan->radius_meter ?: 150;
+            $statusLokasi = ($jarakMeter <= $maxRadius) ? 'dalam_radius' : 'luar_radius';
+        } elseif ($coords) {
+            $statusLokasi = 'dalam_radius'; // Jika perusahaan belum setting koordinat, anggap valid
+        }
+
         AbsensiPkl::create([
             'penempatan_id' => $penempatan->id,
             'tanggal' => $waktuMasuk->format('Y-m-d'),
             'status' => 'hadir',
             'jam_masuk' => $waktuMasuk->format('H:i:s'),
-            'lokasi_masuk' => $request->lokasi, // Menerima data koordinat GPS
+            'lokasi_masuk' => $lokasiString,
+            'jarak_masuk_meter' => $jarakMeter,
+            'status_lokasi_masuk' => $statusLokasi,
         ]);
+
+        $jarakInfo = $jarakMeter !== null ? " (Jarak: {$jarakMeter}m - ".($statusLokasi === 'dalam_radius' ? 'Valid' : 'Luar Radius').')' : '';
 
         ActivityLogger::log(
             'Presensi Siswa',
             'Presensi Masuk',
-            'Presensi masuk pukul '.$waktuMasuk->format('H:i').' WIB'.($request->lokasi ? ' (Koordinat: '.$request->lokasi.')' : '')
+            'Presensi masuk pukul '.$waktuMasuk->format('H:i').' WIB'.$jarakInfo
         );
 
-        return redirect()->route('siswa.absensi.index')->with('success', 'Berhasil Presensi Masuk pada '.$waktuMasuk->format('H:i').' WIB');
+        $successMsg = 'Berhasil Presensi Masuk pada '.$waktuMasuk->format('H:i').' WIB';
+        if ($statusLokasi === 'luar_radius') {
+            $successMsg .= " (Perhatian: Jarak terdeteksi {$jarakMeter}m dari kantor DUDI).";
+        }
+
+        return redirect()->route('siswa.absensi.index')->with('success', $successMsg);
     }
 
     public function update(Request $request, string $id)
@@ -122,7 +155,7 @@ class AbsensiController extends Controller
         $absensi = AbsensiPkl::findOrFail($id);
 
         $user = Auth::user();
-        $penempatan = Penempatan::where('siswa_id', $user->siswa->id)->latest()->first();
+        $penempatan = Penempatan::with('perusahaan')->where('siswa_id', $user->siswa->id)->latest()->first();
 
         // Pastikan absensi milik siswa ini dan belum keluar
         if ($absensi->penempatan_id != $penempatan->id) {
@@ -134,17 +167,42 @@ class AbsensiController extends Controller
         }
 
         $waktuKeluar = now();
+        $lokasiString = $request->input('lokasi');
+        $coords = GeoLocationService::parseCoordinates($lokasiString);
+
+        $jarakMeter = null;
+        $statusLokasi = 'tanpa_gps';
+
+        if ($coords && $penempatan->perusahaan && $penempatan->perusahaan->latitude && $penempatan->perusahaan->longitude) {
+            $companyLat = (float) $penempatan->perusahaan->latitude;
+            $companyLng = (float) $penempatan->perusahaan->longitude;
+            $jarakMeter = GeoLocationService::calculateDistance($coords[0], $coords[1], $companyLat, $companyLng);
+            $maxRadius = $penempatan->perusahaan->radius_meter ?: 150;
+            $statusLokasi = ($jarakMeter <= $maxRadius) ? 'dalam_radius' : 'luar_radius';
+        } elseif ($coords) {
+            $statusLokasi = 'dalam_radius';
+        }
+
         $absensi->update([
             'jam_keluar' => $waktuKeluar->format('H:i:s'),
-            'lokasi_keluar' => $request->lokasi, // Menerima data koordinat GPS
+            'lokasi_keluar' => $lokasiString,
+            'jarak_keluar_meter' => $jarakMeter,
+            'status_lokasi_keluar' => $statusLokasi,
         ]);
+
+        $jarakInfo = $jarakMeter !== null ? " (Jarak: {$jarakMeter}m - ".($statusLokasi === 'dalam_radius' ? 'Valid' : 'Luar Radius').')' : '';
 
         ActivityLogger::log(
             'Presensi Siswa',
             'Presensi Pulang',
-            'Presensi pulang pukul '.$waktuKeluar->format('H:i').' WIB'
+            'Presensi pulang pukul '.$waktuKeluar->format('H:i').' WIB'.$jarakInfo
         );
 
-        return redirect()->route('siswa.absensi.index')->with('success', 'Berhasil Presensi Pulang pada '.$waktuKeluar->format('H:i').' WIB');
+        $successMsg = 'Berhasil Presensi Pulang pada '.$waktuKeluar->format('H:i').' WIB';
+        if ($statusLokasi === 'luar_radius') {
+            $successMsg .= " (Perhatian: Jarak terdeteksi {$jarakMeter}m dari kantor DUDI).";
+        }
+
+        return redirect()->route('siswa.absensi.index')->with('success', $successMsg);
     }
 }

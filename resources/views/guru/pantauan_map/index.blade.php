@@ -68,14 +68,24 @@
                                 </div>
                             </td>
                             <td>
-                                @if($absen->lokasi_masuk)
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
-                                        <i class="ph ph-check-circle me-1"></i> Terverifikasi GPS
-                                    </span>
+                                @if($absen->jarak_masuk_meter !== null)
+                                    @if($absen->status_lokasi_masuk === 'dalam_radius')
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
+                                            <i class="ph ph-check-circle me-1"></i> Radius Valid ({{ $absen->jarak_masuk_meter }}m)
+                                        </span>
+                                    @else
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
+                                            <i class="ph ph-warning-circle me-1"></i> Luar Radius ({{ $absen->jarak_masuk_meter }}m)
+                                        </span>
+                                    @endif
                                     <div class="small text-muted font-monospace mt-1" style="font-size: 0.72rem;">{{ $absen->lokasi_masuk }}</div>
+                                @elseif($absen->lokasi_masuk)
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
+                                        <i class="ph ph-map-pin me-1"></i> GPS: {{ Str::limit($absen->lokasi_masuk, 18) }}
+                                    </span>
                                 @else
-                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
-                                        <i class="ph ph-warning-circle me-1"></i> Tanpa Koordinat
+                                    <span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
+                                        <i class="ph ph-warning-circle me-1"></i> Tanpa GPS
                                     </span>
                                 @endif
                             </td>

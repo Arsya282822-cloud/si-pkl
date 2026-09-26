@@ -1,10 +1,13 @@
 @extends('layouts.app')
-@section('title', 'Absensi Harian PKL')
+@section('title', 'Presensi Harian PKL (Geofencing GPS)')
 @section('content')
 <div class="row mb-4 align-items-center">
     <div class="col-md-7">
         <h3 class="fw-bold mb-1" style="color: var(--text-main);">Presensi Harian PKL</h3>
-        <p class="text-muted mb-0" style="font-size: 0.875rem;">Catat kehadiran Anda setiap hari kerja industri secara realtime menggunakan verifikasi GPS.</p>
+        <p class="text-muted mb-0" style="font-size: 0.875rem;">
+            Verifikasi presensi kehadiran otomatis dengan radius GPS kantor mitra DUDI:
+            <strong>{{ $penempatan->perusahaan->nama_perusahaan ?? 'DUDI' }}</strong>
+        </p>
     </div>
     <div class="col-md-5 text-end mt-3 mt-md-0">
         <div class="pro-card p-3 text-center border-0 text-white" style="background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%); border-radius: 14px;">
@@ -18,57 +21,95 @@
     </div>
 </div>
 
-<div class="pro-card mb-4" style="border-radius: 16px;">
-    <div class="p-4 p-md-5 text-center">
-        @if(!$hari_ini)
-            <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-3 d-inline-flex mb-3">
-                <i class="ph ph-fingerprint" style="font-size: 42px;"></i>
-            </div>
-            <h5 class="fw-bold text-dark mb-2">Presensi Masuk Hari Ini</h5>
-            <p class="text-muted small mb-4">Pastikan Anda berada di lokasi DUDI dan browser memiliki izin akses lokasi GPS.</p>
-            <div class="d-flex justify-content-center flex-wrap gap-3">
-                <form id="form-absen-masuk" action="{{ route('siswa.absensi.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="lokasi" id="lokasi_masuk">
-                    <button type="button" onclick="getLocationAndSubmit('form-absen-masuk', 'lokasi_masuk')" class="btn btn-success px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-absen-masuk" style="border-radius: 10px; font-weight: 600; font-size: 1rem;">
-                        <i class="ph ph-sign-in" style="font-size: 20px;"></i> Presensi Masuk Sekarang
-                    </button>
-                </form>
-                <a href="{{ route('siswa.absensi.create') }}" class="btn btn-outline-secondary px-4 py-2.5 d-inline-flex align-items-center gap-1.5" style="border-radius: 10px; font-weight: 500;">
-                    <i class="ph ph-envelope-simple"></i> Ajukan Izin / Sakit
-                </a>
-            </div>
-        @elseif($hari_ini->status == 'hadir' && !$hari_ini->jam_keluar)
-            <div class="p-3 bg-info-subtle border border-info-subtle rounded-3 mb-3 d-inline-flex align-items-center gap-2 text-info">
-                <i class="ph ph-check-circle" style="font-size: 20px;"></i>
-                <span>Anda sudah presensi masuk pada pukul <strong>{{ \Carbon\Carbon::parse($hari_ini->jam_masuk)->format('H:i') }} WIB</strong></span>
-            </div>
-            <h5 class="fw-bold text-dark mb-2">Presensi Pulang / Selesai Bekerja</h5>
-            <p class="text-muted small mb-4">Lakukan presensi keluar saat jam operasional magang telah berakhir.</p>
-            <form id="form-absen-keluar" action="{{ route('siswa.absensi.update', $hari_ini->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="lokasi" id="lokasi_keluar">
-                <button type="button" onclick="getLocationAndSubmit('form-absen-keluar', 'lokasi_keluar')" class="btn btn-danger px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-absen-keluar" style="border-radius: 10px; font-weight: 600; font-size: 1rem;">
-                    <i class="ph ph-sign-out" style="font-size: 20px;"></i> Presensi Pulang (Keluar)
-                </button>
-            </form>
-        @else
-            <div class="p-4 bg-success-subtle border border-success-subtle rounded-4 d-inline-block px-4 py-3" style="max-width: 600px;">
-                <div class="rounded-circle bg-success text-white p-3 d-inline-flex mb-2">
-                    <i class="ph ph-check-bold" style="font-size: 28px;"></i>
-                </div>
-                <h5 class="fw-bold text-success mb-1">Presensi Hari Ini Lengkap & Tuntas</h5>
-                @if($hari_ini->status == 'hadir')
-                    <p class="mb-0 text-success-emphasis small">
-                        Terima kasih atas dedikasi dan kerja keras Anda hari ini! <br>
-                        (Masuk: <strong>{{ \Carbon\Carbon::parse($hari_ini->jam_masuk)->format('H:i') }} WIB</strong> • Keluar: <strong>{{ \Carbon\Carbon::parse($hari_ini->jam_keluar)->format('H:i') }} WIB</strong>)
+{{-- INFORMASI PENEMPATAN & GEOFENCING WIDGET --}}
+<div class="row g-3 mb-4">
+    <div class="col-lg-7">
+        <div class="pro-card h-100 p-4" style="border-radius: 16px;">
+            <div class="text-center py-2">
+                @if(!$hari_ini)
+                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-3 d-inline-flex mb-3">
+                        <i class="ph ph-fingerprint" style="font-size: 42px;"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Presensi Masuk Hari Ini</h5>
+                    <p class="text-muted small mb-3">
+                        Lokasi kantor: <strong>{{ $penempatan->perusahaan->nama_perusahaan }}</strong><br>
+                        Maksimal toleransi jarak: <span class="badge bg-primary-subtle text-primary fw-bold">{{ $penempatan->perusahaan->radius_meter ?: 150 }} Meter</span>
                     </p>
+
+                    {{-- LIVE DISTANCE INDICATOR BADGE --}}
+                    <div id="distance-indicator" class="alert alert-secondary py-2 px-3 d-inline-flex align-items-center gap-2 mb-4" style="border-radius: 10px; font-size: 0.85rem;">
+                        <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+                        <span>Mendeteksi jarak Anda ke kantor...</span>
+                    </div>
+
+                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                        <form id="form-absen-masuk" action="{{ route('siswa.absensi.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="lokasi" id="lokasi_masuk">
+                            <button type="button" onclick="getLocationAndSubmit('form-absen-masuk', 'lokasi_masuk')" class="btn btn-success px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-absen-masuk" style="border-radius: 10px; font-weight: 600;">
+                                <i class="ph ph-sign-in" style="font-size: 20px;"></i> Presensi Masuk Sekarang
+                            </button>
+                        </form>
+                        <a href="{{ route('siswa.absensi.create') }}" class="btn btn-outline-secondary px-4 py-2.5 d-inline-flex align-items-center gap-1.5" style="border-radius: 10px; font-weight: 500;">
+                            <i class="ph ph-envelope-simple"></i> Ajukan Izin / Sakit
+                        </a>
+                    </div>
+                @elseif($hari_ini->status == 'hadir' && !$hari_ini->jam_keluar)
+                    <div class="p-3 bg-info-subtle border border-info-subtle rounded-3 mb-3 d-inline-flex align-items-center gap-2 text-info">
+                        <i class="ph ph-check-circle" style="font-size: 20px;"></i>
+                        <span>Presensi masuk tercatat pukul <strong>{{ \Carbon\Carbon::parse($hari_ini->jam_masuk)->format('H:i') }} WIB</strong></span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Presensi Pulang / Selesai Magang</h5>
+                    <p class="text-muted small mb-3">Klik tombol di bawah saat jam kerja Anda di industri telah selesai.</p>
+
+                    <div id="distance-indicator" class="alert alert-secondary py-2 px-3 d-inline-flex align-items-center gap-2 mb-4" style="border-radius: 10px; font-size: 0.85rem;">
+                        <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+                        <span>Mendeteksi jarak Anda ke kantor...</span>
+                    </div>
+
+                    <form id="form-absen-keluar" action="{{ route('siswa.absensi.update', $hari_ini->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="lokasi" id="lokasi_keluar">
+                        <button type="button" onclick="getLocationAndSubmit('form-absen-keluar', 'lokasi_keluar')" class="btn btn-danger px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-absen-keluar" style="border-radius: 10px; font-weight: 600;">
+                            <i class="ph ph-sign-out" style="font-size: 20px;"></i> Presensi Pulang (Keluar)
+                        </button>
+                    </form>
                 @else
-                    <p class="mb-0 text-success-emphasis small">Status kehadiran hari ini tercatat: <strong>{{ ucfirst($hari_ini->status) }}</strong> ({{ $hari_ini->keterangan ?: 'Izin disetujui' }})</p>
+                    <div class="p-4 bg-success-subtle border border-success-subtle rounded-4 d-inline-block px-4 py-3">
+                        <div class="rounded-circle bg-success text-white p-3 d-inline-flex mb-2">
+                            <i class="ph ph-check-bold" style="font-size: 28px;"></i>
+                        </div>
+                        <h5 class="fw-bold text-success mb-1">Presensi Hari Ini Lengkap & Valid</h5>
+                        @if($hari_ini->status == 'hadir')
+                            <p class="mb-0 text-success-emphasis small">
+                                Masuk: <strong>{{ \Carbon\Carbon::parse($hari_ini->jam_masuk)->format('H:i') }} WIB</strong> 
+                                • Keluar: <strong>{{ \Carbon\Carbon::parse($hari_ini->jam_keluar)->format('H:i') }} WIB</strong>
+                            </p>
+                        @else
+                            <p class="mb-0 text-success-emphasis small">Status: <strong>{{ ucfirst($hari_ini->status) }}</strong> ({{ $hari_ini->keterangan ?: '-' }})</p>
+                        @endif
+                    </div>
                 @endif
             </div>
-        @endif
+        </div>
+    </div>
+
+    {{-- MAP GEOFENCING RADAR --}}
+    <div class="col-lg-5">
+        <div class="pro-card h-100 p-3" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold small text-dark d-flex align-items-center gap-1">
+                    <i class="ph ph-radar text-primary fs-5"></i> Radar Geofencing DUDI
+                </span>
+                <span class="badge bg-light text-muted border" id="gps-accuracy-badge">GPS Akurasi: ...</span>
+            </div>
+            <div id="live-geofence-map" style="height: 220px; border-radius: 12px; border: 1px solid #cbd5e1;"></div>
+            <div class="mt-2 d-flex justify-content-between align-items-center text-muted" style="font-size: 0.75rem;">
+                <span>🟢 Lingkaran Hijau: Radius Kantor</span>
+                <span>🔵 Pin Biru: Posisi Anda</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -114,7 +155,7 @@
     <div class="p-3 px-4 bg-light border-bottom d-flex justify-content-between align-items-center">
         <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
             <i class="ph ph-clock-counter-clockwise text-primary" style="font-size: 20px;"></i>
-            Riwayat Log Presensi
+            Riwayat Log Presensi & Verifikasi Radius
         </h6>
     </div>
     <div class="p-0">
@@ -123,9 +164,9 @@
                 <thead class="table-light" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
                     <tr>
                         <th class="ps-4">Hari & Tanggal</th>
-                        <th>Status Kehadiran</th>
-                        <th>Waktu Masuk & GPS</th>
-                        <th>Waktu Pulang & GPS</th>
+                        <th>Status</th>
+                        <th>Waktu Masuk & Jarak</th>
+                        <th>Waktu Pulang & Jarak</th>
                         <th>Keterangan</th>
                     </tr>
                 </thead>
@@ -159,18 +200,38 @@
                         </td>
                         <td>
                             <div class="fw-semibold text-dark">{{ $item->jam_masuk ? $item->jam_masuk . ' WIB' : '-' }}</div>
-                            @if($item->lokasi_masuk)
-                                <a href="https://maps.google.com/?q={{ $item->lokasi_masuk }}" target="_blank" class="badge bg-primary-subtle text-primary border border-primary-subtle text-decoration-none mt-1 d-inline-flex align-items-center gap-1" style="border-radius: 4px; font-size: 0.72rem;">
-                                    <i class="ph ph-map-pin"></i> Peta GPS
-                                </a>
+                            @if($item->jarak_masuk_meter !== null)
+                                @if($item->status_lokasi_masuk === 'dalam_radius')
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 0.72rem;">
+                                        <i class="ph ph-check"></i> {{ $item->jarak_masuk_meter }}m (Dalam Radius)
+                                    </span>
+                                @else
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle mt-1" style="font-size: 0.72rem;">
+                                        <i class="ph ph-warning"></i> {{ $item->jarak_masuk_meter }}m (Luar Radius)
+                                    </span>
+                                @endif
+                            @elseif($item->lokasi_masuk)
+                                <span class="badge bg-light text-muted border mt-1" style="font-size: 0.72rem;">
+                                    {{ Str::limit($item->lokasi_masuk, 18) }}
+                                </span>
                             @endif
                         </td>
                         <td>
                             <div class="fw-semibold text-dark">{{ $item->jam_keluar ? $item->jam_keluar . ' WIB' : '-' }}</div>
-                            @if($item->lokasi_keluar)
-                                <a href="https://maps.google.com/?q={{ $item->lokasi_keluar }}" target="_blank" class="badge bg-primary-subtle text-primary border border-primary-subtle text-decoration-none mt-1 d-inline-flex align-items-center gap-1" style="border-radius: 4px; font-size: 0.72rem;">
-                                    <i class="ph ph-map-pin"></i> Peta GPS
-                                </a>
+                            @if($item->jarak_keluar_meter !== null)
+                                @if($item->status_lokasi_keluar === 'dalam_radius')
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 0.72rem;">
+                                        <i class="ph ph-check"></i> {{ $item->jarak_keluar_meter }}m (Dalam Radius)
+                                    </span>
+                                @else
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle mt-1" style="font-size: 0.72rem;">
+                                        <i class="ph ph-warning"></i> {{ $item->jarak_keluar_meter }}m (Luar Radius)
+                                    </span>
+                                @endif
+                            @elseif($item->lokasi_keluar)
+                                <span class="badge bg-light text-muted border mt-1" style="font-size: 0.72rem;">
+                                    {{ Str::limit($item->lokasi_keluar, 18) }}
+                                </span>
                             @endif
                         </td>
                         <td>
@@ -197,7 +258,12 @@
 </div>
 @endsection
 
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+@endpush
+
 @push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
     function updateClock() {
         const now = new Date();
@@ -210,10 +276,96 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // Geofencing Coordinates Setup
+    const companyLat = {{ (float)($penempatan->perusahaan->latitude ?? 0.507068) }};
+    const companyLng = {{ (float)($penempatan->perusahaan->longitude ?? 101.447779) }};
+    const allowedRadius = {{ (int)($penempatan->perusahaan->radius_meter ?: 150) }};
+    const companyName = "{{ addslashes($penempatan->perusahaan->nama_perusahaan ?? 'Kantor DUDI') }}";
+
+    let radarMap = null;
+    let userMarker = null;
+    let companyCircle = null;
+
+    // Haversine Formula (Client Side Distance Calculation)
+    function calculateDistanceClient(lat1, lon1, lat2, lon2) {
+        const R = 6371000;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return Math.round(R * c);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        radarMap = L.map('live-geofence-map').setView([companyLat, companyLng], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(radarMap);
+
+        // Marker Kantor DUDI
+        L.marker([companyLat, companyLng]).addTo(radarMap)
+            .bindPopup(`<b>${companyName}</b><br>Radius: ${allowedRadius} Meter`)
+            .openPopup();
+
+        // Circle Radius Kantor
+        companyCircle = L.circle([companyLat, companyLng], {
+            radius: allowedRadius,
+            color: '#16a34a',
+            fillColor: '#4ade80',
+            fillOpacity: 0.25
+        }).addTo(radarMap);
+
+        // Auto-detect student location on page load
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                const uLat = pos.coords.latitude;
+                const uLng = pos.coords.longitude;
+                const accuracy = Math.round(pos.coords.accuracy);
+
+                document.getElementById('gps-accuracy-badge').textContent = `GPS Akurasi: ±${accuracy}m`;
+
+                // Add User Marker
+                userMarker = L.circleMarker([uLat, uLng], {
+                    radius: 8,
+                    color: '#0284c7',
+                    fillColor: '#38bdf8',
+                    fillOpacity: 0.9
+                }).addTo(radarMap).bindPopup("Lokasi Anda Saat Ini");
+
+                // Fit Bounds to show both company and user
+                const bounds = L.latLngBounds([[companyLat, companyLng], [uLat, uLng]]);
+                radarMap.fitBounds(bounds, { padding: [30, 30] });
+
+                // Calculate Distance
+                const dist = calculateDistanceClient(uLat, uLng, companyLat, companyLng);
+                const indicator = document.getElementById('distance-indicator');
+
+                if (indicator) {
+                    if (dist <= allowedRadius) {
+                        indicator.className = 'alert alert-success py-2 px-3 d-inline-flex align-items-center gap-2 mb-4';
+                        indicator.innerHTML = `<i class="ph ph-check-circle text-success fs-5"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Dalam Radius Kantor ✅)</span>`;
+                    } else {
+                        indicator.className = 'alert alert-warning py-2 px-3 d-inline-flex align-items-center gap-2 mb-4';
+                        indicator.innerHTML = `<i class="ph ph-warning text-warning fs-5"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Di Luar Radius Kantor ${allowedRadius}m ⚠️)</span>`;
+                    }
+                }
+            }, function() {
+                const indicator = document.getElementById('distance-indicator');
+                if (indicator) {
+                    indicator.className = 'alert alert-light py-2 px-3 d-inline-flex align-items-center gap-2 mb-4 border';
+                    indicator.innerHTML = `<i class="ph ph-map-pin text-muted fs-5"></i> <span>Izin GPS belum aktif. Klik tombol presensi untuk menyalakan.</span>`;
+                }
+            }, { enableHighAccuracy: true, timeout: 10000 });
+        }
+    });
+
     function getLocationAndSubmit(formId, inputId) {
         const btn = document.getElementById(formId === 'form-absen-masuk' ? 'btn-absen-masuk' : 'btn-absen-keluar');
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Mendeteksi Lokasi GPS...';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memverifikasi Radius GPS...';
         btn.disabled = true;
 
         if (navigator.geolocation) {
@@ -252,7 +404,7 @@
                         btn.disabled = false;
                     }
                 },
-                { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 }
+                { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
             );
         } else {
             const tetapAbsen = confirm('Browser Anda tidak mendukung GPS Geolocation. Tetap lanjutkan presensi?');
@@ -267,4 +419,3 @@
     }
 </script>
 @endpush
-

@@ -8,7 +8,7 @@ class Perusahaan extends Model
 {
     protected $table = 'perusahaan';
 
-    protected $fillable = ['nama_perusahaan', 'alamat', 'kota', 'no_telepon', 'email', 'website', 'nama_pimpinan', 'status'];
+    protected $fillable = ['nama_perusahaan', 'alamat', 'latitude', 'longitude', 'radius_meter', 'kota', 'no_telepon', 'email', 'website', 'nama_pimpinan', 'status'];
 
     public function penempatan()
     {
