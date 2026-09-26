@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Services\ActivityLogger;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -33,6 +34,12 @@ class SettingController extends Controller
             // Ketua Pokja PKL
             'ketua_pokja' => Setting::get('pejabat_ketua_pokja', 'Mahendra, S.Pd., M.Si.'),
             'nip_ketua_pokja' => Setting::get('pejabat_nip_ketua_pokja', '-'),
+
+            // WhatsApp Gateway Settings
+            'wa_gateway_status' => Setting::get('wa_gateway_status', 'nonaktif'),
+            'wa_gateway_provider' => Setting::get('wa_gateway_provider', 'fonnte'),
+            'wa_gateway_api_key' => Setting::get('wa_gateway_api_key', ''),
+            'wa_gateway_url' => Setting::get('wa_gateway_url', ''),
         ];
 
         return view('admin.settings.index', compact('settings'));
@@ -59,6 +66,11 @@ class SettingController extends Controller
 
             'ketua_pokja' => 'required|string|max:255',
             'nip_ketua_pokja' => 'nullable|string|max:100',
+
+            'wa_gateway_status' => 'required|in:aktif,nonaktif',
+            'wa_gateway_provider' => 'required|in:fonnte,wablas,starsender,custom',
+            'wa_gateway_api_key' => 'nullable|string|max:500',
+            'wa_gateway_url' => 'nullable|string|max:500',
         ]);
 
         Setting::set('sekolah_nama_yayasan', $request->nama_yayasan, 'sekolah');
@@ -90,12 +102,35 @@ class SettingController extends Controller
         Setting::set('pejabat_ketua_pokja', $request->ketua_pokja, 'pejabat');
         Setting::set('pejabat_nip_ketua_pokja', $request->nip_ketua_pokja, 'pejabat');
 
+        // Simpan Konfigurasi WhatsApp Gateway
+        Setting::set('wa_gateway_status', $request->wa_gateway_status, 'whatsapp');
+        Setting::set('wa_gateway_provider', $request->wa_gateway_provider, 'whatsapp');
+        Setting::set('wa_gateway_api_key', $request->wa_gateway_api_key, 'whatsapp');
+        Setting::set('wa_gateway_url', $request->wa_gateway_url, 'whatsapp');
+
         ActivityLogger::log(
             'Pengaturan',
             'Update Pengaturan',
-            'Memperbarui data identitas sekolah & pejabat penandatangan'
+            'Memperbarui data identitas sekolah, pejabat penandatangan, dan WhatsApp Gateway'
         );
 
-        return redirect()->route('admin.pengaturan.index')->with('success', 'Pengaturan Identitas Sekolah & Data Kepala Sekolah (Lama & Baru) berhasil disimpan!');
+        return redirect()->route('admin.pengaturan.index')->with('success', 'Seluruh pengaturan (Identitas Sekolah, Pejabat & WhatsApp Gateway) berhasil disimpan!');
+    }
+
+    public function testWhatsApp(Request $request)
+    {
+        $request->validate([
+            'test_phone' => 'required|string|max:30',
+        ]);
+
+        $pesan = "Halo! Ini adalah pesan uji coba koneksi WhatsApp Gateway dari *SI-PKL SMK LABOR BINAAN FKIP UNRI*.\n\nStatus: Terhubung & Siap Digunakan ✅\nWaktu: ".now()->format('d/m/Y H:i:s').' WIB';
+
+        $result = WhatsAppService::send($request->test_phone, $pesan);
+
+        if ($result['success']) {
+            return back()->with('success', 'Uji coba sukses! '.$result['message']);
+        }
+
+        return back()->with('error', 'Uji coba gagal: '.$result['message']);
     }
 }

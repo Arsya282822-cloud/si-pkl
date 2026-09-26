@@ -8,6 +8,7 @@ use App\Models\Penempatan;
 use App\Models\PengajuanPkl;
 use App\Models\Perusahaan;
 use App\Services\ActivityLogger;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -107,6 +108,9 @@ class PengajuanPklController extends Controller
 
             DB::commit();
 
+            // Kirim notifikasi WhatsApp otomatis ke siswa (jika gateway aktif)
+            WhatsAppService::notifyPengajuanApproved($pengajuan);
+
             ActivityLogger::log(
                 'pengajuan_pkl',
                 'Persetujuan Pengajuan PKL Mandiri',
@@ -137,6 +141,9 @@ class PengajuanPklController extends Controller
             'diverifikasi_oleh' => Auth::id(),
             'diverifikasi_pada' => now(),
         ]);
+
+        // Kirim notifikasi WhatsApp otomatis ke siswa (jika gateway aktif)
+        WhatsAppService::notifyPengajuanRejected($pengajuan, $request->catatan_verifikasi);
 
         ActivityLogger::log(
             'pengajuan_pkl',

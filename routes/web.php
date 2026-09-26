@@ -118,6 +118,7 @@ Route::middleware(['auth', 'role:admin'])
         // Pengaturan Sekolah & Dokumen
         Route::get('/pengaturan', [AdminSettingController::class, 'index'])->name('pengaturan.index');
         Route::post('/pengaturan', [AdminSettingController::class, 'update'])->name('pengaturan.update');
+        Route::post('/pengaturan/test-wa', [AdminSettingController::class, 'testWhatsApp'])->name('pengaturan.test_wa');
 
         // Laporan & Rekapitulasi
         Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
