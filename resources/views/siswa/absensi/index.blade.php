@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', 'Presensi Harian PKL (Geofencing GPS)')
+@section('title', 'Presensi Harian PKL (Geofencing GPS & Foto Selfie)')
 @section('content')
 <div class="row mb-4 align-items-center">
     <div class="col-md-7">
         <h3 class="fw-bold mb-1" style="color: var(--text-main);">Presensi Harian PKL</h3>
         <p class="text-muted mb-0" style="font-size: 0.875rem;">
-            Verifikasi presensi kehadiran otomatis dengan radius GPS kantor mitra DUDI:
+            Verifikasi kehadiran ganda dengan <strong>Geofencing Radius GPS</strong> dan <strong>Foto Selfie Real-time</strong> di mitra DUDI:
             <strong>{{ $penempatan->perusahaan->nama_perusahaan ?? 'DUDI' }}</strong>
         </p>
     </div>
@@ -64,13 +64,9 @@
                     </div>
 
                     <div class="d-flex justify-content-center flex-wrap gap-2">
-                        <form id="form-absen-masuk" action="{{ route('siswa.absensi.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="lokasi" id="lokasi_masuk">
-                            <button type="button" onclick="getLocationAndSubmit('form-absen-masuk', 'lokasi_masuk')" class="btn btn-success px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-absen-masuk" style="border-radius: 10px; font-weight: 600;">
-                                <i class="ph ph-sign-in" style="font-size: 20px;"></i> Presensi Masuk Sekarang
-                            </button>
-                        </form>
+                        <button type="button" onclick="startSelfieAttendance('masuk')" class="btn btn-success px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-trigger-masuk" style="border-radius: 10px; font-weight: 600;">
+                            <i class="ph ph-camera" style="font-size: 20px;"></i> Foto Selfie & Presensi Masuk
+                        </button>
                         <a href="{{ route('siswa.absensi.create') }}" class="btn btn-outline-secondary px-4 py-2.5 d-inline-flex align-items-center gap-1.5" style="border-radius: 10px; font-weight: 500;">
                             <i class="ph ph-envelope-simple"></i> Ajukan Izin / Sakit
                         </a>
@@ -81,21 +77,18 @@
                         <span>Presensi masuk tercatat pukul <strong>{{ \Carbon\Carbon::parse($hari_ini->jam_masuk)->format('H:i') }} WIB</strong></span>
                     </div>
                     <h5 class="fw-bold text-dark mb-2">Presensi Pulang / Selesai Magang</h5>
-                    <p class="text-muted small mb-3">Klik tombol di bawah saat jam kerja Anda di industri telah selesai.</p>
+                    <p class="text-muted small mb-3">Ambil foto selfie di kantor saat jam kerja PKL Anda hari ini telah selesai.</p>
 
                     <div id="distance-indicator" class="p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border" style="font-size: 0.85rem; background: #f8fafc;">
                         <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
                         <span>Mendeteksi jarak Anda ke kantor...</span>
                     </div>
 
-                    <form id="form-absen-keluar" action="{{ route('siswa.absensi.update', $hari_ini->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="lokasi" id="lokasi_keluar">
-                        <button type="button" onclick="getLocationAndSubmit('form-absen-keluar', 'lokasi_keluar')" class="btn btn-danger px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-absen-keluar" style="border-radius: 10px; font-weight: 600;">
-                            <i class="ph ph-sign-out" style="font-size: 20px;"></i> Presensi Pulang (Keluar)
+                    <div>
+                        <button type="button" onclick="startSelfieAttendance('keluar')" class="btn btn-danger px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2" id="btn-trigger-keluar" style="border-radius: 10px; font-weight: 600;">
+                            <i class="ph ph-camera" style="font-size: 20px;"></i> Foto Selfie & Presensi Pulang
                         </button>
-                    </form>
+                    </div>
                 @else
                     <div class="p-4 bg-success-subtle border border-success-subtle rounded-4 d-inline-block px-4 py-3">
                         <div class="rounded-circle bg-success text-white p-3 d-inline-flex mb-2">
@@ -186,8 +179,8 @@
                     <tr>
                         <th class="ps-4">Hari & Tanggal</th>
                         <th>Status</th>
-                        <th>Waktu Masuk & Jarak</th>
-                        <th>Waktu Pulang & Jarak</th>
+                        <th>Waktu Masuk & Selfie</th>
+                        <th>Waktu Pulang & Selfie</th>
                         <th>Keterangan</th>
                     </tr>
                 </thead>
@@ -221,39 +214,47 @@
                         </td>
                         <td>
                             <div class="fw-semibold text-dark">{{ $item->jam_masuk ? $item->jam_masuk . ' WIB' : '-' }}</div>
-                            @if($item->jarak_masuk_meter !== null)
-                                @if($item->status_lokasi_masuk === 'dalam_radius')
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 0.72rem;">
-                                        <i class="ph ph-check"></i> {{ $item->jarak_masuk_meter }}m (Dalam Radius)
-                                    </span>
-                                @else
-                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle mt-1" style="font-size: 0.72rem;">
-                                        <i class="ph ph-warning"></i> {{ $item->jarak_masuk_meter }}m (Luar Radius)
-                                    </span>
+                            <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
+                                @if($item->jarak_masuk_meter !== null)
+                                    @if($item->status_lokasi_masuk === 'dalam_radius')
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.72rem;">
+                                            <i class="ph ph-check"></i> {{ $item->jarak_masuk_meter }}m (Radius Valid)
+                                        </span>
+                                    @else
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 0.72rem;">
+                                            <i class="ph ph-warning"></i> {{ $item->jarak_masuk_meter }}m (Luar Radius)
+                                        </span>
+                                    @endif
                                 @endif
-                            @elseif($item->lokasi_masuk)
-                                <span class="badge bg-light text-muted border mt-1" style="font-size: 0.72rem;">
-                                    {{ Str::limit($item->lokasi_masuk, 18) }}
-                                </span>
-                            @endif
+
+                                @if($item->foto_masuk)
+                                    <a href="javascript:void(0)" onclick="openPhotoModal('{{ asset('storage/'.$item->foto_masuk) }}', 'Foto Selfie Masuk - {{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }} ({{ $item->jam_masuk }} WIB)')" class="badge bg-primary-subtle text-primary border border-primary-subtle text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                                        <i class="ph ph-camera"></i> Lihat Selfie
+                                    </a>
+                                @endif
+                            </div>
                         </td>
                         <td>
                             <div class="fw-semibold text-dark">{{ $item->jam_keluar ? $item->jam_keluar . ' WIB' : '-' }}</div>
-                            @if($item->jarak_keluar_meter !== null)
-                                @if($item->status_lokasi_keluar === 'dalam_radius')
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 0.72rem;">
-                                        <i class="ph ph-check"></i> {{ $item->jarak_keluar_meter }}m (Dalam Radius)
-                                    </span>
-                                @else
-                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle mt-1" style="font-size: 0.72rem;">
-                                        <i class="ph ph-warning"></i> {{ $item->jarak_keluar_meter }}m (Luar Radius)
-                                    </span>
+                            <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
+                                @if($item->jarak_keluar_meter !== null)
+                                    @if($item->status_lokasi_keluar === 'dalam_radius')
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.72rem;">
+                                            <i class="ph ph-check"></i> {{ $item->jarak_keluar_meter }}m (Radius Valid)
+                                        </span>
+                                    @else
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 0.72rem;">
+                                            <i class="ph ph-warning"></i> {{ $item->jarak_keluar_meter }}m (Luar Radius)
+                                        </span>
+                                    @endif
                                 @endif
-                            @elseif($item->lokasi_keluar)
-                                <span class="badge bg-light text-muted border mt-1" style="font-size: 0.72rem;">
-                                    {{ Str::limit($item->lokasi_keluar, 18) }}
-                                </span>
-                            @endif
+
+                                @if($item->foto_keluar)
+                                    <a href="javascript:void(0)" onclick="openPhotoModal('{{ asset('storage/'.$item->foto_keluar) }}', 'Foto Selfie Pulang - {{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }} ({{ $item->jam_keluar }} WIB)')" class="badge bg-danger-subtle text-danger border border-danger-subtle text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                                        <i class="ph ph-camera"></i> Lihat Selfie
+                                    </a>
+                                @endif
+                            </div>
                         </td>
                         <td>
                             <span class="text-muted small">{{ $item->keterangan ?: '-' }}</span>
@@ -277,6 +278,111 @@
     </div>
     @endif
 </div>
+
+{{-- HIDDEN FORMS FOR ATTENDANCE SUBMISSION --}}
+<form id="form-absen-masuk" action="{{ route('siswa.absensi.store') }}" method="POST" enctype="multipart/form-data" style="display:none;">
+    @csrf
+    <input type="hidden" name="lokasi" id="lokasi_masuk">
+    <input type="hidden" name="foto_masuk" id="foto_masuk">
+</form>
+
+@if($hari_ini)
+<form id="form-absen-keluar" action="{{ route('siswa.absensi.update', $hari_ini->id) }}" method="POST" enctype="multipart/form-data" style="display:none;">
+    @csrf
+    @method('PUT')
+    <input type="hidden" name="lokasi" id="lokasi_keluar">
+    <input type="hidden" name="foto_keluar" id="foto_keluar">
+</form>
+@endif
+
+{{-- MODAL LIVE WEBRTC SELFIE CAMERA --}}
+<div class="modal fade" id="modalSelfieAttendance" tabindex="-1" aria-labelledby="modalSelfieAttendanceLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-header border-0 bg-dark text-white px-4 py-3">
+                <div>
+                    <h6 class="modal-title fw-bold d-flex align-items-center gap-2 mb-0" id="modalSelfieAttendanceLabel">
+                        <i class="ph ph-camera fs-5 text-info"></i> <span id="camera-modal-title">Foto Selfie Presensi</span>
+                    </h6>
+                    <small class="text-white-50" style="font-size: 0.75rem;">Posisikan wajah Anda dengan jelas di depan kamera</small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="closeCameraStream()"></button>
+            </div>
+            <div class="modal-body p-4 bg-light text-center">
+                {{-- STATUS DISTANCE & GPS BADGE INSIDE MODAL --}}
+                <div id="modal-distance-badge" class="p-2 px-3 rounded-pill bg-white border shadow-sm mb-3 d-inline-flex align-items-center gap-2 small text-muted">
+                    <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+                    <span>Mengunci sinyal GPS & Jarak...</span>
+                </div>
+
+                {{-- CAMERA VIEWFINDER CONTAINER --}}
+                <div class="position-relative mx-auto bg-black rounded-4 overflow-hidden shadow-sm" style="max-width: 400px; aspect-ratio: 4/3;">
+                    {{-- Live Video Stream --}}
+                    <video id="webcam-video" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+
+                    {{-- Image Preview after snap --}}
+                    <img id="selfie-preview-img" src="" alt="Pratinjau Selfie" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+
+                    {{-- Hidden Canvas for Capture Processing --}}
+                    <canvas id="webcam-canvas" style="display: none;"></canvas>
+
+                    {{-- Viewfinder Framing Guidelines --}}
+                    <div id="camera-overlay-frame" class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none d-flex flex-column justify-content-between p-3" style="border: 2px dashed rgba(255,255,255,0.4); border-radius: 16px; pointer-events: none;">
+                        <div class="d-flex justify-content-between">
+                            <span class="badge bg-dark bg-opacity-75 text-white fw-normal" style="font-size: 0.7rem;"><i class="ph ph-circle text-danger me-1"></i> LIVE</span>
+                            <span class="badge bg-dark bg-opacity-75 text-white fw-normal" style="font-size: 0.7rem;" id="modal-live-clock">00:00:00 WIB</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="badge bg-dark bg-opacity-75 text-white-50 fw-normal px-2 py-1" style="font-size: 0.7rem;">SMK LABOR PKL</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- CAMERA ERROR / FALLBACK NOTIFICATION --}}
+                <div id="camera-fallback-alert" class="alert alert-warning border mt-3 text-start small mb-0" style="display: none; border-radius: 12px;">
+                    <div class="fw-bold mb-1"><i class="ph ph-warning me-1"></i> Akses Kamera Browser Tidak Tersedia</div>
+                    <p class="mb-2 text-muted" style="font-size: 0.78rem;">
+                        Browser Anda tidak mengizinkan akses webcam langsung. Anda tetap bisa mengambil foto menggunakan kamera perangkat Anda:
+                    </p>
+                    <input type="file" id="fallback-file-input" accept="image/*" capture="user" class="form-control form-control-sm" onchange="handleFallbackFileInput(this)">
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 bg-light px-4 pb-4 pt-0 justify-content-center gap-2">
+                {{-- Snap Button --}}
+                <button type="button" id="btn-snap-photo" onclick="snapSelfiePhoto()" class="btn btn-primary px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm font-semibold">
+                    <i class="ph ph-camera" style="font-size: 20px;"></i> Ambil Foto Selfie
+                </button>
+
+                {{-- Retake Button --}}
+                <button type="button" id="btn-retake-photo" onclick="retakeSelfiePhoto()" class="btn btn-outline-secondary px-3 py-2.5 rounded-3 d-inline-flex align-items-center gap-1.5" style="display: none;">
+                    <i class="ph ph-arrow-counter-clockwise"></i> Foto Ulang
+                </button>
+
+                {{-- Submit Attendance Button --}}
+                <button type="button" id="btn-submit-attendance" onclick="submitAttendancePayload()" class="btn btn-success px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm font-semibold" style="display: none;">
+                    <i class="ph ph-check-circle" style="font-size: 20px;"></i> Konfirmasi & Kirim Presensi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL LIGHTBOX PHOTO PREVIEW --}}
+<div class="modal fade" id="modalPhotoPreview" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header border-0 bg-dark text-white px-4 py-3">
+                <h6 class="modal-title fw-bold" id="photo-preview-title">Foto Selfie Presensi</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 text-center bg-black">
+                <img id="photo-preview-img" src="" alt="Selfie" style="width: 100%; max-height: 480px; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('styles')
@@ -286,13 +392,17 @@
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
+    // Live Clock Management
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
+        const timeStr = `${hours}:${minutes}:${seconds}`;
         const clockElem = document.getElementById('live-clock');
-        if(clockElem) clockElem.textContent = `${hours}:${minutes}:${seconds}`;
+        const modalClock = document.getElementById('modal-live-clock');
+        if(clockElem) clockElem.textContent = timeStr;
+        if(modalClock) modalClock.textContent = `${timeStr} WIB`;
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -307,7 +417,17 @@
     let userMarker = null;
     let companyCircle = null;
 
-    // Haversine Formula (Client Side Distance Calculation)
+    let currentLat = null;
+    let currentLng = null;
+    let currentAccuracy = null;
+    let currentDistance = null;
+
+    // Active attendance type ('masuk' | 'keluar')
+    let activeAttendanceType = 'masuk';
+    let mediaStream = null;
+    let capturedPhotoBase64 = null;
+
+    // Haversine Distance Calculation
     function calculateDistanceClient(lat1, lon1, lat2, lon2) {
         const R = 6371000;
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -342,14 +462,14 @@
         // Auto-detect student location on page load
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(pos) {
-                const uLat = pos.coords.latitude;
-                const uLng = pos.coords.longitude;
-                const accuracy = Math.round(pos.coords.accuracy);
+                currentLat = pos.coords.latitude;
+                currentLng = pos.coords.longitude;
+                currentAccuracy = Math.round(pos.coords.accuracy);
 
-                document.getElementById('gps-accuracy-badge').textContent = `GPS Akurasi: ±${accuracy}m`;
+                document.getElementById('gps-accuracy-badge').textContent = `GPS Akurasi: ±${currentAccuracy}m`;
 
                 // Add User Marker
-                userMarker = L.circleMarker([uLat, uLng], {
+                userMarker = L.circleMarker([currentLat, currentLng], {
                     radius: 8,
                     color: '#0284c7',
                     fillColor: '#38bdf8',
@@ -357,22 +477,12 @@
                 }).addTo(radarMap).bindPopup("Lokasi Anda Saat Ini");
 
                 // Fit Bounds to show both company and user
-                const bounds = L.latLngBounds([[companyLat, companyLng], [uLat, uLng]]);
+                const bounds = L.latLngBounds([[companyLat, companyLng], [currentLat, currentLng]]);
                 radarMap.fitBounds(bounds, { padding: [30, 30] });
 
                 // Calculate Distance
-                const dist = calculateDistanceClient(uLat, uLng, companyLat, companyLng);
-                const indicator = document.getElementById('distance-indicator');
-
-                if (indicator) {
-                    if (dist <= allowedRadius) {
-                        indicator.className = 'p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border border-success-subtle bg-success bg-opacity-10 text-success fw-medium';
-                        indicator.innerHTML = `<i class="ph ph-check-circle fs-5"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Dalam Radius Kantor ✅)</span>`;
-                    } else {
-                        indicator.className = 'p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border border-warning-subtle bg-warning bg-opacity-10 text-warning-emphasis fw-medium';
-                        indicator.innerHTML = `<i class="ph ph-warning fs-5 text-warning"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Di Luar Radius Kantor ${allowedRadius}m ⚠️)</span>`;
-                    }
-                }
+                currentDistance = calculateDistanceClient(currentLat, currentLng, companyLat, companyLng);
+                updateDistanceIndicatorUI(currentDistance);
             }, function() {
                 const indicator = document.getElementById('distance-indicator');
                 if (indicator) {
@@ -383,79 +493,254 @@
         }
     });
 
-    function getLocationAndSubmit(formId, inputId) {
-        const btn = document.getElementById(formId === 'form-absen-masuk' ? 'btn-absen-masuk' : 'btn-absen-keluar');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memverifikasi Radius GPS...';
-        btn.disabled = true;
+    function updateDistanceIndicatorUI(dist) {
+        const indicator = document.getElementById('distance-indicator');
+        const modalBadge = document.getElementById('modal-distance-badge');
+
+        if (indicator) {
+            if (dist <= allowedRadius) {
+                indicator.className = 'p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border border-success-subtle bg-success bg-opacity-10 text-success fw-medium';
+                indicator.innerHTML = `<i class="ph ph-check-circle fs-5"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Dalam Radius Kantor ✅)</span>`;
+            } else {
+                indicator.className = 'p-2.5 px-3.5 d-inline-flex align-items-center gap-2 mb-4 rounded-3 border border-warning-subtle bg-warning bg-opacity-10 text-warning-emphasis fw-medium';
+                indicator.innerHTML = `<i class="ph ph-warning fs-5 text-warning"></i> <span>Jarak Anda: <strong>${dist} Meter</strong> (Di Luar Radius Kantor ${allowedRadius}m ⚠️)</span>`;
+            }
+        }
+
+        if (modalBadge) {
+            if (dist <= allowedRadius) {
+                modalBadge.className = 'p-2 px-3 rounded-pill bg-success-subtle text-success border border-success-subtle shadow-sm mb-3 d-inline-flex align-items-center gap-2 small fw-semibold';
+                modalBadge.innerHTML = `<i class="ph ph-check-circle"></i> <span>Jarak: ${dist}m (Radius Valid)</span>`;
+            } else {
+                modalBadge.className = 'p-2 px-3 rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle shadow-sm mb-3 d-inline-flex align-items-center gap-2 small fw-semibold';
+                modalBadge.innerHTML = `<i class="ph ph-warning"></i> <span>Jarak: ${dist}m (Di Luar Radius Kantor)</span>`;
+            }
+        }
+    }
+
+    // --- WEBRTC CAMERA & SELFIE CAPTURE ---
+    function startSelfieAttendance(type) {
+        activeAttendanceType = type;
+        capturedPhotoBase64 = null;
+
+        document.getElementById('camera-modal-title').textContent = type === 'masuk' 
+            ? 'Foto Selfie Presensi Masuk' 
+            : 'Foto Selfie Presensi Pulang';
+
+        // Reset elements
+        document.getElementById('webcam-video').style.display = 'block';
+        document.getElementById('selfie-preview-img').style.display = 'none';
+        document.getElementById('camera-overlay-frame').style.display = 'flex';
+        document.getElementById('camera-fallback-alert').style.display = 'none';
+        document.getElementById('btn-snap-photo').style.display = 'inline-flex';
+        document.getElementById('btn-retake-photo').style.display = 'none';
+        document.getElementById('btn-submit-attendance').style.display = 'none';
+
+        const modalElem = document.getElementById('modalSelfieAttendance');
+        const bsModal = new bootstrap.Modal(modalElem);
+        bsModal.show();
+
+        // Refresh location when opening modal
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                currentLat = pos.coords.latitude;
+                currentLng = pos.coords.longitude;
+                currentDistance = calculateDistanceClient(currentLat, currentLng, companyLat, companyLng);
+                updateDistanceIndicatorUI(currentDistance);
+            }, function() {}, { enableHighAccuracy: true, timeout: 8000 });
+        }
+
+        // Start WebRTC camera stream
+        startCameraStream();
+    }
+
+    async function startCameraStream() {
+        const video = document.getElementById('webcam-video');
+        const fallbackAlert = document.getElementById('camera-fallback-alert');
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            try {
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                }
+
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    },
+                    audio: false
+                });
+
+                video.srcObject = mediaStream;
+                video.style.display = 'block';
+                fallbackAlert.style.display = 'none';
+            } catch (err) {
+                console.warn("Camera access failed:", err);
+                video.style.display = 'none';
+                fallbackAlert.style.display = 'block';
+                document.getElementById('btn-snap-photo').style.display = 'none';
+            }
+        } else {
+            video.style.display = 'none';
+            fallbackAlert.style.display = 'block';
+            document.getElementById('btn-snap-photo').style.display = 'none';
+        }
+    }
+
+    function closeCameraStream() {
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => track.stop());
+            mediaStream = null;
+        }
+    }
+
+    function snapSelfiePhoto() {
+        const video = document.getElementById('webcam-video');
+        const canvas = document.getElementById('webcam-canvas');
+        const previewImg = document.getElementById('selfie-preview-img');
+
+        if (!video.videoWidth || !video.videoHeight) {
+            alert("Kamera belum siap. Harap tunggu beberapa saat.");
+            return;
+        }
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+
+        // Flip horizontally to match selfie mirror mode
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // Watermark Banner at the bottom
+        const bannerHeight = 44;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+        ctx.fillRect(0, canvas.height - bannerHeight, canvas.width, bannerHeight);
+
+        // Watermark Text
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 13px sans-serif';
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('id-ID') + ' WIB';
+        const distStr = currentDistance !== null ? ` | Jarak: ${currentDistance}m` : '';
+        ctx.fillText(`SMK LABOR PKL • ${dateStr}${distStr}`, 12, canvas.height - 18);
+
+        // Export to Base64 JPEG
+        capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+
+        // Switch View
+        previewImg.src = capturedPhotoBase64;
+        previewImg.style.display = 'block';
+        video.style.display = 'none';
+        document.getElementById('camera-overlay-frame').style.display = 'none';
+
+        // Toggle Buttons
+        document.getElementById('btn-snap-photo').style.display = 'none';
+        document.getElementById('btn-retake-photo').style.display = 'inline-flex';
+        document.getElementById('btn-submit-attendance').style.display = 'inline-flex';
+    }
+
+    function retakeSelfiePhoto() {
+        capturedPhotoBase64 = null;
+        document.getElementById('selfie-preview-img').style.display = 'none';
+        document.getElementById('webcam-video').style.display = 'block';
+        document.getElementById('camera-overlay-frame').style.display = 'flex';
+
+        document.getElementById('btn-snap-photo').style.display = 'inline-flex';
+        document.getElementById('btn-retake-photo').style.display = 'none';
+        document.getElementById('btn-submit-attendance').style.display = 'none';
+    }
+
+    function handleFallbackFileInput(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                capturedPhotoBase64 = e.target.result;
+                const previewImg = document.getElementById('selfie-preview-img');
+                previewImg.src = capturedPhotoBase64;
+                previewImg.style.display = 'block';
+                document.getElementById('webcam-video').style.display = 'none';
+                document.getElementById('btn-submit-attendance').style.display = 'inline-flex';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function submitAttendancePayload() {
+        if (!capturedPhotoBase64) {
+            alert('Silakan ambil foto selfie terlebih dahulu.');
+            return;
+        }
+
+        const submitBtn = document.getElementById('btn-submit-attendance');
+        const origText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan Presensi...';
+        submitBtn.disabled = true;
+
+        const executeSubmit = function(lat, lon) {
+            const form = document.getElementById(activeAttendanceType === 'masuk' ? 'form-absen-masuk' : 'form-absen-keluar');
+            const inputLokasi = document.getElementById(activeAttendanceType === 'masuk' ? 'lokasi_masuk' : 'lokasi_keluar');
+            const inputFoto = document.getElementById(activeAttendanceType === 'masuk' ? 'foto_masuk' : 'foto_keluar');
+
+            inputLokasi.value = (lat && lon) ? `${lat},${lon}` : 'Tanpa GPS';
+            inputFoto.value = capturedPhotoBase64;
+
+            closeCameraStream();
+            form.submit();
+        };
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
+                function(pos) {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
                     const dist = calculateDistanceClient(lat, lon, companyLat, companyLng);
 
                     if (dist > allowedRadius) {
                         const confirmOutside = confirm(
                             `⚠️ PERHATIAN: LOKASI ANDA DI LUAR RADIUS KANTOR!\n\n` +
                             `• Jarak Anda saat ini: ${dist} Meter\n` +
-                            `• Batas Maksimal Toleransi Radius: ${allowedRadius} Meter\n` +
+                            `• Batas Toleransi Radius Kantor: ${allowedRadius} Meter\n` +
                             `• Lokasi Kantor: ${companyName}\n\n` +
-                            `Presensi Anda akan dicatat dengan status 'Luar Radius' dan tercatat pada rekap kehadiran.\n\n` +
+                            `Presensi Anda akan dicatat dengan status 'Luar Radius' dan tercatat pada rekap evaluasi pembimbing.\n\n` +
                             `Apakah Anda ingin TETAP MELANJUTKAN presensi?`
                         );
 
                         if (!confirmOutside) {
-                            btn.innerHTML = originalText;
-                            btn.disabled = false;
+                            submitBtn.innerHTML = origText;
+                            submitBtn.disabled = false;
                             return;
                         }
                     }
 
-                    document.getElementById(inputId).value = lat + ',' + lon;
-                    document.getElementById(formId).submit();
+                    executeSubmit(lat, lon);
                 },
-                function(error) {
-                    let errorMsg = 'Gagal mendeteksi koordinat GPS.';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMsg = 'Akses lokasi ditolak oleh browser/perangkat Anda.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMsg = 'Informasi lokasi perangkat tidak tersedia atau sinyal GPS lemah.';
-                            break;
-                        case error.TIMEOUT:
-                            errorMsg = 'Waktu permintaan lokasi habis (Timeout).';
-                            break;
-                    }
-
-                    const tetapAbsen = confirm(
-                        errorMsg + '\n\n' +
-                        'Tips: Klik ikon gembok/pengaturan di sebelah kiri URL browser untuk mengizinkan (Allow) Akses Lokasi.\n\n' +
-                        'Apakah Anda ingin TETAP MELANJUTKAN presensi tanpa koordinat GPS?'
-                    );
-
-                    if (tetapAbsen) {
-                        document.getElementById(inputId).value = 'Tanpa GPS (Izin Tidak Diberikan)';
-                        document.getElementById(formId).submit();
+                function() {
+                    const confirmNoGps = confirm('Gagal mendeteksi koordinat GPS perangkat. Apakah Anda ingin tetap mengirim presensi dengan foto selfie?');
+                    if (confirmNoGps) {
+                        executeSubmit(null, null);
                     } else {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
+                        submitBtn.innerHTML = origText;
+                        submitBtn.disabled = false;
                     }
                 },
-                { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+                { enableHighAccuracy: true, timeout: 8000 }
             );
         } else {
-            const tetapAbsen = confirm('Browser Anda tidak mendukung GPS Geolocation. Tetap lanjutkan presensi?');
-            if (tetapAbsen) {
-                document.getElementById(inputId).value = 'Browser Tidak Mendukung GPS';
-                document.getElementById(formId).submit();
-            } else {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+            executeSubmit(null, null);
         }
+    }
+
+    // Photo Lightbox Zoom Modal
+    function openPhotoModal(imageUrl, title) {
+        document.getElementById('photo-preview-img').src = imageUrl;
+        document.getElementById('photo-preview-title').textContent = title || 'Foto Selfie Presensi';
+        const modal = new bootstrap.Modal(document.getElementById('modalPhotoPreview'));
+        modal.show();
     }
 </script>
 @endpush

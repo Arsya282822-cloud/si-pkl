@@ -47,7 +47,7 @@
                         <th class="ps-4">Siswa</th>
                         <th>Perusahaan / Tempat PKL</th>
                         <th>Waktu Masuk</th>
-                        <th>Status Koordinat GPS</th>
+                        <th>Status Radius & Selfie</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,25 +68,35 @@
                                 </div>
                             </td>
                             <td>
-                                @if($absen->jarak_masuk_meter !== null)
-                                    @if($absen->status_lokasi_masuk === 'dalam_radius')
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
-                                            <i class="ph ph-check-circle me-1"></i> Radius Valid ({{ $absen->jarak_masuk_meter }}m)
+                                <div class="d-flex flex-wrap align-items-center gap-1.5">
+                                    @if($absen->jarak_masuk_meter !== null)
+                                        @if($absen->status_lokasi_masuk === 'dalam_radius')
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="border-radius: 6px; font-weight: 600; font-size: 0.72rem;">
+                                                <i class="ph ph-check-circle me-1"></i> Radius Valid ({{ $absen->jarak_masuk_meter }}m)
+                                            </span>
+                                        @else
+                                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1" style="border-radius: 6px; font-weight: 600; font-size: 0.72rem;">
+                                                <i class="ph ph-warning-circle me-1"></i> Luar Radius ({{ $absen->jarak_masuk_meter }}m)
+                                            </span>
+                                        @endif
+                                    @elseif($absen->lokasi_masuk)
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="border-radius: 6px; font-weight: 600; font-size: 0.72rem;">
+                                            <i class="ph ph-map-pin me-1"></i> GPS: {{ Str::limit($absen->lokasi_masuk, 18) }}
                                         </span>
                                     @else
-                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
-                                            <i class="ph ph-warning-circle me-1"></i> Luar Radius ({{ $absen->jarak_masuk_meter }}m)
+                                        <span class="badge bg-secondary-subtle text-secondary border px-2 py-1" style="border-radius: 6px; font-weight: 600; font-size: 0.72rem;">
+                                            <i class="ph ph-warning-circle me-1"></i> Tanpa GPS
                                         </span>
                                     @endif
-                                    <div class="small text-muted font-monospace mt-1" style="font-size: 0.72rem;">{{ $absen->lokasi_masuk }}</div>
-                                @elseif($absen->lokasi_masuk)
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
-                                        <i class="ph ph-map-pin me-1"></i> GPS: {{ Str::limit($absen->lokasi_masuk, 18) }}
-                                    </span>
-                                @else
-                                    <span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1" style="border-radius: 6px; font-weight: 600;">
-                                        <i class="ph ph-warning-circle me-1"></i> Tanpa GPS
-                                    </span>
+
+                                    @if($absen->foto_masuk)
+                                        <a href="javascript:void(0)" onclick="openPhotoModal('{{ asset('storage/'.$absen->foto_masuk) }}', 'Selfie Masuk - {{ $absen->penempatan->siswa->nama ?? 'Siswa' }}')" class="badge bg-info-subtle text-info border border-info-subtle text-decoration-none d-inline-flex align-items-center gap-1" style="border-radius: 6px; font-size: 0.72rem;">
+                                            <i class="ph ph-camera"></i> Foto Selfie
+                                        </a>
+                                    @endif
+                                </div>
+                                @if($absen->lokasi_masuk)
+                                    <div class="small text-muted font-monospace mt-1" style="font-size: 0.7rem;">{{ $absen->lokasi_masuk }}</div>
                                 @endif
                             </td>
                         </tr>
@@ -103,6 +113,21 @@
         </div>
     </div>
 </div>
+
+{{-- MODAL LIGHTBOX PHOTO PREVIEW --}}
+<div class="modal fade" id="modalPhotoPreview" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header border-0 bg-dark text-white px-4 py-3">
+                <h6 class="modal-title fw-bold" id="photo-preview-title">Foto Selfie Presensi</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 text-center bg-black">
+                <img id="photo-preview-img" src="" alt="Selfie" style="width: 100%; max-height: 480px; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -110,6 +135,13 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <script>
+function openPhotoModal(imageUrl, title) {
+    document.getElementById('photo-preview-img').src = imageUrl;
+    document.getElementById('photo-preview-title').textContent = title || 'Foto Selfie Presensi';
+    const modal = new bootstrap.Modal(document.getElementById('modalPhotoPreview'));
+    modal.show();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize map centering on Pekanbaru
     var map = L.map('map').setView([0.5071, 101.4478], 13);
@@ -133,14 +165,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!isNaN(lat) && !isNaN(lng)) {
                     var marker = L.marker([lat, lng]).addTo(map);
                     
+                    var photoHtml = '';
+                    if (absen.foto_masuk) {
+                        photoHtml = `
+                            <div style="margin-top: 8px; text-align: center;">
+                                <img src="/storage/${absen.foto_masuk}" style="width: 100%; max-height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            </div>
+                        `;
+                    }
+
                     var popupContent = `
-                        <div style="font-family: 'Inter', sans-serif; padding: 4px;">
-                            <h6 style="margin: 0 0 4px 0; font-weight: 700; color: #0f172a; font-size: 14px;">${absen.penempatan.siswa.nama}</h6>
-                            <div style="font-size: 12px; color: #64748b; line-height: 1.5;">
+                        <div style="font-family: 'Inter', sans-serif; padding: 4px; min-width: 180px;">
+                            <h6 style="margin: 0 0 4px 0; font-weight: 700; color: #0f172a; font-size: 13px;">${absen.penempatan.siswa.nama}</h6>
+                            <div style="font-size: 11px; color: #64748b; line-height: 1.4;">
                                 <div><strong class="text-dark">${absen.penempatan.perusahaan.nama_perusahaan}</strong></div>
                                 <div>Masuk: <strong>${absen.jam_masuk || '-'}</strong> WIB</div>
-                                <div>Koordinat: <span style="font-family: monospace; font-size: 11px;">${lat.toFixed(5)}, ${lng.toFixed(5)}</span></div>
+                                <div>Status: <span class="badge ${absen.status_lokasi_masuk === 'dalam_radius' ? 'bg-success' : 'bg-warning'} text-white" style="font-size: 10px;">${absen.status_lokasi_masuk === 'dalam_radius' ? 'Radius Valid' : 'Luar Radius'}</span></div>
                             </div>
+                            ${photoHtml}
                         </div>
                     `;
                     marker.bindPopup(popupContent);

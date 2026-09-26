@@ -10,10 +10,42 @@ use App\Services\ActivityLogger;
 use App\Services\GeoLocationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
 {
+    /**
+     * Helper to save attendance selfie photo (supports base64 data URI or UploadedFile).
+     */
+    private function saveAttendancePhoto($input, string $folder): ?string
+    {
+        if (! $input) {
+            return null;
+        }
+
+        if ($input instanceof UploadedFile) {
+            return $input->store("absensi/{$folder}", 'public');
+        }
+
+        if (is_string($input) && str_starts_with($input, 'data:image/')) {
+            @[$type, $data] = explode(';', $input);
+            @[, $data] = explode(',', $data);
+            if ($data) {
+                $decoded = base64_decode($data);
+                if ($decoded !== false) {
+                    $filename = "absensi/{$folder}/selfie_".uniqid().'_'.time().'.jpg';
+                    Storage::disk('public')->put($filename, $decoded);
+
+                    return $filename;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Cari riwayat presensi hadir sebelum hari ini yang belum memiliki jurnal harian.
      */
@@ -164,6 +196,8 @@ class AbsensiController extends Controller
             $statusLokasi = 'dalam_radius'; // Jika perusahaan belum setting koordinat, anggap valid
         }
 
+        $fotoMasukPath = $this->saveAttendancePhoto($request->file('foto') ?? $request->input('foto_masuk') ?? $request->input('foto'), 'masuk');
+
         AbsensiPkl::create([
             'penempatan_id' => $penempatan->id,
             'tanggal' => $waktuMasuk->format('Y-m-d'),
@@ -172,6 +206,7 @@ class AbsensiController extends Controller
             'lokasi_masuk' => $lokasiString,
             'jarak_masuk_meter' => $jarakMeter,
             'status_lokasi_masuk' => $statusLokasi,
+            'foto_masuk' => $fotoMasukPath,
         ]);
 
         $jarakInfo = $jarakMeter !== null ? " (Jarak: {$jarakMeter}m - ".($statusLokasi === 'dalam_radius' ? 'Valid' : 'Luar Radius').')' : '';
@@ -223,11 +258,14 @@ class AbsensiController extends Controller
             $statusLokasi = 'dalam_radius';
         }
 
+        $fotoKeluarPath = $this->saveAttendancePhoto($request->file('foto') ?? $request->input('foto_keluar') ?? $request->input('foto'), 'pulang');
+
         $absensi->update([
             'jam_keluar' => $waktuKeluar->format('H:i:s'),
             'lokasi_keluar' => $lokasiString,
             'jarak_keluar_meter' => $jarakMeter,
             'status_lokasi_keluar' => $statusLokasi,
+            'foto_keluar' => $fotoKeluarPath ?? $absensi->foto_keluar,
         ]);
 
         $jarakInfo = $jarakMeter !== null ? " (Jarak: {$jarakMeter}m - ".($statusLokasi === 'dalam_radius' ? 'Valid' : 'Luar Radius').')' : '';

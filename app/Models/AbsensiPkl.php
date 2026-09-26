@@ -19,4 +19,14 @@ class AbsensiPkl extends Model
     {
         return $this->penempatan?->siswa;
     }
+
+    public function getFotoMasukUrlAttribute(): ?string
+    {
+        return $this->foto_masuk ? asset('storage/'.$this->foto_masuk) : null;
+    }
+
+    public function getFotoKeluarUrlAttribute(): ?string
+    {
+        return $this->foto_keluar ? asset('storage/'.$this->foto_keluar) : null;
+    }
 }

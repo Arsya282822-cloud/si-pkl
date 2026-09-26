@@ -108,4 +108,92 @@ class AttendanceJournalLockTest extends TestCase
         $responseAfter->assertStatus(200);
         $responseAfter->assertDontSee('Presensi Hari Ini Terkunci!');
     }
+
+    public function test_attendance_with_selfie_photo_and_geofencing()
+    {
+        $roleSiswa = Role::firstOrCreate(['nama_role' => 'siswa']);
+
+        $user = User::factory()->create([
+            'role_id' => $roleSiswa->id,
+            'status' => 'aktif',
+        ]);
+
+        $jurusan = Jurusan::firstOrCreate(
+            ['kode_jurusan' => 'TKJ'],
+            ['nama_jurusan' => 'Teknik Komputer dan Jaringan', 'status' => true]
+        );
+
+        $kelas = Kelas::firstOrCreate(
+            ['nama_kelas' => 'XII TKJ 1'],
+            ['jurusan_id' => $jurusan->id, 'tingkat' => 'XII', 'status' => true]
+        );
+
+        $siswa = Siswa::create([
+            'user_id' => $user->id,
+            'kelas_id' => $kelas->id,
+            'jurusan_id' => $jurusan->id,
+            'nis' => '54321',
+            'nisn' => '0987654321',
+            'nama' => 'SITI AMINAH',
+            'jenis_kelamin' => 'P',
+            'no_hp' => '081298765432',
+        ]);
+
+        $perusahaan = Perusahaan::create([
+            'nama_perusahaan' => 'PT Garuda Cyber Indonesia',
+            'alamat' => 'Jl. HR. Soebrantas',
+            'kota' => 'Pekanbaru',
+            'latitude' => '0.507068',
+            'longitude' => '101.447779',
+            'radius_meter' => 150,
+            'status' => 'aktif',
+        ]);
+
+        $periode = PeriodePkl::create([
+            'nama_periode' => 'PKL 2026',
+            'tahun_ajaran' => '2026/2027',
+            'tanggal_mulai' => now()->subMonths(1)->format('Y-m-d'),
+            'tanggal_selesai' => now()->addMonths(3)->format('Y-m-d'),
+            'status' => 'aktif',
+        ]);
+
+        $penempatan = Penempatan::create([
+            'siswa_id' => $siswa->id,
+            'perusahaan_id' => $perusahaan->id,
+            'periode_pkl_id' => $periode->id,
+        ]);
+
+        // Base64 sample 1x1 transparent png
+        $fakeBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
+        // 1. Submit Attendance Masuk with Selfie & Geolocation (inside radius)
+        $responseMasuk = $this->actingAs($user)->post(route('siswa.absensi.store'), [
+            'lokasi' => '0.507068,101.447779',
+            'foto_masuk' => $fakeBase64,
+        ]);
+
+        $responseMasuk->assertRedirect(route('siswa.absensi.index'));
+        $responseMasuk->assertSessionHas('success');
+
+        $absenToday = AbsensiPkl::where('penempatan_id', $penempatan->id)->first();
+        $this->assertNotNull($absenToday);
+        $this->assertEquals('hadir', $absenToday->status);
+        $this->assertEquals('dalam_radius', $absenToday->status_lokasi_masuk);
+        $this->assertNotNull($absenToday->foto_masuk);
+        $this->assertStringContainsString('absensi/masuk/', $absenToday->foto_masuk);
+
+        // 2. Submit Attendance Pulang with Selfie
+        $responseKeluar = $this->actingAs($user)->put(route('siswa.absensi.update', $absenToday->id), [
+            'lokasi' => '0.507068,101.447779',
+            'foto_keluar' => $fakeBase64,
+        ]);
+
+        $responseKeluar->assertRedirect(route('siswa.absensi.index'));
+        $responseKeluar->assertSessionHas('success');
+
+        $absenToday->refresh();
+        $this->assertNotNull($absenToday->jam_keluar);
+        $this->assertNotNull($absenToday->foto_keluar);
+        $this->assertStringContainsString('absensi/pulang/', $absenToday->foto_keluar);
+    }
 }
